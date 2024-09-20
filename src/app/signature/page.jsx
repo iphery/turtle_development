@@ -73,7 +73,7 @@ export default function SignaturePad() {
 
       {trimmedDataURL.map((item, index) => {
         return (
-          <div className="mb-2 border p-2">
+          <div className="mb-2 border p-2" key={index}>
             <img src={item.image} />
             <div>{`${item.timestamp}`}</div>
           </div>
