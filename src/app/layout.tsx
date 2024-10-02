@@ -8,9 +8,12 @@ import { DataProvider } from "@/app/appcontext";
 
 import { Metadata } from "next";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export const metadata: Metadata = {
-  title: "MIST",
-  description: "Maintenance Apps",
+  title: "Logbook",
+  description: "Logistic Apps",
   // manifest: "/manifest.json",
 };
 
@@ -23,6 +26,7 @@ export default function RootLayout({
     <DataProvider>
       <html lang="en">
         <body suppressHydrationWarning={true}>
+          <ToastContainer />
           <div className="dark:bg-boxdark-2 dark:text-bodydark">{children}</div>
         </body>
       </html>

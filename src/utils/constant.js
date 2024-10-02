@@ -1,1 +1,1 @@
-export const API_URL = "http://turtledev.wuaze.com/public";
+export const API_URL = "https://logbook.pbfobat.com/api";
