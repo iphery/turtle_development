@@ -6,7 +6,7 @@ import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-export default function page() {
+export default function Page() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
