@@ -359,34 +359,36 @@ export default function PartsOut() {
                 </PageCard>
                 <div className="mb-5"></div>
                 <PageCard>
-                  <div className="flex flex-row items-center justify-evenly">
-                    <div className="w-full">
-                      <CommonInput
-                        input={keyword}
-                        type={"text"}
-                        reference={focusKeyword}
-                        onInputChange={(val) => {
-                          //setKeyword(val);
-                          //  fetch_data();
-                          setKeyword(val);
-                          setCurrentPage(1);
+                  <div className="flex-row sm:flex">
+                    <div className="flex flex-row items-center sm:w-full">
+                      <div className="w-full">
+                        <CommonInput
+                          input={keyword}
+                          type={"text"}
+                          reference={focusKeyword}
+                          onInputChange={(val) => {
+                            //setKeyword(val);
+                            //  fetch_data();
+                            setKeyword(val);
+                            setCurrentPage(1);
+                          }}
+                          placeholder={"Search"}
+                        >
+                          <HiOutlineSearch />
+                        </CommonInput>
+                      </div>
+                      <div
+                        className="ml-1"
+                        onClick={() => {
+                          //link to scanner
+                          localStorage.setItem("searchitem", "");
+                          setDoScan(true);
                         }}
-                        placeholder={"Search"}
                       >
-                        <HiOutlineSearch />
-                      </CommonInput>
+                        <MdOutlineDocumentScanner className="h-5 w-5" />
+                      </div>
                     </div>
-                    <div className="ml-1"></div>
-                    <div
-                      className=""
-                      onClick={() => {
-                        //link to scanner
-                        localStorage.setItem("searchitem", "");
-                        setDoScan(true);
-                      }}
-                    >
-                      <MdOutlineDocumentScanner className="h-5 w-5" />
-                    </div>
+
                     <div className="ml-3"></div>
                     <div className="w-full">
                       <CommonInput
@@ -397,7 +399,7 @@ export default function PartsOut() {
                     </div>
 
                     <div className="ml-3"></div>
-                    <div className="w-2/3">
+                    <div className="sm: w-2/3 w-full">
                       <CommonInput
                         placeholder={"Enter quantity"}
                         input={tempQuantity}
