@@ -81,8 +81,11 @@ export default function UserAuth({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user == null) {
+        localStorage.setItem("userUid", "");
         setLogin(false);
       } else {
+        localStorage.setItem("userUid", user.uid);
+        console.log(user.uid);
         setLogin(true);
       }
 

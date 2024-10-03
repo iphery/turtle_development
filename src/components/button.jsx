@@ -4,7 +4,7 @@ export const CommonButton = ({ label, onload, disabled, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="bg-buttonnormal hover:bg-buttonhover rounded-sm border border-bodydark p-2 text-sm text-white shadow-md"
+      className="bg-buttonnormal hover:bg-buttonhover rounded-sm border border-bodydark p-2 text-sm text-strokedark shadow-md"
       disabled={disabled}
     >
       {onload ? <ButtonLoader color={"white"} /> : label}
