@@ -177,7 +177,8 @@ export default function PartsOut() {
 
       if (response.status == 200) {
         console.log(response.data);
-        window.location.reload();
+        //window.location.reload();
+        router.push("/transaction");
       }
     }
     setOnSubmit(false);
