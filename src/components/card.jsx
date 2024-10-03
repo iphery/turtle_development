@@ -34,7 +34,7 @@ export const ProgressSummary = ({ title, hour, isActive }) => {
 
 export const PageCard = ({ children }) => {
   return (
-    <div className=" w-full rounded-sm border border-strokedark  shadow-default">
+    <div className=" w-full rounded-sm border border-bodydark  shadow-default">
       <div className="p-3">{children}</div>
     </div>
   );

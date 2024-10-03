@@ -159,6 +159,14 @@ export default function PartsOut() {
       localErrorInfo[2] = false;
     }
 
+    if (inputDataInfo.note == "") {
+      newdataerror[3] = true;
+      setInputDataInfoError(newdataerror);
+      localErrorInfo[3] = true;
+    } else {
+      localErrorInfo[3] = false;
+    }
+
     if (!localErrorInfo.includes(true)) {
       const apiUrl = `${API_URL}/newstockout`;
       const response = await axios.post(apiUrl, {
@@ -169,80 +177,20 @@ export default function PartsOut() {
 
       if (response.status == 200) {
         console.log(response.data);
+        window.location.reload();
       }
     }
     setOnSubmit(false);
-  };
-  const save_data1 = async () => {
-    setLoadingSubmit(true);
-    console.log(inputDate); //harus input validasi
-    console.log(inputReceiver); //harus input validasi
-    console.log(idService); //jika kategory "Service"
-    console.log(categoryTrans);
-    console.log(dataAsset["id_asset"]);
-
-    console.log(listOrder); //validasi kalo length = 0
-
-    let error = [0, 0, 0];
-    if (inputDate == null || inputDate == "") {
-      setInputDateError(true);
-      setInputDateMessage("Tidak boleh kosong");
-      error[0] = 1;
-    } else {
-      setInputDateError(false);
-      setInputDateMessage("");
-      error[0] = 0;
-    }
-
-    if (inputReceiver == null || inputReceiver == "") {
-      setInputReceiverError(true);
-      setInputReceiverMessage("Tidak boleh kosong");
-      error[1] = 1;
-    } else {
-      setInputReceiverError(false);
-      setInputReceiverMessage("");
-      error[1] = 0;
-    }
-
-    if (listOrder.length == 0) {
-      setEmptyListAlert(true);
-      error[2] = 1;
-    } else {
-      setEmptyListAlert(false);
-      error[2] = 0;
-    }
-
-    const errorSum = error.reduce((accum, current) => accum + current, 0);
-    if (errorSum == 0) {
-      const user = localStorage.getItem("info");
-      const parseUser = JSON.parse(user);
-
-      const apiUrl = `${API_URL}/transout`;
-      const response = await axios.post(apiUrl, {
-        date: inputDate,
-        receiver: inputReceiver,
-        serviceId: idService,
-        category: categoryTrans,
-        assetId: dataAsset["id_asset"],
-        order: listOrder,
-        uid: parseUser[0]["Uid"],
-      });
-
-      if (response.status == 200) {
-        const result = response.data["response"];
-        NotifySuccess(result);
-        router.back();
-      }
-    }
-    setLoadingSubmit(false);
   };
 
   const [inputDataInfo, setInputDataInfo] = useState({
     date: "",
     receiver: "",
     phone: "",
+    note: "",
   });
   const [inputDataInfoError, setInputDataInfoError] = useState([
+    false,
     false,
     false,
     false,
@@ -288,9 +236,9 @@ export default function PartsOut() {
                 <PageCard>
                   <div className="flex flex-row justify-evenly">
                     <div className="w-full">
-                      <div className="mb-2 flex justify-between">
+                      <div className="mb-2   sm:flex sm:justify-between ">
                         <div>Tanggal</div>
-                        <div className="w-1/2">
+                        <div className="w-full sm:w-1/2">
                           <CommonInput
                             type={"date"}
                             input={inputDataInfo.date}
@@ -310,9 +258,9 @@ export default function PartsOut() {
                           ></CommonInput>
                         </div>
                       </div>
-                      <div className="mb-2 flex justify-between">
+                      <div className="mb-2 sm:flex sm:justify-between ">
                         <div>Penerima</div>
-                        <div className="w-1/2">
+                        <div className="w-full sm:w-1/2">
                           <CommonInput
                             type={"text"}
                             input={inputDataInfo.receiver}
@@ -332,9 +280,9 @@ export default function PartsOut() {
                           ></CommonInput>
                         </div>
                       </div>
-                      <div className="mb-2 flex justify-between">
+                      <div className="mb-2 sm:flex sm:justify-between ">
                         <div>No Telp (WA)</div>
-                        <div className="w-1/2">
+                        <div className="w-full sm:w-1/2">
                           <CommonInput
                             type={"number"}
                             input={inputDataInfo.phone}
@@ -354,13 +302,34 @@ export default function PartsOut() {
                           ></CommonInput>
                         </div>
                       </div>
+                      <div className="mb-2 sm:flex sm:justify-between ">
+                        <div>Note</div>
+                        <div className="w-full sm:w-1/2">
+                          <CommonInput
+                            input={inputDataInfo.note}
+                            error={inputDataInfoError[3]}
+                            errorMessage={"Required"}
+                            onInputChange={(val) => {
+                              setInputDataInfo((prev) => ({
+                                ...prev,
+                                note: val,
+                              }));
+                            }}
+                            onKeyChange={() => {
+                              const newdata = [...inputDataInfoError];
+                              newdata[3] = false;
+                              setInputDataInfoError(newdata);
+                            }}
+                          ></CommonInput>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </PageCard>
                 <div className="mb-5"></div>
                 <PageCard>
                   <div className="flex-row sm:flex">
-                    <div className="flex flex-row items-center sm:w-full">
+                    <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
                       <div className="w-full">
                         <CommonInput
                           input={keyword}
@@ -390,7 +359,7 @@ export default function PartsOut() {
                     </div>
 
                     <div className="ml-3"></div>
-                    <div className="w-full">
+                    <div className="mb-2 w-full sm:mb-0">
                       <CommonInput
                         placeholder={"Description"}
                         input={tempItem}
