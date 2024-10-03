@@ -143,9 +143,9 @@ export default function Page({ params }) {
             )}
           </div>
           {trans.signed == "1" ? (
-            <div className="w-full border p-2">
+            <div className="w-full border p-2 ">
               {" "}
-              <img src={trans.signature} alt="" />
+              <img src={trans.signature} alt="" className="h-20 w-20" />
             </div>
           ) : (
             <>
@@ -178,6 +178,7 @@ export default function Page({ params }) {
                 disabled={onSubmit}
                 onClick={save}
               ></CommonButtonFull>
+              <div className="mb-10"></div>
             </>
           )}
         </div>
