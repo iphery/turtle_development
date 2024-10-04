@@ -4,7 +4,7 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 
 export const SearchScanner = ({ exit, onScanResult }) => {
   const exit_scanner = () => {
-    onScanResult("1");
+    //onScanResult("1");
     exit();
   };
 
