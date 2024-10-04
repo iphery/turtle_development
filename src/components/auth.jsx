@@ -13,6 +13,7 @@ import SignIn from "@/app/(auth)/signin/page";
 import { useProvider } from "@/app/appcontext";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
+import { PageLoader } from "./loader";
 
 //const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL; // Your Supabase URL
 //const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Your Supabase Anon Key
@@ -98,7 +99,7 @@ export default function UserAuth({ children }) {
   }, []);
 
   if (onLoad) {
-    return <div>loading</div>;
+    return <PageLoader></PageLoader>;
   } else {
     if (!isLogin) {
       return <SignIn></SignIn>;

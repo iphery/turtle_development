@@ -177,8 +177,14 @@ export default function PartsOut() {
 
       if (response.status == 200) {
         console.log(response.data);
+        const responseError = response.data["error"];
+        if (responseError == 1) {
+          setListOrder(response.data["result"]);
+          NotifyError(response.data["message"]);
+        } else {
+          router.push("/transaction");
+        }
         //window.location.reload();
-        router.push("/transaction");
       }
     }
     setOnSubmit(false);
@@ -414,8 +420,9 @@ export default function PartsOut() {
                                   id_part: tempIdPart,
                                   description: tempItem,
                                   type: tempTypePart,
-                                  quantity: tempQuantity,
+                                  quantity: 100, //tempQuantity,
                                   unit: tempUnit,
+                                  error: 0,
                                 };
                                 newList.push(order);
                                 setEmptyListAlert(false);
@@ -527,7 +534,10 @@ export default function PartsOut() {
                         <tbody>
                           {listOrder.map((item, index) => {
                             return (
-                              <tr key={index}>
+                              <tr
+                                key={index}
+                                className={`${item.error == 0 ? "" : "bg-warning text-white"}`}
+                              >
                                 <td className="py-2 text-center">
                                   {index + 1}
                                 </td>

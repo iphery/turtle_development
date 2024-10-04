@@ -23,23 +23,7 @@ export default function Home() {
 
   return (
     <UserAuth>
-      <DefaultLayout>
-        <div
-          onClick={() => {
-            fetch_data_user();
-          }}
-        >
-          abc
-        </div>
-        <div
-          onClick={async () => {
-            console.log("logoiut");
-            await signOut(auth);
-          }}
-        >
-          Logout
-        </div>
-      </DefaultLayout>
+      <DefaultLayout>Welcome to Logbook</DefaultLayout>
     </UserAuth>
   );
 }

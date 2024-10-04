@@ -61,7 +61,7 @@ export default function Page() {
     <UserAuth>
       <DefaultLayout>
         <div className="mb-3 flex items-center justify-between">
-          <div className="text-xl font-bold">Transaction</div>
+          <div className=" text-xl font-bold">Transaction</div>
           <div className="relative">
             <button
               onClick={toggleDropdown}
@@ -91,7 +91,7 @@ export default function Page() {
           </div>
         </div>
         <PageCard>
-          <div className="mb-3 w-full sm:w-1/2">
+          <div className="mb-3 w-1/2 sm:w-1/2">
             <CommonInput
               placeholder={"Search"}
               input={keyword}
@@ -100,59 +100,63 @@ export default function Page() {
               }}
             ></CommonInput>
           </div>
-          <table className="w-full">
-            <thead>
-              <tr className="bg-strokedark text-white">
-                <th>No</th>
+          <div className="flex overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-strokedark text-white">
+                  <th>No</th>
 
-                <th>ID</th>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Unit</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTrans.length > 0 &&
-                filteredTrans.map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td className="p-1 text-center">{index + 1}</td>
-                      <td
-                        className="cursor-default p-1 text-center hover:text-primary"
-                        onClick={() => {
-                          router.push(`/transaction/${item["id_transaction"]}`);
-                        }}
-                      >
-                        {item["id_transaction"]}
-                      </td>
-                      <td className="p-1 text-center">{item["date"]}</td>
-                      <td
-                        className="cursor-default p-1 hover:text-primary"
-                        onClick={() => {
-                          router.push(`/product/${item["id_product"]}`);
-                        }}
-                      >
-                        {item["description"]}
-                      </td>
-                      <td className="p-1 text-center">{item["quantity"]}</td>
-                      <td className="p-1 text-center">{item["unit"]}</td>
-                      <td className="p-1 text-center">
-                        <div className="flex items-center justify-center">
-                          <div className="text-sm"> {item["type"]}</div>
-                          {item["type"] == "OUT" ? (
-                            <FiArrowUpRight className="text-danger" />
-                          ) : (
-                            <FiArrowDownLeft className="text-success" />
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                  <th>Unit</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTrans.length > 0 &&
+                  filteredTrans.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td className="p-1 text-center">{index + 1}</td>
+                        <td
+                          className="cursor-default p-1 text-center hover:text-primary"
+                          onClick={() => {
+                            router.push(
+                              `/transaction/${item["id_transaction"]}`,
+                            );
+                          }}
+                        >
+                          {item["id_transaction"]}
+                        </td>
+                        <td className="p-1 text-center">{item["date"]}</td>
+                        <td
+                          className="cursor-default p-1 hover:text-primary"
+                          onClick={() => {
+                            router.push(`/product/${item["id_product"]}`);
+                          }}
+                        >
+                          {item["description"]}
+                        </td>
+                        <td className="p-1 text-center">{item["quantity"]}</td>
+                        <td className="p-1 text-center">{item["unit"]}</td>
+                        <td className="p-1 text-center">
+                          <div className="flex items-center justify-center">
+                            <div className="text-sm"> {item["type"]}</div>
+                            {item["type"] == "OUT" ? (
+                              <FiArrowUpRight className="text-danger" />
+                            ) : (
+                              <FiArrowDownLeft className="text-success" />
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
         </PageCard>
       </DefaultLayout>
     </UserAuth>

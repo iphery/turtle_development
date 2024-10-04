@@ -61,7 +61,7 @@ export const CommonInputFile = ({
   children,
   reference,
   isDisabled,
-
+  acceptFile,
   isAutoFocus,
 }) => {
   return (
@@ -72,6 +72,7 @@ export const CommonInputFile = ({
         ref={reference}
         placeholder={placeholder}
         disabled={isDisabled}
+        accept={acceptFile}
         autoFocus={isAutoFocus}
         onKeyDown={onKeyChange}
         onChange={(event) => {
