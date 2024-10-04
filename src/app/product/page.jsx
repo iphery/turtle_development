@@ -106,7 +106,7 @@ export default function Page() {
 
               <PageCard>
                 <div>
-                  <div className="mb-3 w-full sm:w-1/2">
+                  <div className="mb-3 w-1/2 sm:w-1/2">
                     <CommonInput
                       placeholder={"Search"}
                       input={keyword}
