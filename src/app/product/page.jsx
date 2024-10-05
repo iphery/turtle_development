@@ -168,7 +168,7 @@ export default function Page() {
                       </table>
                     </div>
                   ) : (
-                    <div>
+                    <div className="py-3">
                       {filteredProducts.map((item, index) => {
                         return (
                           <div
@@ -178,7 +178,7 @@ export default function Page() {
                               router.push(`/product/${item["id_product"]}`);
                             }}
                           >
-                            <div className="p-1 shadow-sm">
+                            <div className="p-2 shadow-sm">
                               <div>{item["id_product"]}</div>
                               <div>{item["barcode"]}</div>
                               <div>{item["description"]}</div>
