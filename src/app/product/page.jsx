@@ -12,8 +12,11 @@ import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import NewProduct from "@/components/newproduct";
 import { SearchScanner } from "@/components/searchscanner";
+import { useMediaQuery } from "react-responsive";
 
 export default function Page() {
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
+
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
@@ -76,7 +79,7 @@ export default function Page() {
               <div className="mb-3 flex items-center justify-between">
                 <div className=" text-xl font-bold">Product</div>
 
-                <div className="relative">
+                <div className="relative z-20">
                   <button
                     onClick={toggleDropdown}
                     className="rounded-md bg-strokedark px-3 py-1 text-white"
@@ -106,61 +109,90 @@ export default function Page() {
 
               <PageCard>
                 <div>
-                  <div className="mb-3 w-1/2 sm:w-1/2">
-                    <CommonInput
-                      placeholder={"Search"}
-                      input={keyword}
-                      onInputChange={(val) => {
-                        setKeyword(val);
-                      }}
-                    ></CommonInput>
+                  <div className="relative">
+                    <div className="z-10 mb-3 w-full sm:w-1/2">
+                      <CommonInput
+                        placeholder={"Search"}
+                        input={keyword}
+                        onInputChange={(val) => {
+                          setKeyword(val);
+                        }}
+                      ></CommonInput>
+                    </div>
                   </div>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full ">
-                      <thead>
-                        <tr className="bg-strokedark text-white">
-                          <th>No</th>
-                          <th>Code</th>
-                          <th>Description</th>
-                          <th>Barcode</th>
-                          <th>Quantity</th>
-                          <th>Unit</th>
-                          <th>Category</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredProducts.map((item, index) => {
-                          return (
-                            <tr
-                              key={index}
-                              onClick={() => {
-                                router.push(`/product/${item["id_product"]}`);
-                              }}
-                              className=" hover:bg-bodydark"
-                            >
-                              <td className="p-1 text-center">{index + 1}</td>
-                              <td className="p-1 text-center">
-                                {item["id_product"]}
-                              </td>
-                              <td className="p-1">{item["description"]}</td>
-                              <td className="p-1 text-center">
-                                {item["barcode"]}
-                              </td>
-                              <td className="p-1 text-center">
-                                {item["available_quantity"]}
-                              </td>
-                              <td className="p-1 text-center">
-                                {item["unit"]}
-                              </td>
-                              <td className="p-1 text-center">
-                                {item["category"]}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                  {!isSmallScreen ? (
+                    <div className="">
+                      <table className="min-w-full ">
+                        <thead>
+                          <tr className="bg-strokedark text-white">
+                            <th>No</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Barcode</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Category</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredProducts.map((item, index) => {
+                            return (
+                              <tr
+                                key={index}
+                                onClick={() => {
+                                  router.push(`/product/${item["id_product"]}`);
+                                }}
+                                className=" hover:bg-bodydark"
+                              >
+                                <td className="p-1 text-center">{index + 1}</td>
+                                <td className="p-1 text-center">
+                                  {item["id_product"]}
+                                </td>
+                                <td className="p-1">{item["description"]}</td>
+                                <td className="p-1 text-center">
+                                  {item["barcode"]}
+                                </td>
+                                <td className="p-1 text-center">
+                                  {item["available_quantity"]}
+                                </td>
+                                <td className="p-1 text-center">
+                                  {item["unit"]}
+                                </td>
+                                <td className="p-1 text-center">
+                                  {item["category"]}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div>
+                      {filteredProducts.map((item, index) => {
+                        return (
+                          <div
+                            className="py-1"
+                            key={index}
+                            onClick={() => {
+                              router.push(`/product/${item["id_product"]}`);
+                            }}
+                          >
+                            <div className="p-1 shadow-sm">
+                              <div>{item["id_product"]}</div>
+                              <div>{item["barcode"]}</div>
+                              <div>{item["description"]}</div>
+                              <div>{item["category"]}</div>
+                              <div className="flex justify-between">
+                                <div>{item["available_quantity"]}</div>
+                                <div>{item["unit"]}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </PageCard>
             </DefaultLayout>

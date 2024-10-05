@@ -96,22 +96,29 @@ export default function Page({ params }) {
           </div>
         </PageCard>
         <div className="mb-5"></div>
-        <PageCard>
-          <div className="sm:flex sm:justify-evenly">
-            <div className="w-full">
-              <div className="flex justify-start">
-                <div>Signed at :</div>
-                <div className="ml-3">aa</div>
+
+        {trans.type == "OUT" ? (
+          <PageCard>
+            <div className="sm:flex sm:justify-evenly">
+              <div className="w-full">
+                <div className="flex justify-start">
+                  <div>Signed at :</div>
+                  <div className="ml-3">{trans.signed_at}</div>
+                </div>
+              </div>
+              <div className="w-full">
+                <div className="flex justify-start">
+                  <div>Signature :</div>
+                  <div className="ml-3">
+                    <img src={trans.signature} className="h-12" />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="w-full">
-              <div className="flex justify-start">
-                <div>Signature :</div>
-                <div className="ml-3">aa</div>
-              </div>
-            </div>
-          </div>
-        </PageCard>
+          </PageCard>
+        ) : (
+          <></>
+        )}
       </DefaultLayout>
     </UserAuth>
   );
