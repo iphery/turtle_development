@@ -102,7 +102,9 @@ export default function Page({ params }) {
         </div>
       ) : (
         <div className=" overflow-y-auto p-2">
-          <div className="tex-xl text-center font-bold">Nota Barang</div>
+          <div className="tex-xl text-center font-bold">
+            Serah Terima Barang
+          </div>
 
           <div className="text-center text-sm">{trans.id_transaction}</div>
           <div className="text-sm">Tanggal :</div>
@@ -114,7 +116,7 @@ export default function Page({ params }) {
           <table className="w-full">
             <thead>
               <tr className="text-sm">
-                <th>Item</th>
+                <th className="text-left">Item</th>
                 <th>Jumlah</th>
                 <th>Unit</th>
               </tr>

@@ -12,9 +12,11 @@ import { CustomModal } from "@/components/modal";
 import EditProduct from "@/components/editproduct";
 import EditPicture from "@/components/editpicture";
 import { SearchScanner } from "@/components/searchscanner";
+import { useMediaQuery } from "react-responsive";
 
 export default function Page({ params }) {
   const [detail, setDetail] = useState({});
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   const [startDate, setStartDate] = useState(
     get_first_date().toISOString().substring(0, 10),
@@ -131,7 +133,7 @@ export default function Page({ params }) {
                 </div>
               </div>
               <PageCard>
-                <div className="flex justify-evenly">
+                <div className="flex flex-col sm:flex-row sm:justify-evenly">
                   <div className="w-full">
                     <div className="mb-2 flex justify-evenly">
                       <div className="w-full">Description</div>
