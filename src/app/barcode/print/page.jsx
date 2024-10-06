@@ -37,7 +37,7 @@ export default function Barcode() {
               <div className="text-sm font-bold">Category</div>
               <div className="mb-1 text-xs">{item["category"]}</div>
               <div className=" text-sm font-bold">Description</div>
-              <div className="text-xs">{item["barcode"]}</div>
+              <div className="text-xs">{item["description"]}</div>
             </div>
           </div>
         </div>
