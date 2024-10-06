@@ -120,6 +120,7 @@ export default function Page() {
                     <th>Quantity</th>
                     <th>Unit</th>
                     <th>Type</th>
+                    <th>Created By</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -138,20 +139,24 @@ export default function Page() {
                           >
                             {item["id_transaction"]}
                           </td>
-                          <td className="p-1 text-center">{item["date"]}</td>
+                          <td className="px-1 py-2 text-center">
+                            {item["date"]}
+                          </td>
                           <td
-                            className="cursor-default p-1 hover:text-primary"
+                            className="cursor-default px-1 py-2 hover:text-primary"
                             onClick={() => {
                               router.push(`/product/${item["id_product"]}`);
                             }}
                           >
                             {item["description"]}
                           </td>
-                          <td className="p-1 text-center">
+                          <td className="px-1 py-2 text-center">
                             {item["quantity"]}
                           </td>
-                          <td className="p-1 text-center">{item["unit"]}</td>
-                          <td className="p-1 text-center">
+                          <td className="px-1 py-2 text-center">
+                            {item["unit"]}
+                          </td>
+                          <td className="px-1 py-2 text-center">
                             <div className="flex items-center justify-center">
                               <div className="text-sm"> {item["type"]}</div>
                               {item["type"] == "OUT" ? (
@@ -161,6 +166,7 @@ export default function Page() {
                               )}
                             </div>
                           </td>
+                          <td>{item["name"]}</td>
                         </tr>
                       );
                     })}

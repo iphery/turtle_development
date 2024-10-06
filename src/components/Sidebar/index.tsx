@@ -106,13 +106,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
           <Link href="/">
-            <Image
-              width={176}
-              height={32}
-              src={"/images/logo/logo.svg"}
-              alt="Logo"
-              priority
-            />
+            <div className="flex items-center justify-center">
+              <img src={"/images/logo/logo-icon.svg"} alt="Logo" />
+
+              <div className="ml-2 text-2xl text-white">Logbook</div>
+            </div>
           </Link>
 
           <button

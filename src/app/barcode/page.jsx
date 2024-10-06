@@ -77,7 +77,7 @@ export default function Page() {
           <div className="absolute z-0 h-full w-full">
             <DefaultLayout>
               <div className="mb-3 flex items-center justify-between">
-                <div className=" text-xl font-bold">Product</div>
+                <div className=" text-xl font-bold">Barcode</div>
 
                 <div className="relative z-20">
                   <button
@@ -133,41 +133,26 @@ export default function Page() {
                       <table className="min-w-full ">
                         <thead>
                           <tr className="bg-strokedark text-white">
-                            <th>No</th>
-                            <th>Code</th>
-                            <th>Description</th>
                             <th>Barcode</th>
-                            <th>Quantity</th>
-                            <th>Unit</th>
+                            <th>Description</th>
                             <th>Category</th>
+                            <th>Option</th>
                           </tr>
                         </thead>
                         <tbody>
                           {filteredProducts.map((item, index) => {
                             return (
-                              <tr
-                                key={index}
-                                onClick={() => {
-                                  router.push(`/product/${item["id_product"]}`);
-                                }}
-                                className=" hover:bg-bodydark"
-                              >
-                                <td className="p-1 text-center">{index + 1}</td>
+                              <tr key={index} className=" ">
                                 <td className="p-1 text-center">
                                   {item["id_product"]}
                                 </td>
                                 <td className="p-1">{item["description"]}</td>
-                                <td className="p-1 text-center">
-                                  {item["barcode"]}
-                                </td>
-                                <td className="p-1 text-center">
-                                  {item["available_quantity"]}
-                                </td>
-                                <td className="p-1 text-center">
-                                  {item["unit"]}
-                                </td>
+
                                 <td className="p-1 text-center">
                                   {item["category"]}
+                                </td>
+                                <td>
+                                  <button>Print</button>
                                 </td>
                               </tr>
                             );

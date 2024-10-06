@@ -143,7 +143,7 @@ export default function EditProduct({
 
       <div className="mt-5">
         <CommonButtonFull
-          label={"Edit"}
+          label={"Save"}
           onload={onSubmit}
           disabled={onSubmit}
           onClick={async (e) => {

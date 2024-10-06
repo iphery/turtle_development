@@ -1,12 +1,15 @@
 // components/QrScanner.js
-"use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 
-export default function Page() {
+export const Scanner = ({ onExit, onScanResult }) => {
   const qrCodeRef = useRef(null);
   const html5QrCode = useRef(null);
-  const [isScanning, setIsScanning] = useState(false); // State to manage scanning
+
+  const exit = () => {
+    html5QrCode.current.stop();
+    onExit();
+  };
 
   useEffect(() => {
     html5QrCode.current = new Html5Qrcode(qrCodeRef.current.id);
@@ -23,11 +26,13 @@ export default function Page() {
           config,
           (decodedText, decodedResult) => {
             console.log(`Decoded text: ${decodedText}`, decodedResult);
-            onScanResult(decodedText); // Handle scan result
+
+            // Call the onScanResult callback with the scanned text
+            onScanResult(decodedText);
+            exit();
           },
           (errorMessage) => {
             // Optionally handle errors during scanning
-            console.error(`Error scanning: ${errorMessage}`);
           },
         )
         .catch((err) => {
@@ -35,27 +40,19 @@ export default function Page() {
         });
     };
 
-    const stopScanner = () => {
+    startScanner(); // Start the scanner on component mount
+
+    return () => {
+      // Cleanup function to stop and clear the scanner
       html5QrCode.current
         .stop()
         .then(() => {
-          console.log("QR Code scanner stopped.");
-          setIsScanning(false); // Update scanning state
+          console.log("QR Code scanner stopped during cleanup.");
         })
         .catch((err) => {
           console.error(`Error stopping the scanner: ${err}`);
         });
-    };
 
-    if (isScanning) {
-      startScanner(); // Start scanner if scanning is true
-    } else {
-      stopScanner(); // Stop scanner if scanning is false
-    }
-
-    // Cleanup function
-    return () => {
-      stopScanner();
       html5QrCode.current
         .clear()
         .then(() => {
@@ -65,25 +62,12 @@ export default function Page() {
           console.error(`Error clearing the scanner: ${err}`);
         });
     };
-  }, [isScanning]); // Depend on isScanning state
+  }, []);
 
   return (
     <div>
       <div id="qr-reader" ref={qrCodeRef} style={{ width: "100%" }} />
-      <div className="mt-4 flex justify-center">
-        <button
-          onClick={() => setIsScanning(true)}
-          className="mr-2 rounded bg-blue-500 px-4 py-2 text-white"
-        >
-          Start Scanning
-        </button>
-        <button
-          onClick={() => setIsScanning(false)}
-          className="bg-red-500 rounded px-4 py-2 text-white"
-        >
-          Stop Scanning
-        </button>
-      </div>
+      <div onClick={onExit}>exit</div>
     </div>
   );
-}
+};

@@ -10,6 +10,7 @@ import { auth } from "@/app/firebase-config";
 import { useProvider } from "@/app/appcontext";
 import nookies from "nookies";
 import { useRouter } from "next/navigation";
+import { ErrorMessage } from "@/utils/errorfirebase";
 
 const SignIn = () => {
   const [inputEmail, setInputEmail] = useState("");
@@ -62,8 +63,8 @@ const SignIn = () => {
       });
       window.location.reload();
     } catch (error) {
-      console.log(error.message);
-      alert(error.message);
+      //console.log(error.code);
+      ErrorMessage(error.code);
     }
     setOnloadLogin(false);
   };
@@ -71,9 +72,14 @@ const SignIn = () => {
   return (
     <div className="flex flex min-h-screen items-center justify-center bg-strokedark">
       <div className="w-full  p-1 sm:w-1/3">
-        <div className="mb-5 bg-strokedark text-center text-2xl text-white">
-          Logbook
+        <div className="mb-5 flex items-center justify-center">
+          <div>
+            <img src="/images/logo/logo-icon.svg" />
+          </div>
+          <div className="mx-1"></div>
+          <div className="text-2xl text-white">Logbook</div>
         </div>
+
         <div className="flex  w-full rounded-sm border border-strokedark bg-boxdark  shadow-default">
           <div className=" w-full p-5">
             <h1 className="mb-9 text-xl  text-black  text-white "></h1>
@@ -89,11 +95,9 @@ const SignIn = () => {
               onKeyChange={() => {
                 setEmailError(false);
               }}
-            >
-              <HiOutlineMail className="h-7 w-7"></HiOutlineMail>
-            </CommonInputIcon>
+            ></CommonInputIcon>
             <div className="mb-5" />
-            <CommonInputIcon
+            <CommonInput
               placeholder={"Enter your password"}
               type={"password"}
               error={inputPasswordError}
@@ -104,9 +108,7 @@ const SignIn = () => {
               onKeyChange={() => {
                 setPasswordError(false);
               }}
-            >
-              <HiLockClosed className="h-7 w-7" />
-            </CommonInputIcon>
+            ></CommonInput>
             <div className="mb-10" />
             <div className="w-full">
               <CommonButtonFull
@@ -114,6 +116,7 @@ const SignIn = () => {
                 onClick={proceed_login}
                 onload={onloadLogin}
                 disabled={disabledLogin}
+                btnColor={"white"}
               />
             </div>
             <div className="mt-3 text-center text-white">

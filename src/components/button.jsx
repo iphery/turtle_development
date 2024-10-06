@@ -31,14 +31,20 @@ export const CommonButtonColor = ({
   );
 };
 
-export const CommonButtonFull = ({ label, onload, disabled, onClick }) => {
+export const CommonButtonFull = ({
+  label,
+  onload,
+  disabled,
+  onClick,
+  btnColor,
+}) => {
   return (
     <button
       onClick={onClick}
-      className="bg-buttonnormal hover:bg-buttonhover w-full cursor-default rounded-sm border border-bodydark p-3 text-sm text-strokedark shadow-md"
+      className="w-full cursor-default rounded-sm border border-bodydark bg-strokedark p-3 text-sm text-white shadow-md hover:bg-form-strokedark"
       disabled={disabled}
     >
-      {onload ? <ButtonLoader color={"strokedark"} /> : label}
+      {onload ? <ButtonLoader color={btnColor} /> : label}
     </button>
   );
 };

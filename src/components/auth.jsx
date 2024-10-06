@@ -69,13 +69,14 @@ export default function UserAuth({ children }) {
   const [onLoad, setOnload] = useState(true);
 
   const fetch_user = async (uid) => {
-    const apiUrl = `${API_URL}/api/loginaction`;
+    const apiUrl = `${API_URL}/loginaction`;
     const response = await axios.post(apiUrl, {
       uid: uid,
     });
 
     if (response.status == 200) {
       console.log(response.data);
+      localStorage.setItem("username", response.data["user"]);
     }
   };
 
@@ -85,7 +86,7 @@ export default function UserAuth({ children }) {
         localStorage.setItem("userUid", "");
         setLogin(false);
       } else {
-        localStorage.setItem("userUid", user.uid);
+        fetch_user(user.uid);
         console.log(user.uid);
         setLogin(true);
       }

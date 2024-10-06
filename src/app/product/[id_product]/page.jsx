@@ -13,6 +13,7 @@ import EditProduct from "@/components/editproduct";
 import EditPicture from "@/components/editpicture";
 import { SearchScanner } from "@/components/searchscanner";
 import { useMediaQuery } from "react-responsive";
+import CameraPage from "../../../components/camera";
 
 export default function Page({ params }) {
   const [detail, setDetail] = useState({});
@@ -81,6 +82,8 @@ export default function Page({ params }) {
   const [modalPicture, setModalPicture] = useState(false);
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const [pageMode, setPageMode] = useState(0); //0 normal, 1 scanner, 2 camera
 
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -88,7 +91,7 @@ export default function Page({ params }) {
 
   return (
     <UserAuth>
-      {!showScanner ? (
+      {pageMode == 0 ? (
         <div className="relative">
           <div className="absolute z-0 h-full w-full">
             <DefaultLayout>
@@ -242,7 +245,8 @@ export default function Page({ params }) {
             <EditProduct
               data={detail}
               showScanner={() => {
-                setShowScanner(true);
+                //setShowScanner(true);
+                setPageMode(2);
                 console.log("hahah");
               }}
               scanResult={scanResult}
@@ -262,9 +266,9 @@ export default function Page({ params }) {
             {" "}
             <EditPicture
               data={detail}
-              showScanner={() => {
-                setShowScanner(true);
-                console.log("hahah");
+              showCamera={() => {
+                setPageMode(1);
+                setModalPicture(false);
               }}
               scanResult={scanResult}
               onClose={(val) => {
@@ -274,6 +278,14 @@ export default function Page({ params }) {
             ></EditPicture>
           </CustomModal>
         </div>
+      ) : pageMode == 1 ? (
+        <CameraPage
+          idProduct={params.id_product}
+          onComplete={() => {
+            setPageMode(0);
+            setRefresh(true);
+          }}
+        ></CameraPage>
       ) : (
         <SearchScanner
           onScanResult={(val) => {

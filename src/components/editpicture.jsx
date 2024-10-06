@@ -2,9 +2,12 @@ import { CommonInput, CommonInputFile } from "@/components/input";
 import { useEffect, useState } from "react";
 import { FaGlasses } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";
-import { CommonButtonFull } from "./button";
+import { CommonButton, CommonButtonFull } from "./button";
 import { API_URL, IMAGE_URL } from "@/utils/constant";
-export default function NewProduct({ data, onClose, showScanner, scanResult }) {
+import { useMediaQuery } from "react-responsive";
+
+export default function EditPicture({ data, onClose, showCamera, scanResult }) {
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
   const [inputData, setInputData] = useState({
     description: "",
     barcode: "",
@@ -76,6 +79,19 @@ export default function NewProduct({ data, onClose, showScanner, scanResult }) {
               <></>
             )}
           </div>
+          {isSmallScreen ? (
+            <div className="my-2 flex flex-row">
+              <div>or</div>
+              <div
+                onClick={showCamera}
+                className="ml-2 cursor-default hover:text-strokedark"
+              >
+                Take a Picture
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       {file || filePreview ? (

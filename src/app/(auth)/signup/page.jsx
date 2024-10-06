@@ -13,6 +13,7 @@ import { auth } from "@/app/firebase-config";
 import { useProvider } from "@/app/appcontext";
 import nookies from "nookies";
 import { useRouter } from "next/navigation";
+import { ErrorMessage } from "@/utils/errorfirebase";
 
 const SignUp = () => {
   const { setUser } = useProvider();
@@ -77,8 +78,12 @@ const SignUp = () => {
   return (
     <div className="flex flex min-h-screen items-center justify-center bg-strokedark">
       <div className="w-full  p-1 sm:w-1/3">
-        <div className="mb-5 bg-strokedark text-center text-2xl text-white">
-          Logbook
+        <div className="mb-5 flex items-center justify-center">
+          <div>
+            <img src="/images/logo/logo-icon.svg" />
+          </div>
+          <div className="mx-1"></div>
+          <div className="text-2xl text-white">Logbook</div>
         </div>
         <div className="flex  w-full rounded-sm border border-strokedark bg-boxdark  shadow-default">
           <div className=" w-full p-5">
@@ -176,30 +181,18 @@ const SignUp = () => {
                       inputData.email,
                       inputData.password,
                     );
-                    router.push("/");
-                  } catch (error) {
-                    switch (error.code) {
-                      case "auth/invalid-email":
-                        console.log("Invalid email format.");
-                        //setError("Invalid email format.");
-                        break;
-                      case "auth/email-already-in-use":
-                        console.log("This email is already in use.");
-                        //setError("This email is already in use.");
-                        break;
-                      case "auth/weak-password":
-                        console.log(
-                          "Password should be at least 6 characters.",
-                        );
-                        //setError("Password should be at least 6 characters.");
-                        break;
-                      default:
-                        console.log(
-                          "An unknown error occurred.Invalid email format.",
-                        );
-                        //setError("An unknown error occurred.");
-                        break;
+                    console.log(userCredential.user);
+                    const apiurl = `${API_URL}/register`;
+                    const response = await axios.post(apiurl, {
+                      data: inputData,
+                      uid: userCredential.user.uid,
+                    });
+
+                    if (response.status == 200) {
+                      router.push("/");
                     }
+                  } catch (error) {
+                    ErrorMessage(error.code);
                   }
                   setOnSubmit(false);
                 }}

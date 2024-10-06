@@ -20,6 +20,10 @@ import { IoWarningSharp } from "react-icons/io5";
 import { IoMdRemoveCircle } from "react-icons/io";
 import { MdOutlineDocumentScanner } from "react-icons/md";
 import { SearchScanner } from "@/components/searchscanner";
+import { FaRegAddressBook, FaRegSave } from "react-icons/fa";
+import { CustomModal } from "@/components/modal";
+import Phonebook from "@/components/phonebook";
+import { Scanner } from "@/components/scanner";
 
 export default function PartsOut() {
   const router = useRouter();
@@ -79,6 +83,7 @@ export default function PartsOut() {
 
   const [products, setProducts] = useState([]);
   const [filteredProduct, setFilteredProduct] = useState([]);
+  const [modalPhonebook, setModalPhonebook] = useState(false);
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/stock`;
@@ -224,379 +229,421 @@ export default function PartsOut() {
     <UserAuth>
       {!doScan ? (
         <div className="min-h-screen  ">
-          <DefaultLayout>
-            {!loader ? (
-              <div className="flex items-center justify-center"></div>
-            ) : (
-              <div className="">
-                <div className="mb-3 flex items-center justify-start">
-                  <div
-                    className="text-lg"
-                    onClick={() => {
-                      console.log(localStorage.getItem("userUid"));
-                    }}
-                  >
-                    Stock Out
-                  </div>
-                </div>
-
-                <PageCard>
-                  <div className="flex flex-row justify-evenly">
-                    <div className="w-full">
-                      <div className="mb-2   sm:flex sm:justify-between ">
-                        <div>Tanggal</div>
-                        <div className="w-full sm:w-1/2">
-                          <CommonInput
-                            type={"date"}
-                            input={inputDataInfo.date}
-                            error={inputDataInfoError[0]}
-                            errorMessage={"Required"}
-                            onInputChange={(val) => {
-                              setInputDataInfo((prev) => ({
-                                ...prev,
-                                date: val,
-                              }));
-                            }}
-                            onChg={() => {
-                              const newdata = [...inputDataInfoError];
-                              newdata[0] = false;
-                              setInputDataInfoError(newdata);
-                            }}
-                          ></CommonInput>
-                        </div>
-                      </div>
-                      <div className="mb-2 sm:flex sm:justify-between ">
-                        <div>Penerima</div>
-                        <div className="w-full sm:w-1/2">
-                          <CommonInput
-                            type={"text"}
-                            input={inputDataInfo.receiver}
-                            error={inputDataInfoError[1]}
-                            errorMessage={"Required"}
-                            onInputChange={(val) => {
-                              setInputDataInfo((prev) => ({
-                                ...prev,
-                                receiver: val,
-                              }));
-                            }}
-                            onKeyChange={() => {
-                              const newdata = [...inputDataInfoError];
-                              newdata[1] = false;
-                              setInputDataInfoError(newdata);
-                            }}
-                          ></CommonInput>
-                        </div>
-                      </div>
-                      <div className="mb-2 sm:flex sm:justify-between ">
-                        <div>No Telp (WA)</div>
-                        <div className="w-full sm:w-1/2">
-                          <CommonInput
-                            type={"number"}
-                            input={inputDataInfo.phone}
-                            error={inputDataInfoError[2]}
-                            errorMessage={"Required"}
-                            onInputChange={(val) => {
-                              setInputDataInfo((prev) => ({
-                                ...prev,
-                                phone: val,
-                              }));
-                            }}
-                            onKeyChange={() => {
-                              const newdata = [...inputDataInfoError];
-                              newdata[2] = false;
-                              setInputDataInfoError(newdata);
-                            }}
-                          ></CommonInput>
-                        </div>
-                      </div>
-                      <div className="mb-2 sm:flex sm:justify-between ">
-                        <div>Note</div>
-                        <div className="w-full sm:w-1/2">
-                          <CommonInput
-                            input={inputDataInfo.note}
-                            error={inputDataInfoError[3]}
-                            errorMessage={"Required"}
-                            onInputChange={(val) => {
-                              setInputDataInfo((prev) => ({
-                                ...prev,
-                                note: val,
-                              }));
-                            }}
-                            onKeyChange={() => {
-                              const newdata = [...inputDataInfoError];
-                              newdata[3] = false;
-                              setInputDataInfoError(newdata);
-                            }}
-                          ></CommonInput>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </PageCard>
-                <div className="mb-5"></div>
-                <PageCard>
-                  <div className="flex-row sm:flex">
-                    <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
-                      <div className="w-full">
-                        <CommonInput
-                          input={keyword}
-                          type={"text"}
-                          reference={focusKeyword}
-                          onInputChange={(val) => {
-                            //setKeyword(val);
-                            //  fetch_data();
-                            setKeyword(val);
-                            setCurrentPage(1);
-                          }}
-                          placeholder={"Search"}
-                        >
-                          <HiOutlineSearch />
-                        </CommonInput>
-                      </div>
+          <div className="relative">
+            <div className="absolute z-0 h-full w-full">
+              <DefaultLayout>
+                {!loader ? (
+                  <div className="flex items-center justify-center"></div>
+                ) : (
+                  <div className="">
+                    <div className="mb-3 flex items-center justify-start">
                       <div
-                        className="ml-1"
+                        className="text-lg"
                         onClick={() => {
-                          //link to scanner
-                          localStorage.setItem("searchitem", "");
-                          setDoScan(true);
+                          console.log(localStorage.getItem("userUid"));
                         }}
                       >
-                        <MdOutlineDocumentScanner className="h-5 w-5" />
+                        Stock Out
                       </div>
                     </div>
 
-                    <div className="ml-3"></div>
-                    <div className="mb-2 w-full sm:mb-0">
-                      <CommonInput
-                        placeholder={"Description"}
-                        input={tempItem}
-                        isDisabled={true}
-                      ></CommonInput>
-                    </div>
-
-                    <div className="ml-3"></div>
-                    <div className="sm: w-2/3 w-full">
-                      <CommonInput
-                        placeholder={"Enter quantity"}
-                        input={tempQuantity}
-                        type="number"
-                        reference={focusTempQuantity}
-                        onInputChange={(val) => {
-                          setTempQuantity(val);
-                        }}
-                        onKeyChange={(event) => {
-                          if (event.key == "Enter") {
-                            console.log(tempAvailableQuantity);
-                            console.log(tempQuantity);
-
-                            if (
-                              parseInt(tempQuantity) >
-                              parseInt(tempAvailableQuantity)
-                            ) {
-                              console.log("tidak cukurp");
-                              AlertMessage("Stock tidak cukup");
-                            } else {
-                              //cek jika exist
-                              const newList = [...listOrder];
-                              const findIndex = newList.findIndex(
-                                (value) => value.id_part == tempIdPart,
-                              );
-
-                              if (findIndex != -1) {
-                                const qty =
-                                  parseInt(newList[findIndex].quantity) +
-                                  parseInt(tempQuantity);
-
-                                if (qty > tempAvailableQuantity) {
-                                  AlertMessage("Stock tidak cukup");
-                                } else {
-                                  newList[findIndex].quantity = qty;
-                                }
-
-                                //exist
-                              } else {
-                                //not exist
-                                const order = {
-                                  id_part: tempIdPart,
-                                  description: tempItem,
-                                  type: tempTypePart,
-                                  quantity: 100, //tempQuantity,
-                                  unit: tempUnit,
-                                  error: 0,
-                                };
-                                newList.push(order);
-                                setEmptyListAlert(false);
-                              }
-
-                              //setListOrder();
-                              setListOrder(newList);
-                            }
-                            setTempItem("");
-                            setTempQuantity("");
-                            setTempUnit("");
-                            setTempTypePart("");
-                            focusKeyword.current.focus();
-                            // console.log(listOrder);
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {emptyListAlert ? (
-                    <div className="mt-5">
-                      <div className="mb-5 flex flex-row items-center rounded-lg border p-2">
-                        <GoAlert className="text-warning"></GoAlert>
-
-                        <div className="ml-2 text-warning">
-                          List ini tidak boleh kosong
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  <div>
-                    {keyword.length >= 2 ? (
-                      searchNotFound ? (
-                        <div className="mt-3 flex items-center justify-start">
-                          <IoWarningSharp className="text-warning" />
-                          <div className="ml-2">Ups.. barang tidak ketemu</div>
-                        </div>
-                      ) : (
-                        <div className=" py-2">
-                          <div className="h-40 overflow-y-auto">
-                            <table className="w-full">
-                              <tbody className="">
-                                {filteredProduct.map((item, index) => {
-                                  return (
-                                    <tr
-                                      className={`cursor-default text-strokedark hover:bg-secondary  ${index % 2 === 0 ? "bg-gray" : "bg-white"}`}
-                                      key={index}
-                                      onClick={() => {
-                                        console.log(item.id_product);
-
-                                        setTempIdPart(item.id_product);
-                                        setTempItem(item.description);
-                                        setTempUnit(item.unit);
-                                        setTempAvailableQuantity(
-                                          item.available_quantity,
-                                        );
-                                        setTempTypePart(item.vendor_code);
-
-                                        setKeyword("");
-                                        if (focusTempQuantity.current) {
-                                          focusTempQuantity.current.focus();
-                                        }
-                                      }}
-                                    >
-                                      <td className="w-1/5 ">
-                                        {item["description"]}
-                                      </td>
-
-                                      <td className="w-1/5">
-                                        {item["category"]}
-                                      </td>
-                                      <td className="w-1/5 text-center">
-                                        {item["available_quantity"]}
-                                      </td>
-                                      <td className="w-1/5 text-center">
-                                        {item["unit"]}
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody>
-                            </table>
+                    <PageCard>
+                      <div className="flex flex-row justify-evenly">
+                        <div className="w-full">
+                          <div className="mb-2   sm:flex sm:justify-between ">
+                            <div className="flex items-center">Tanggal</div>
+                            <div className="w-full sm:w-1/2">
+                              <CommonInput
+                                type={"date"}
+                                input={inputDataInfo.date}
+                                error={inputDataInfoError[0]}
+                                errorMessage={"Required"}
+                                onInputChange={(val) => {
+                                  setInputDataInfo((prev) => ({
+                                    ...prev,
+                                    date: val,
+                                  }));
+                                }}
+                                onChg={() => {
+                                  const newdata = [...inputDataInfoError];
+                                  newdata[0] = false;
+                                  setInputDataInfoError(newdata);
+                                }}
+                              ></CommonInput>
+                            </div>
+                          </div>
+                          <div className="mb-2 sm:flex sm:justify-between ">
+                            <div className="flex flex-row ">
+                              <div className="mr-2 flex items-center">
+                                Penerima
+                              </div>
+                              <div
+                                onClick={() => {
+                                  setModalPhonebook(true);
+                                }}
+                                className="flex items-center"
+                              >
+                                <FaRegAddressBook />
+                              </div>
+                            </div>
+                            <div className="w-full sm:w-1/2">
+                              <CommonInput
+                                type={"text"}
+                                input={inputDataInfo.receiver}
+                                error={inputDataInfoError[1]}
+                                errorMessage={"Required"}
+                                onInputChange={(val) => {
+                                  setInputDataInfo((prev) => ({
+                                    ...prev,
+                                    receiver: val,
+                                  }));
+                                }}
+                                onKeyChange={() => {
+                                  const newdata = [...inputDataInfoError];
+                                  newdata[1] = false;
+                                  setInputDataInfoError(newdata);
+                                }}
+                              ></CommonInput>
+                            </div>
+                          </div>
+                          <div className="mb-2 sm:flex sm:justify-between ">
+                            <div className="flex items-center">
+                              No Telp (WA)
+                            </div>
+                            <div className="w-full sm:w-1/2">
+                              <CommonInput
+                                type={"number"}
+                                input={inputDataInfo.phone}
+                                error={inputDataInfoError[2]}
+                                errorMessage={"Required"}
+                                onInputChange={(val) => {
+                                  setInputDataInfo((prev) => ({
+                                    ...prev,
+                                    phone: val,
+                                  }));
+                                }}
+                                onKeyChange={() => {
+                                  const newdata = [...inputDataInfoError];
+                                  newdata[2] = false;
+                                  setInputDataInfoError(newdata);
+                                }}
+                              ></CommonInput>
+                            </div>
+                          </div>
+                          <div className="mb-2 sm:flex sm:justify-between ">
+                            <div className="flex items-center">Note</div>
+                            <div className="w-full sm:w-1/2">
+                              <CommonInput
+                                input={inputDataInfo.note}
+                                error={inputDataInfoError[3]}
+                                errorMessage={"Required"}
+                                onInputChange={(val) => {
+                                  setInputDataInfo((prev) => ({
+                                    ...prev,
+                                    note: val,
+                                  }));
+                                }}
+                                onKeyChange={() => {
+                                  const newdata = [...inputDataInfoError];
+                                  newdata[3] = false;
+                                  setInputDataInfoError(newdata);
+                                }}
+                              ></CommonInput>
+                            </div>
                           </div>
                         </div>
-                      )
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-
-                  {showButton ? (
-                    <>
-                      <div className="mb-5"></div>
-                      <table className="w-full">
-                        <thead>
-                          <tr className="bg-black text-white">
-                            <th className="text-center">No</th>
-                            <th className="text-center">Item</th>
-
-                            <th className="text-center">Quantity</th>
-                            <th className="text-center">Unit</th>
-                            <th className="text-center">Opsi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {listOrder.map((item, index) => {
-                            return (
-                              <tr
-                                key={index}
-                                className={`${item.error == 0 ? "" : "bg-warning text-white"}`}
-                              >
-                                <td className="py-2 text-center">
-                                  {index + 1}
-                                </td>
-                                <td className="py-1">{item.description}</td>
-                                <td className="py-1 text-center">
-                                  {item.quantity}
-                                </td>
-                                <td className="py-1 text-center">
-                                  {item.unit}
-                                </td>
-
-                                <td>
-                                  <div
-                                    className="flex justify-center py-1"
-                                    onClick={() => {
-                                      const foundIndex = listOrder.findIndex(
-                                        (value) =>
-                                          value.id_part == item.id_part,
-                                      );
-
-                                      const list = [...listOrder];
-                                      list.splice(foundIndex, 1);
-                                      setListOrder(list);
-                                    }}
-                                  >
-                                    <div className="h-5 w-5">
-                                      <IoMdRemoveCircle className="text-danger hover:text-strokedark" />
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                      <div className="mb-20"></div>
-                      <div className="flex justify-end">
-                        <CommonButton
-                          label={"Submit"}
-                          onload={onSubmit}
-                          disabled={onSubmit}
-                          onClick={() => {
-                            save_data();
-                            //router.back();
-                          }}
-                        />
                       </div>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </PageCard>
-              </div>
-            )}
-          </DefaultLayout>
+                    </PageCard>
+                    <div className="mb-5"></div>
+                    <PageCard>
+                      <div className="flex-row sm:flex">
+                        <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
+                          <div className="w-full">
+                            <CommonInput
+                              input={keyword}
+                              type={"text"}
+                              reference={focusKeyword}
+                              onInputChange={(val) => {
+                                //setKeyword(val);
+                                //  fetch_data();
+                                setKeyword(val);
+                                setCurrentPage(1);
+                              }}
+                              placeholder={"Search"}
+                            >
+                              <HiOutlineSearch />
+                            </CommonInput>
+                          </div>
+                          <div
+                            className="ml-1"
+                            onClick={() => {
+                              //link to scanner
+                              localStorage.setItem("searchitem", "");
+                              setDoScan(true);
+                            }}
+                          >
+                            <MdOutlineDocumentScanner className="h-5 w-5" />
+                          </div>
+                        </div>
+
+                        <div className="ml-3"></div>
+                        <div className="mb-2 w-full sm:mb-0">
+                          <CommonInput
+                            placeholder={"Description"}
+                            input={tempItem}
+                            isDisabled={true}
+                          ></CommonInput>
+                        </div>
+
+                        <div className="ml-3"></div>
+                        <div className="sm: w-2/3 w-full">
+                          <CommonInput
+                            placeholder={"Enter quantity"}
+                            input={tempQuantity}
+                            type="number"
+                            reference={focusTempQuantity}
+                            onInputChange={(val) => {
+                              setTempQuantity(val);
+                            }}
+                            onKeyChange={(event) => {
+                              if (event.key == "Enter") {
+                                console.log(tempAvailableQuantity);
+                                console.log(tempQuantity);
+
+                                if (
+                                  parseInt(tempQuantity) >
+                                  parseInt(tempAvailableQuantity)
+                                ) {
+                                  console.log("tidak cukurp");
+                                  AlertMessage("Stock tidak cukup");
+                                } else {
+                                  //cek jika exist
+                                  const newList = [...listOrder];
+                                  const findIndex = newList.findIndex(
+                                    (value) => value.id_part == tempIdPart,
+                                  );
+
+                                  if (findIndex != -1) {
+                                    const qty =
+                                      parseInt(newList[findIndex].quantity) +
+                                      parseInt(tempQuantity);
+
+                                    if (qty > tempAvailableQuantity) {
+                                      AlertMessage("Stock tidak cukup");
+                                    } else {
+                                      newList[findIndex].quantity = qty;
+                                    }
+
+                                    //exist
+                                  } else {
+                                    //not exist
+                                    const order = {
+                                      id_part: tempIdPart,
+                                      description: tempItem,
+                                      type: tempTypePart,
+                                      quantity: tempQuantity,
+                                      unit: tempUnit,
+                                      error: 0,
+                                    };
+                                    newList.push(order);
+                                    setEmptyListAlert(false);
+                                  }
+
+                                  //setListOrder();
+                                  setListOrder(newList);
+                                }
+                                setTempItem("");
+                                setTempQuantity("");
+                                setTempUnit("");
+                                setTempTypePart("");
+                                focusKeyword.current.focus();
+                                // console.log(listOrder);
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {emptyListAlert ? (
+                        <div className="mt-5">
+                          <div className="mb-5 flex flex-row items-center rounded-lg border p-2">
+                            <GoAlert className="text-warning"></GoAlert>
+
+                            <div className="ml-2 text-warning">
+                              List ini tidak boleh kosong
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+
+                      <div>
+                        {keyword.length >= 2 ? (
+                          searchNotFound ? (
+                            <div className="mt-3 flex items-center justify-start">
+                              <IoWarningSharp className="text-warning" />
+                              <div className="ml-2">
+                                Ups.. barang tidak ketemu
+                              </div>
+                            </div>
+                          ) : (
+                            <div className=" py-2">
+                              <div className="h-40 overflow-y-auto">
+                                <table className="w-full">
+                                  <tbody className="">
+                                    {filteredProduct.map((item, index) => {
+                                      return (
+                                        <tr
+                                          className={`cursor-default text-strokedark hover:bg-secondary  ${index % 2 === 0 ? "bg-gray" : "bg-white"}`}
+                                          key={index}
+                                          onClick={() => {
+                                            console.log(item.id_product);
+
+                                            setTempIdPart(item.id_product);
+                                            setTempItem(item.description);
+                                            setTempUnit(item.unit);
+                                            setTempAvailableQuantity(
+                                              item.available_quantity,
+                                            );
+                                            setTempTypePart(item.vendor_code);
+
+                                            setKeyword("");
+                                            if (focusTempQuantity.current) {
+                                              focusTempQuantity.current.focus();
+                                            }
+                                          }}
+                                        >
+                                          <td className="w-1/5 ">
+                                            {item["description"]}
+                                          </td>
+
+                                          <td className="w-1/5">
+                                            {item["category"]}
+                                          </td>
+                                          <td className="w-1/5 text-center">
+                                            {item["available_quantity"]}
+                                          </td>
+                                          <td className="w-1/5 text-center">
+                                            {item["unit"]}
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+
+                      {showButton ? (
+                        <>
+                          <div className="mb-5"></div>
+                          <table className="w-full">
+                            <thead>
+                              <tr className="bg-black text-white">
+                                <th className="text-center">No</th>
+                                <th className="text-center">Item</th>
+
+                                <th className="text-center">Quantity</th>
+                                <th className="text-center">Unit</th>
+                                <th className="text-center">Opsi</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {listOrder.map((item, index) => {
+                                return (
+                                  <tr
+                                    key={index}
+                                    className={`${item.error == 0 ? "" : "bg-warning text-white"}`}
+                                  >
+                                    <td className="py-2 text-center">
+                                      {index + 1}
+                                    </td>
+                                    <td className="py-1">{item.description}</td>
+                                    <td className="py-1 text-center">
+                                      {item.quantity}
+                                    </td>
+                                    <td className="py-1 text-center">
+                                      {item.unit}
+                                    </td>
+
+                                    <td>
+                                      <div
+                                        className="flex justify-center py-1"
+                                        onClick={() => {
+                                          const foundIndex =
+                                            listOrder.findIndex(
+                                              (value) =>
+                                                value.id_part == item.id_part,
+                                            );
+
+                                          const list = [...listOrder];
+                                          list.splice(foundIndex, 1);
+                                          setListOrder(list);
+                                        }}
+                                      >
+                                        <div className="h-5 w-5">
+                                          <IoMdRemoveCircle className="text-danger hover:text-strokedark" />
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                          <div className="mb-20"></div>
+                          <div className="flex justify-end">
+                            <CommonButton
+                              label={"Submit"}
+                              onload={onSubmit}
+                              disabled={onSubmit}
+                              onClick={() => {
+                                save_data();
+                                //router.back();
+                              }}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </PageCard>
+                  </div>
+                )}
+              </DefaultLayout>
+            </div>
+            <CustomModal
+              isVisible={modalPhonebook}
+              isSmallWidth="md"
+              onClose={() => {
+                setModalPhonebook(false);
+              }}
+            >
+              <Phonebook
+                onSelected={(val) => {
+                  setModalPhonebook(false);
+                  setInputDataInfo((prev) => ({
+                    ...prev,
+                    receiver: val.name,
+                    phone: val.phone,
+                  }));
+
+                  console.log(inputDataInfo);
+                }}
+              ></Phonebook>
+            </CustomModal>
+          </div>
         </div>
       ) : (
-        <SearchScanner
+        <Scanner
           exit={() => {
+            console.log("stop deh");
             setDoScan(false);
           }}
           onScanResult={(result) => {
