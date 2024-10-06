@@ -6,14 +6,18 @@ import { useEffect, useState } from "react";
 //import { QRCodeCanvas } from "qrcode.react";
 import { QRCode } from "react-qrcode-logo";
 
-export default function barcode() {
+export default function Barcode() {
   const itemsPerRow = 4; // Number of items per row
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
+  const fetch = () => {
     const data = localStorage.getItem("barcodetoprint");
     const parseData = JSON.parse(data);
     setItems(parseData);
+  };
+
+  useEffect(() => {
+    fetch();
   }, []);
 
   return (
