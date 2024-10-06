@@ -5,12 +5,14 @@ import { IoScan } from "react-icons/io5";
 import { CommonButtonFull } from "./button";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 export default function EditProduct({
   data,
   onClose,
   showScanner,
   scanResult,
 }) {
+  const router = useRouter();
   const [inputData, setInputData] = useState({
     description: "",
     barcode: "",
@@ -29,6 +31,7 @@ export default function EditProduct({
   const [filePreview, setFilePreview] = useState();
   const [onSubmit, setOnSubmit] = useState(false);
   const [fileErrorMessage, setFileErrorMessage] = useState("");
+  const [barcodeErrorMessage, setBarcodeErrorMessage] = useState(false);
 
   useEffect(() => {
     console.log(data);
@@ -64,7 +67,14 @@ export default function EditProduct({
   return (
     <div>
       <div className="mb-3 flex justify-evenly">
-        <div className="w-1/2">Description</div>
+        <div
+          className="w-1/2"
+          onClick={() => {
+            console.log(inputData);
+          }}
+        >
+          Description
+        </div>
         <div className="w-full">
           <CommonInput
             input={inputData.description}
@@ -95,7 +105,7 @@ export default function EditProduct({
               setInputData((prev) => ({ ...prev, barcode: val }));
             }}
             error={inputDataError[1]}
-            errorMessage={"Required"}
+            errorMessage={barcodeErrorMessage}
             onChg={() => {
               const newdata = [...inputDataError];
               newdata[1] = false;
@@ -161,6 +171,7 @@ export default function EditProduct({
             if (inputData.barcode == "") {
               error[1] = true;
               localError[1] = true;
+              setBarcodeErrorMessage("Required");
               setInputDataError(error);
             } else {
               localError[1] = false;
@@ -191,9 +202,19 @@ export default function EditProduct({
               });
 
               if (response.status == 200) {
-                //const data = await response.json();
-                //console.log(data);
-                close_modal();
+                const data = await response.data;
+                console.log(data);
+
+                if (data["error"] == 1) {
+                  error[1] = true;
+                  localError[1] = true;
+
+                  setBarcodeErrorMessage(data["message"]);
+                  setInputDataError(error);
+                } else {
+                  localError[1] = false;
+                  close_modal();
+                }
               }
               setOnSubmit(false);
             }

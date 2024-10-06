@@ -24,6 +24,7 @@ import { FaRegAddressBook, FaRegSave } from "react-icons/fa";
 import { CustomModal } from "@/components/modal";
 import Phonebook from "@/components/phonebook";
 import { Scanner } from "@/components/scanner";
+import QRScanner from "@/components/qrscan1";
 
 export default function PartsOut() {
   const router = useRouter();
@@ -136,6 +137,7 @@ export default function PartsOut() {
     console.log(listOrder);
     console.log(inputDataInfo);
     const user = localStorage.getItem("userUid");
+    console.log(user);
 
     setOnSubmit(true);
     const newdataerror = [...inputDataInfoError];
@@ -391,7 +393,7 @@ export default function PartsOut() {
                           <CommonInput
                             placeholder={"Description"}
                             input={tempItem}
-                            isDisabled={true}
+                            // isDisabled={true}
                           ></CommonInput>
                         </div>
 
@@ -641,29 +643,39 @@ export default function PartsOut() {
           </div>
         </div>
       ) : (
-        <Scanner
+        <QRScanner
           exit={() => {
             console.log("stop deh");
             setDoScan(false);
           }}
           onScanResult={(result) => {
             console.log(result);
+            setDoScan(false);
             const filterData = products.filter((item) => {
-              const id_product =
-                item["id_product"] && item["id_product"] === result;
+              const barcode = item["barcode"] && item["barcode"] === result;
               const code = item["code"] && item["code"] === result;
 
-              return id_product || code;
+              return barcode;
             });
-            setTempIdPart(filterData[0].id_product);
-            setTempItem(filterData[0].description);
-            setTempUnit(filterData[0].unit);
-            setTempAvailableQuantity(filterData[0].available_quantity);
-            setTempTypePart(filterData[0].vendor_code);
 
-            setKeyword("");
-            if (focusTempQuantity.current) {
-              focusTempQuantity.current.focus();
+            if (filterData.length > 0) {
+              setTempIdPart(filterData[0].id_product);
+              setTempItem(filterData[0].description);
+              setTempUnit(filterData[0].unit);
+              setTempAvailableQuantity(filterData[0].available_quantity);
+              setTempTypePart(filterData[0].vendor_code);
+
+              setKeyword("");
+              if (focusTempQuantity.current) {
+                focusTempQuantity.current.focus();
+              }
+              console.log("ektemu");
+            } else {
+              if (focusKeyword.current) {
+                focusKeyword.current.focus();
+              }
+              // alert("Product not found");
+              console.log("todak ketemu");
             }
           }}
         />

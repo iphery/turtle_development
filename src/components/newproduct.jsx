@@ -23,11 +23,19 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
   const [filePreview, setFilePreview] = useState();
   const [onSubmit, setOnSubmit] = useState(false);
   const [fileErrorMessage, setFileErrorMessage] = useState("");
+  const [barcodeErrorMessage, setBarcodeErrorMessage] = useState("");
 
   useEffect(() => {
     console.log(scanResult);
     setInputData((prev) => ({ ...prev, barcode: scanResult }));
+    console.log(inputData);
   }, [scanResult]);
+
+  const display_scanner = () => {
+    const temp = JSON.stringify(inputData);
+    localStorage.setItem("tempNewProduct", temp);
+    showScanner();
+  };
 
   useEffect(() => {
     if (file) {
@@ -50,6 +58,35 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
   return (
     <div>
       <div className="mb-3 flex justify-evenly">
+        <div className="flex w-1/2  justify-start">
+          <div className="flex items-center">Barcode</div>
+          <div
+            className="ml-3 flex items-center text-danger"
+            onClick={() => {
+              display_scanner();
+            }}
+          >
+            <IoScan className="h-5 w-5" />
+          </div>
+        </div>
+        <div className="w-full">
+          <CommonInput
+            placeholder={"Leave empty if not available"}
+            input={inputData.barcode}
+            onInputChange={(val) => {
+              setInputData((prev) => ({ ...prev, barcode: val }));
+            }}
+            error={inputDataError[1]}
+            errorMessage={barcodeErrorMessage}
+            onChg={() => {
+              const newdata = [...inputDataError];
+              newdata[1] = false;
+              setInputDataError(newdata);
+            }}
+          ></CommonInput>
+        </div>
+      </div>
+      <div className="mb-3 flex justify-evenly">
         <div className="w-1/2">Description</div>
         <div className="w-full">
           <CommonInput
@@ -67,29 +104,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
           ></CommonInput>
         </div>
       </div>
-      <div className="mb-3 flex justify-evenly">
-        <div className="flex w-1/2  justify-start">
-          <div>Barcode</div>
-          <div className="ml-3 text-danger " onClick={showScanner}>
-            <IoScan className="h-5 w-5" />
-          </div>
-        </div>
-        <div className="w-full">
-          <CommonInput
-            input={inputData.barcode}
-            onInputChange={(val) => {
-              setInputData((prev) => ({ ...prev, barcode: val }));
-            }}
-            error={inputDataError[1]}
-            errorMessage={"Required"}
-            onChg={() => {
-              const newdata = [...inputDataError];
-              newdata[1] = false;
-              setInputDataError(newdata);
-            }}
-          ></CommonInput>
-        </div>
-      </div>
+
       <div className="mb-3 flex justify-evenly">
         <div className="w-1/2">Unit</div>
         <div className="w-full">
@@ -177,6 +192,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               localError[0] = false;
             }
 
+            /*
             if (inputData.barcode == "") {
               error[1] = true;
               localError[1] = true;
@@ -184,7 +200,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
             } else {
               localError[1] = false;
             }
-
+*/
             if (inputData.unit == "") {
               error[2] = true;
               localError[2] = true;
@@ -196,6 +212,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
             if (inputData.category == "") {
               error[3] = true;
               localError[3] = true;
+
               setInputDataError(error);
             } else {
               localError[3] = false;
@@ -235,9 +252,19 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               });
 
               if (response.status == 200) {
-                //const data = await response.json();
+                const data = await response.json();
                 //console.log(data);
-                close_modal();
+                if (data["error"] == 1) {
+                  error[1] = true;
+                  localError[1] = true;
+                  setInputDataError(error);
+                  setBarcodeErrorMessage(data["message"]);
+                } else {
+                  error[1] = false;
+                  localError[1] = false;
+                  setInputDataError(error);
+                  close_modal();
+                }
               }
               setOnSubmit(false);
             }

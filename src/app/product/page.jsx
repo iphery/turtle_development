@@ -13,6 +13,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import NewProduct from "@/components/newproduct";
 import { SearchScanner } from "@/components/searchscanner";
 import { useMediaQuery } from "react-responsive";
+import QRScanner from "@/components/qrscan1";
 
 export default function Page() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
@@ -134,8 +135,8 @@ export default function Page() {
                         <thead>
                           <tr className="bg-strokedark text-white">
                             <th>No</th>
-                            <th>Code</th>
                             <th>Description</th>
+
                             <th>Barcode</th>
                             <th>Quantity</th>
                             <th>Unit</th>
@@ -153,13 +154,11 @@ export default function Page() {
                                 className=" hover:bg-bodydark"
                               >
                                 <td className="p-1 text-center">{index + 1}</td>
-                                <td className="p-1 text-center">
-                                  {item["id_product"]}
-                                </td>
                                 <td className="p-1">{item["description"]}</td>
                                 <td className="p-1 text-center">
                                   {item["barcode"]}
                                 </td>
+
                                 <td className="p-1 text-center">
                                   {item["available_quantity"]}
                                 </td>
@@ -188,7 +187,7 @@ export default function Page() {
                           >
                             <div className="p-2 shadow-sm">
                               <div>{item["id_product"]}</div>
-                              <div>{item["barcode"]}</div>
+
                               <div>{item["description"]}</div>
                               <div>{item["category"]}</div>
                               <div className="flex justify-between">
@@ -214,6 +213,7 @@ export default function Page() {
           >
             <NewProduct
               showScanner={() => {
+                localStorage.setItem("tempNewProduct", "");
                 setShowScanner(true);
               }}
               onClose={(val) => {
@@ -225,14 +225,14 @@ export default function Page() {
           </CustomModal>
         </div>
       ) : (
-        <SearchScanner
+        <QRScanner
           onScanResult={(val) => {
             setScanResult(val);
           }}
           exit={() => {
             setShowScanner(false);
           }}
-        ></SearchScanner>
+        ></QRScanner>
       )}
     </UserAuth>
   );

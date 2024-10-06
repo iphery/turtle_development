@@ -25,9 +25,10 @@ export default function Page() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [scanResult, setScanResult] = useState("");
   const [refresh, setRefresh] = useState(false);
+  const [selectedCheckbox, setSelectedCheckbox] = useState("");
 
   const fetch_product = async () => {
-    const apiUrl = `${API_URL}/product`;
+    const apiUrl = `${API_URL}/barcode`;
     const response = await axios.get(apiUrl);
 
     if (response.status == 200) {
@@ -49,9 +50,34 @@ export default function Page() {
     setFilteredProducts(filterData);
   };
 
+  const update_checkbox = (id) => {
+    const newdata = [...products];
+    const index = newdata.findIndex((product) => product.id_product === id);
+    //console.log(newdata[index].checked);
+    if (index !== -1) {
+      // Update the item at the found index
+      newdata[index] = {
+        ...newdata[index],
+        checked: !newdata[index].checked,
+      };
+      setProducts(newdata);
+      //setFilteredProducts(newdata);
+      console.log(newdata);
+    }
+    setSelectedCheckbox("");
+  };
+
   useEffect(() => {
     fetch_product();
   }, []);
+
+  useEffect(() => {
+    update_checkbox(selectedCheckbox);
+    if (selectedCheckbox != "") {
+      console.log(selectedCheckbox);
+      update_checkbox(selectedCheckbox);
+    }
+  }, [selectedCheckbox]);
 
   useEffect(() => {
     if (refresh) {
@@ -62,7 +88,7 @@ export default function Page() {
 
   useEffect(() => {
     search_product();
-  }, [keyword]);
+  }, [keyword, selectedCheckbox]);
 
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -81,37 +107,26 @@ export default function Page() {
 
                 <div className="relative z-20">
                   <button
-                    onClick={toggleDropdown}
+                    onClick={() => {
+                      const filterData = products.filter((item) => {
+                        const checked = item.checked;
+
+                        return checked;
+                      });
+
+                      localStorage.setItem(
+                        "barcodetoprint",
+                        JSON.stringify(filterData),
+                      );
+
+                      router.push("/barcode/print");
+                    }}
                     className="rounded-md bg-strokedark px-3 py-1 text-white"
                   >
                     <div className="flex items-center justify-start">
-                      <IoMdArrowDropdown />
-                      <div>Option</div>
+                      <div>Print</div>
                     </div>
                   </button>
-                  {showDropdown && (
-                    <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                      <div className="py-1">
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            toggleDropdown();
-                            setModalAdd(true);
-                          }}
-                        >
-                          Add Product
-                        </div>
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            router.push("barcode");
-                          }}
-                        >
-                          Print Barcode
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -133,6 +148,7 @@ export default function Page() {
                       <table className="min-w-full ">
                         <thead>
                           <tr className="bg-strokedark text-white">
+                            <th>No</th>
                             <th>Barcode</th>
                             <th>Description</th>
                             <th>Category</th>
@@ -143,16 +159,25 @@ export default function Page() {
                           {filteredProducts.map((item, index) => {
                             return (
                               <tr key={index} className=" ">
+                                <td className="p-1 text-center">{index + 1}</td>
                                 <td className="p-1 text-center">
-                                  {item["id_product"]}
+                                  {item["barcode"]}
                                 </td>
                                 <td className="p-1">{item["description"]}</td>
 
                                 <td className="p-1 text-center">
                                   {item["category"]}
                                 </td>
-                                <td>
-                                  <button>Print</button>
+                                <td className="p-1 text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={item["checked"]}
+                                    onChange={() => {
+                                      console.log("hehe");
+                                      setSelectedCheckbox(item["id_product"]);
+                                    }}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                  />
                                 </td>
                               </tr>
                             );

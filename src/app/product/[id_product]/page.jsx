@@ -34,10 +34,11 @@ export default function Page({ params }) {
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailproduct`;
     const response = await axios.post(apiurl, { idProduct: params.id_product });
-
+    console.log(params.id_product);
     if (response.status == 200) {
       const data = response.data["details"][0];
       setDetail(data);
+      console.log(data);
     }
   };
 

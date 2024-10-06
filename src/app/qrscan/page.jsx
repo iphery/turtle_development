@@ -2,7 +2,41 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import QRScanner from "@/components/qrscan1";
 
+export default function Page() {
+  const [scannedResult, setScannedResult] = useState("");
+  const [showScanner, setShowScanner] = useState(false);
+
+  const handleScan = (result) => {
+    setScannedResult(result);
+    setShowScanner(false);
+  };
+
+  return (
+    <div>
+      {showScanner ? (
+        <div>
+          <h1>QR Code Scanner</h1>
+          <QRScanner onScan={handleScan} />
+          {scannedResult && <p>Scanned Result: {scannedResult}</p>}
+        </div>
+      ) : (
+        <div>
+          <button
+            onClick={() => {
+              setShowScanner(true);
+            }}
+          >
+            show
+          </button>
+          <div>{scannedResult}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+/*
 export default function Page() {
   const qrCodeRef = useRef(null);
   const html5QrCode = useRef(null);
@@ -87,3 +121,4 @@ export default function Page() {
     </div>
   );
 }
+*/

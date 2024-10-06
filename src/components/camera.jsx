@@ -33,7 +33,7 @@ const CameraPage = ({ idProduct, onComplete }) => {
             <Webcam
               audio={false}
               ref={webcamRef}
-              // videoConstraints={videoConstraints}
+              videoConstraints={videoConstraints}
               onUserMedia={() => {
                 setCameraReady(true);
               }}
