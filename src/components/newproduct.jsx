@@ -10,6 +10,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
     barcode: "",
     unit: "",
     category: "",
+    location: "",
   });
   const [inputDataError, setInputDataError] = useState([
     false,
@@ -142,6 +143,17 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
         </div>
       </div>
       <div className="mb-3 flex justify-evenly">
+        <div className="w-1/2">Location</div>
+        <div className="w-full">
+          <CommonInput
+            input={inputData.location}
+            onInputChange={(val) => {
+              setInputData((prev) => ({ ...prev, location: val }));
+            }}
+          ></CommonInput>
+        </div>
+      </div>
+      <div className="mb-3 flex justify-evenly">
         <div className="w-1/2">Picture</div>
         <div className="w-full">
           <div className="relative">
@@ -235,6 +247,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               }
             }
             console.log(file.size);
+            console.log(inputData);
 
             if (!localError.includes(true)) {
               setOnSubmit(true);
@@ -245,6 +258,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               formData.append("barcode", inputData.barcode);
               formData.append("unit", inputData.unit);
               formData.append("category", inputData.category);
+              formData.append("location", inputData.location);
 
               const response = await fetch(apiurl, {
                 method: "POST",
