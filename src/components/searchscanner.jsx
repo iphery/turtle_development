@@ -1,6 +1,6 @@
 "use client";
 
-import QrScanner from "@yudiel/react-qr-scanner";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 export const SearchScanner = ({ exit, onScanResult }) => {
   const exit_scanner = () => {
@@ -14,7 +14,7 @@ export const SearchScanner = ({ exit, onScanResult }) => {
         Exit scanner
       </div>
       <div className="flex min-h-screen items-center  bg-boxdark-2">
-        <QrScanner
+        <Scanner
           onScan={(result) => {
             onScanResult(result[0].rawValue);
             exit();

@@ -23,12 +23,12 @@ export default function barcode() {
       </div>
 
       <div className="grid grid-cols-5 gap-4">
-        {products.map((item, index) => (
+        {items.map((item, index) => (
           <div
             key={index}
             className="flex items-center justify-center  p-2 text-white"
           >
-            <QRCodeCanvas value={items["id_product"]} />
+            <QRCodeCanvas value={"aan"} />
             <div>aa</div>
           </div>
         ))}
