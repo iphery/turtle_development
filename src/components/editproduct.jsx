@@ -150,6 +150,17 @@ export default function EditProduct({
           ></CommonInput>
         </div>
       </div>
+      <div className="mb-3 flex justify-evenly">
+        <div className="w-1/2">Location</div>
+        <div className="w-full">
+          <CommonInput
+            input={inputData.location}
+            onInputChange={(val) => {
+              setInputData((prev) => ({ ...prev, location: val }));
+            }}
+          ></CommonInput>
+        </div>
+      </div>
 
       <div className="mt-5">
         <CommonButtonFull

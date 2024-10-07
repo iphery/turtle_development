@@ -11,6 +11,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
     unit: "",
     category: "",
     location: "",
+    initial_stock: "",
   });
   const [inputDataError, setInputDataError] = useState([
     false,
@@ -143,6 +144,17 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
         </div>
       </div>
       <div className="mb-3 flex justify-evenly">
+        <div className="w-1/2">Initial Stock</div>
+        <div className="w-full">
+          <CommonInput
+            input={inputData.initial_stock}
+            onInputChange={(val) => {
+              setInputData((prev) => ({ ...prev, initial_stock: val }));
+            }}
+          ></CommonInput>
+        </div>
+      </div>
+      <div className="mb-3 flex justify-evenly">
         <div className="w-1/2">Location</div>
         <div className="w-full">
           <CommonInput
@@ -259,6 +271,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               formData.append("unit", inputData.unit);
               formData.append("category", inputData.category);
               formData.append("location", inputData.location);
+              formData.append("initial_stock", inputData.initial_stock);
 
               const response = await fetch(apiurl, {
                 method: "POST",

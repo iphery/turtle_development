@@ -155,6 +155,10 @@ export default function Page({ params }) {
                       <div className="w-full">Category</div>
                       <div className="w-full ">{detail.category}</div>
                     </div>
+                    <div className="mb-2 flex justify-evenly">
+                      <div className="w-full">Location</div>
+                      <div className="w-full ">{detail.location}</div>
+                    </div>
                   </div>
                   <div className="flex w-full justify-center">
                     <img
