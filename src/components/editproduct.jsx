@@ -18,6 +18,7 @@ export default function EditProduct({
     barcode: "",
     unit: "",
     category: "",
+    initial_stock: "",
   });
   const [inputDataError, setInputDataError] = useState([
     false,
@@ -128,6 +129,17 @@ export default function EditProduct({
               const newdata = [...inputDataError];
               newdata[2] = false;
               setInputDataError(newdata);
+            }}
+          ></CommonInput>
+        </div>
+      </div>
+      <div className="mb-3 flex justify-evenly">
+        <div className="w-1/2">Initial Stock</div>
+        <div className="w-full">
+          <CommonInput
+            input={inputData.initial_stock}
+            onInputChange={(val) => {
+              setInputData((prev) => ({ ...prev, initial_stock: val }));
             }}
           ></CommonInput>
         </div>

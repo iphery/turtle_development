@@ -7,6 +7,7 @@ import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { CommonButton, CommonButtonFull } from "@/components/button";
 import { TextLoader } from "@/components/loader";
+import { formatDateLocal1, formatDateLocal2 } from "@/utils/dateformat";
 
 export default function Page({ params }) {
   const [trimmedDataURL, setTrimmedDataURL] = useState([]);
@@ -102,17 +103,21 @@ export default function Page({ params }) {
         </div>
       ) : (
         <div className=" overflow-y-auto p-2">
-          <div className="tex-xl text-center font-bold">
-            Serah Terima Barang
+          <div className="flex justify-between">
+            <i className="text-sm">PT Bali Turtle Island Development</i>
+            <i className="text-sm">Logistic Team</i>
           </div>
 
-          <div className="text-center text-sm">{trans.id_transaction}</div>
-          <div className="text-sm">Tanggal :</div>
-          <div className="mb-2">{trans.date}</div>
-          <div className="text-sm">Kepada :</div>
-          <div className="mb-2">{trans.subject}</div>
-          <div className="text-sm">Note :</div>
-          <div className="mb-2">{trans.note}</div>
+          <div className="tex-xl mt-2 text-center font-bold">
+            Serah Terima Barang
+          </div>
+          <div className="flex justify-center">
+            <div className="text-center text-sm">{`No. ${trans.id_transaction}`}</div>
+            <div className="ml-1 text-sm">{`| ${formatDateLocal1(trans.date)}`}</div>
+          </div>
+          <p className="mb-2 mt-4">
+            Telah diserahkan barang-barang sebagai berikut:
+          </p>
           <table className="w-full">
             <thead>
               <tr className="text-sm">
@@ -134,12 +139,23 @@ export default function Page({ params }) {
             </tbody>
           </table>
           <div className="mb-10"></div>
-          <div className="mb-3">Diserahkan oleh Sri pada 02-10-2024 11:00</div>
+          <div className="flex flex-row">
+            <div className="">Note.</div>
+            <div className="ml-2">
+              Untuk pengerjaan project yang penambahlan kebocoran atam di daery
+              tengah
+            </div>
+          </div>
+          <div className="my-3">{`Diterima oleh, ${trans.subject}`}</div>
           <div className="mb-3 flex justify-between">
-            <div>Penerima,</div>
+            {trans.signed == "1" ? (
+              <div>Paraf</div>
+            ) : (
+              <div>Mohon paraf disini</div>
+            )}
 
             {trans.signed == "1" ? (
-              <div className="text-sm">{trans.signed_at}</div>
+              <div className="text-sm">{formatDateLocal2(trans.signed_at)}</div>
             ) : (
               <></>
             )}
@@ -165,7 +181,7 @@ export default function Page({ params }) {
               </div>
               <div className="mb-5 flex justify-between">
                 <div className="cursor-default text-sm" onClick={clear}>
-                  Ulangi
+                  Hapus
                 </div>
                 {error ? (
                   <div className="text-sm text-danger">Tidak boleh kosong</div>
