@@ -4,6 +4,7 @@ import UserAuth from "@/components/auth";
 import { PageCard } from "@/components/card";
 import { CommonInput } from "@/components/input";
 import { API_URL } from "@/utils/constant";
+import { formatDateLocal1 } from "@/utils/dateformat";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,22 +28,18 @@ export default function Page() {
     if (response.status == 200) {
       console.log(response.data);
       const newtrans = response.data["transactions"];
-      setTrans(newtrans);
+      setFuels(newtrans);
       setFilteredTrans(newtrans);
     }
   };
 
   const search_data = () => {
-    const filterData = trans.filter((item) => {
-      const desc =
-        item["description"] &&
-        item["description"].toLowerCase().includes(keyword.toLowerCase());
-
+    const filterData = fuels.filter((item) => {
       const id =
-        item["id_transaction"] &&
-        item["id_transaction"].toLowerCase().includes(keyword.toLowerCase());
+        item["id_asset"] &&
+        item["id_asset"].toLowerCase().includes(keyword.toLowerCase());
 
-      return desc || id;
+      return id;
     });
     setFilteredTrans(filterData);
   };
@@ -117,15 +114,21 @@ export default function Page() {
 
                     <th>ID</th>
                     <th>Date</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Unit</th>
-                    <th>Type</th>
-                    <th>Created By</th>
+                    <th>Vehicle No</th>
+                    <th>Last KM</th>
+                    <th>Current KM</th>
+                    <th>
+                      <div className="flex flex-col">
+                        <div>Amount</div>
+                        <div>(Liter)</div>
+                      </div>
+                    </th>
+                    <th>Ratio</th>
+                    <th>Reported By</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/*filteredTrans.length > 0 &&
+                  {filteredTrans.length > 0 &&
                     filteredTrans.map((item, index) => {
                       return (
                         <tr key={index}>
@@ -133,15 +136,13 @@ export default function Page() {
                           <td
                             className="cursor-default p-1 text-center hover:text-primary"
                             onClick={() => {
-                              router.push(
-                                `/transaction/${item["id_transaction"]}`,
-                              );
+                              ///detail
                             }}
                           >
-                            {item["id_transaction"]}
+                            {item["id_register"]}
                           </td>
                           <td className="px-1 py-2 text-center">
-                            {item["date"]}
+                            {formatDateLocal1(item["date"])}
                           </td>
                           <td
                             className="cursor-default px-1 py-2 hover:text-primary"
@@ -149,28 +150,28 @@ export default function Page() {
                               router.push(`/product/${item["id_product"]}`);
                             }}
                           >
-                            {item["description"]}
+                            {item["id_asset"]}
                           </td>
                           <td className="px-1 py-2 text-center">
-                            {item["quantity"]}
+                            {item["last_km"]}
                           </td>
                           <td className="px-1 py-2 text-center">
-                            {item["unit"]}
+                            {item["current_km"]}
                           </td>
+
                           <td className="px-1 py-2 text-center">
-                            <div className="flex items-center justify-center">
-                              <div className="text-sm"> {item["type"]}</div>
-                              {item["type"] == "OUT" ? (
-                                <FiArrowUpRight className="text-danger" />
-                              ) : (
-                                <FiArrowDownLeft className="text-success" />
-                              )}
-                            </div>
+                            {item["amount"]}
                           </td>
-                          <td>{item["name"]}</td>
+                          <td>
+                            {`1/${
+                              (item["current_km"] - item["last_km"]) /
+                              item["amount"]
+                            }`}
+                          </td>
+                          <td>{item["reported_by"]}</td>
                         </tr>
                       );
-                    })*/}
+                    })}
                 </tbody>
               </table>
             </div>
