@@ -5,6 +5,7 @@ import { PageCard } from "@/components/card";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { IoDocumentTextOutline } from "react-icons/io5";
 
 export default function Page({ params }) {
   const [trans, setTrans] = useState({});
@@ -32,7 +33,7 @@ export default function Page({ params }) {
   return (
     <UserAuth>
       <DefaultLayout>
-        <div className="text-xl font-bold">Transaction Detail</div>
+        <div className="mb-3 text-xl font-bold">Transaction Detail</div>
         <PageCard>
           <div className="mb-2 sm:mb-0 sm:flex sm:flex-row">
             <div className="w-full sm:w-1/2 ">
@@ -101,9 +102,21 @@ export default function Page({ params }) {
           <PageCard>
             <div className="sm:flex sm:justify-evenly">
               <div className="w-full">
-                <div className="flex justify-start">
+                <div className="flex items-center justify-start">
                   <div>Signed at :</div>
                   <div className="ml-3">{trans.signed_at}</div>
+                  <div
+                    className="ml-3 hover:text-warning"
+                    onClick={() => {
+                      window.open(
+                        `/receipt/${trans.token}`,
+                        "_blank",
+                        "noopener,noreferrer",
+                      );
+                    }}
+                  >
+                    <IoDocumentTextOutline />
+                  </div>
                 </div>
               </div>
               <div className="w-full">

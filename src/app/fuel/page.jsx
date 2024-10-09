@@ -19,9 +19,10 @@ export default function Page() {
   const [filteredTrans, setFilteredTrans] = useState([]);
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
+  const [fuels, setFuels] = useState([]);
 
   const fetch_data = async () => {
-    const apiurl = `${API_URL}/fetchtransaction`;
+    const apiurl = `${API_URL}/fetchfuel`;
     const response = await axios.get(apiurl);
     if (response.status == 200) {
       console.log(response.data);
@@ -124,7 +125,7 @@ export default function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredTrans.length > 0 &&
+                  {/*filteredTrans.length > 0 &&
                     filteredTrans.map((item, index) => {
                       return (
                         <tr key={index}>
@@ -169,13 +170,13 @@ export default function Page() {
                           <td>{item["name"]}</td>
                         </tr>
                       );
-                    })}
+                    })*/}
                 </tbody>
               </table>
             </div>
           ) : (
             <div>
-              {filteredTrans.length > 0 &&
+              {/*filteredTrans.length > 0 &&
                 filteredTrans.map((item, index) => {
                   return (
                     <div key={index} className="py-2">
@@ -216,7 +217,7 @@ export default function Page() {
                       </div>
                     </div>
                   );
-                })}
+                })*/}
             </div>
           )}
         </PageCard>

@@ -14,6 +14,7 @@ import { useProvider } from "@/app/appcontext";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { PageLoader } from "./loader";
+import { useRouter } from "next/navigation";
 
 //const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL; // Your Supabase URL
 //const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Your Supabase Anon Key
@@ -67,6 +68,7 @@ export default function UserAuth({ children }) {
   const [isLogin, setLogin] = useState(true);
   const { user } = useProvider();
   const [onLoad, setOnload] = useState(true);
+  const router = useRouter();
 
   const fetch_user = async (uid) => {
     const apiUrl = `${API_URL}/loginaction`;
@@ -75,8 +77,16 @@ export default function UserAuth({ children }) {
     });
 
     if (response.status == 200) {
+      console.log("ini user");
       console.log(response.data);
-      localStorage.setItem("username", response.data["user"]);
+      if (response.data["user"] === null) {
+        setLogin(false);
+        router.push("/");
+      } else {
+        localStorage.setItem("username", response.data["user"]);
+        setLogin(true);
+      }
+      setOnload(false);
     }
   };
 
@@ -85,15 +95,14 @@ export default function UserAuth({ children }) {
       if (user == null) {
         localStorage.setItem("userUid", "");
         setLogin(false);
+        router.push("/");
       } else {
         fetch_user(user.uid);
         console.log(user.uid);
-        setLogin(true);
+        //setLogin(true);
       }
 
       //fetch_user(user.uid);
-
-      setOnload(false);
     });
 
     //return () => unsubscribe();

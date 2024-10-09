@@ -104,7 +104,11 @@ export default function Page({ params }) {
       ) : (
         <div className=" overflow-y-auto p-2">
           <div className="flex justify-between">
-            <i className="text-sm">Logbook</i>
+            <div className="flex items-center justify-start">
+              <img src="/images/logo/logo-icon.svg" className="h-4" />
+              <i className="ml-1 text-sm">Logbook</i>
+            </div>
+
             <i className="text-sm">Logistic Team</i>
           </div>
 
