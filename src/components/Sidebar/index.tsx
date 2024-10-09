@@ -125,7 +125,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Fuel",
-        route: "/transaction",
+        route: "/fuel",
       },
     ],
   },
