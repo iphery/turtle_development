@@ -104,7 +104,7 @@ export default function Page({ params }) {
       ) : (
         <div className=" overflow-y-auto p-2">
           <div className="flex justify-between">
-            <i className="text-sm">PT Bali Turtle Island Development</i>
+            <i className="text-sm">Logbook</i>
             <i className="text-sm">Logistic Team</i>
           </div>
 
