@@ -95,6 +95,7 @@ export default function UserAuth({ children }) {
       if (user == null) {
         localStorage.setItem("userUid", "");
         setLogin(false);
+        setOnload(false);
         router.push("/");
       } else {
         fetch_user(user.uid);
