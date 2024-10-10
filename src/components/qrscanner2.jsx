@@ -4,6 +4,79 @@ import { Html5Qrcode } from "html5-qrcode";
 
 export default function QRScanner1({ onScanResult, exit }) {
   const [scanResult, setScanResult] = useState("");
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const scannerRef = useRef(null);
+  const html5QrCode = useRef(null);
+
+  useEffect(() => {
+    html5QrCode.current = new Html5Qrcode("reader");
+
+    const config = {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+    };
+
+    html5QrCode.current
+      .start(
+        { facingMode: "environment" },
+        config,
+        (decodedText, decodedResult) => {
+          setScanResult(decodedText);
+          onScanResult(decodedText);
+          console.log(decodedText);
+          exit();
+          // html5QrCode.current.stop(); // Uncomment if you want to stop scanning after a successful scan
+        },
+        (errorMessage) => {
+          // console.log(errorMessage);
+        },
+      )
+      .catch((err) => {
+        console.error("Error starting scanner:", err);
+      });
+
+    return () => {
+      if (html5QrCode.current && html5QrCode.current.isScanning) {
+        html5QrCode.current
+          .stop()
+          .catch((err) => console.error("Error stopping scanner:", err));
+      }
+    };
+  }, []);
+
+  const handleZoomChange = async (e) => {
+    const newZoomLevel = parseFloat(e.target.value);
+    setZoomLevel(newZoomLevel);
+
+    if (html5QrCode.current) {
+      try {
+        const camera =
+          await html5QrCode.current.getRunningTrackCameraCapabilities();
+        if (camera.isZoomSupported()) {
+          await camera.applyZoom(newZoomLevel);
+        } else {
+          console.log("Zoom is not supported by the current device");
+        }
+      } catch (error) {
+        console.error("Error applying zoom:", error);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <div
+        id="reader"
+        ref={scannerRef}
+        style={{ width: "100%", maxWidth: "600px" }}
+      ></div>
+    </div>
+  );
+}
+
+/*
+export default function QRScanner1({ onScanResult, exit }) {
+  const [scanResult, setScanResult] = useState("");
   const [zoomApplied, setZoomApplied] = useState(false);
   const scannerRef = useRef(null);
   const html5QrCode = useRef(null);
@@ -52,21 +125,20 @@ export default function QRScanner1({ onScanResult, exit }) {
       try {
         const camera =
           await html5QrCode.current.getRunningTrackCameraCapabilities();
-        if (camera.isZoomSupported()) {
-          await camera.applyZoom(FIXED_ZOOM_LEVEL);
-          setZoomApplied(true);
-          console.log(
-            `Fixed zoom of ${FIXED_ZOOM_LEVEL}x applied successfully.`,
-          );
-        } else {
-          console.log("Zoom is not supported by the current device");
-        }
+        // if (camera.isZoomSupported()) {
+        await camera.applyZoom(FIXED_ZOOM_LEVEL);
+        setZoomApplied(true);
+        console.log(`Fixed zoom of ${FIXED_ZOOM_LEVEL}x applied successfully.`);
+        // } else {
+        //  console.log("Zoom is not supported by the current device");
+        // }
       } catch (error) {
         console.error("Error applying fixed zoom:", error);
       }
     }
   };
 
+  
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-strokedark">
       <div
@@ -87,3 +159,4 @@ export default function QRScanner1({ onScanResult, exit }) {
     </div>
   );
 }
+*/
