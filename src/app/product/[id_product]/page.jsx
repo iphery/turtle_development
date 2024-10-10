@@ -140,24 +140,24 @@ export default function Page({ params }) {
                 <div className="flex flex-col sm:flex-row sm:justify-evenly">
                   <div className="w-full">
                     <div className="mb-2 flex justify-evenly">
-                      <div className="w-full">Description</div>
-                      <div className="w-full ">{detail.description}</div>
+                      <div className="w-1/3 ">Description</div>
+                      <div className="w-2/3 ">{detail.description}</div>
+                    </div>
+                    <div className="mb-2 flex justify-evenly ">
+                      <div className="w-1/3">Barcode</div>
+                      <div className="w-2/3 ">{detail.barcode}</div>
                     </div>
                     <div className="mb-2 flex justify-evenly">
-                      <div className="w-full">Barcode</div>
-                      <div className="w-full ">{detail.barcode}</div>
+                      <div className="w-1/3">Unit</div>
+                      <div className="w-2/3 ">{detail.unit}</div>
                     </div>
                     <div className="mb-2 flex justify-evenly">
-                      <div className="w-full">Unit</div>
-                      <div className="w-full ">{detail.unit}</div>
+                      <div className="w-1/3">Category</div>
+                      <div className="w-2/3 ">{detail.category}</div>
                     </div>
                     <div className="mb-2 flex justify-evenly">
-                      <div className="w-full">Category</div>
-                      <div className="w-full ">{detail.category}</div>
-                    </div>
-                    <div className="mb-2 flex justify-evenly">
-                      <div className="w-full">Location</div>
-                      <div className="w-full ">{detail.location}</div>
+                      <div className="w-1/3">Location</div>
+                      <div className="w-2/3 ">{detail.location}</div>
                     </div>
                   </div>
                   <div className="flex w-full justify-center">

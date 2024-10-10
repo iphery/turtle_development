@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import { useRouter } from "next/navigation";
+import { API_URL } from "@/utils/constant";
+import axios from "axios";
 /*
 const QRCodeScanner = () => {
   const [scanResult, setScanResult] = useState("");
@@ -179,6 +182,7 @@ const QRCodeScanner = () => {
   const [zoomLevel, setZoomLevel] = useState(1);
   const scannerRef = useRef(null);
   const html5QrCode = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     html5QrCode.current = new Html5Qrcode("reader");
@@ -193,6 +197,8 @@ const QRCodeScanner = () => {
         { facingMode: "environment" },
         config,
         (decodedText, decodedResult) => {
+          html5QrCode.current.pause();
+
           setScanResult(decodedText);
           // html5QrCode.current.stop(); // Uncomment if you want to stop scanning after a successful scan
         },
@@ -239,6 +245,8 @@ const QRCodeScanner = () => {
         ref={scannerRef}
         style={{ width: "100%", maxWidth: "600px" }}
       ></div>
+
+      {/*
       <div>
         <label htmlFor="zoom">Zoom: </label>
         <input
@@ -253,7 +261,9 @@ const QRCodeScanner = () => {
         />
         <span>{zoomLevel.toFixed(1)}x</span>
       </div>
-      {scanResult && <p>Scanned Result: {scanResult}</p>}
+      
+   */}
+      {/*scanResult && <p>Scanned Result: {scanResult}</p>*/}
     </div>
   );
 };

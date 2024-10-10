@@ -8,6 +8,7 @@ import { auth } from "@/app/firebase-config";
 import UserAuth from "@/components/auth";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
+import Dashboard from "@/components/dashboard";
 
 export default function Home() {
   const fetch_data_user = async () => {
@@ -21,9 +22,5 @@ export default function Home() {
     }
   };
 
-  return (
-    <UserAuth>
-      <DefaultLayout>Welcome to Logbook</DefaultLayout>
-    </UserAuth>
-  );
+  return <Dashboard />;
 }
