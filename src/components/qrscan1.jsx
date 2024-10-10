@@ -12,16 +12,17 @@ export default function QRScanner({ onScanResult, exit }) {
         await scannerRef.current.start(
           { facingMode: "environment" },
           {
-            fps: 10,
+            fps: 20,
             qrbox: { width: 250, height: 250 },
           },
           (decodedText) => {
             onScanResult(decodedText);
+            console.log(decodedText);
             exit();
             scannerRef.current.stop();
           },
           (error) => {
-            // console.error("QR code scanning error:", error);
+            console.error("QR code scanning error:", error);
           },
         );
       } catch (err) {

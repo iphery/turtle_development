@@ -14,6 +14,7 @@ import NewProduct from "@/components/newproduct";
 import { SearchScanner } from "@/components/searchscanner";
 import { useMediaQuery } from "react-responsive";
 import QRScanner from "@/components/qrscan1";
+import QRScanner1 from "../../components/qrscanner2";
 
 export default function Page() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
@@ -225,14 +226,14 @@ export default function Page() {
           </CustomModal>
         </div>
       ) : (
-        <QRScanner
+        <QRScanner1
           onScanResult={(val) => {
             setScanResult(val);
           }}
           exit={() => {
             setShowScanner(false);
           }}
-        ></QRScanner>
+        ></QRScanner1>
       )}
     </UserAuth>
   );
