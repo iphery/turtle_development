@@ -106,7 +106,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Tools",
-        route: "/transaction",
+        route: "/tool",
       },
       {
         icon: (
