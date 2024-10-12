@@ -128,9 +128,7 @@ export default function Page() {
                           <td
                             className="cursor-default p-1 text-center hover:text-primary"
                             onClick={() => {
-                              router.push(
-                                `/transaction/${item["id_transaction"]}`,
-                              );
+                              router.push(`/loan/${item["id_transaction"]}`);
                             }}
                           >
                             {item["id_transaction"]}

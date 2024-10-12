@@ -92,6 +92,7 @@ export default function Page() {
 
     if (response.status == 200) {
       const tools = response.data["available_tools"];
+      console.log("hahah");
       console.log(tools);
       setProducts(tools);
       setFilteredProduct(tools);
