@@ -33,7 +33,7 @@ export default function Page({ params }) {
       console.log(array);
       setTrimmedDataURL((prev) => [...prev, array]);
 
-      const apiurl = `${API_URL}/transactionsigned`;
+      const apiurl = `${API_URL}/loansigned`;
       const response = await axios.post(apiurl, {
         token: params.token,
         signature: base64Signature,
@@ -75,7 +75,7 @@ export default function Page({ params }) {
   const [onload, setOnload] = useState(true);
 
   const fetch_data = async () => {
-    const apiurl = `${API_URL}/fetchdetailbytoken`;
+    const apiurl = `${API_URL}/fetchloanbytoken`;
     const response = await axios.post(apiurl, {
       token: params.token,
     });
@@ -113,14 +113,14 @@ export default function Page({ params }) {
           </div>
 
           <div className="tex-xl mt-2 text-center font-bold">
-            Serah Terima Barang
+            Serah Terima Alat
           </div>
           <div className="flex justify-center">
             <div className="text-center text-sm">{`No. ${trans.id_transaction}`}</div>
             <div className="ml-1 text-sm">{`| ${formatDateLocal1(trans.date)}`}</div>
           </div>
           <p className="mb-2 mt-4">
-            Telah diserahkan barang-barang sebagai berikut:
+            Telah diserahkan alat-alat sebagai berikut:
           </p>
           <table className="w-full">
             <thead>

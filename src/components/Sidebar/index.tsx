@@ -106,7 +106,11 @@ const menuGroups = [
           </svg>
         ),
         label: "Tools",
-        route: "/tool",
+        route: "*",
+        children: [
+          { label: "List", route: "/tool" },
+          { label: "Loan Transaction", route: "/loan" },
+        ],
       },
       {
         icon: (

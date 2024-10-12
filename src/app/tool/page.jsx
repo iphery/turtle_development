@@ -96,10 +96,11 @@ export default function Page() {
                       >
                         Add Tool
                       </div>
+
                       <div
                         className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                         onClick={() => {
-                          //router.push("barcode");
+                          router.push("barcode");
                         }}
                       >
                         Print Barcode
