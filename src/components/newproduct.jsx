@@ -1,18 +1,31 @@
-import { CommonInput, CommonInputFile } from "@/components/input";
+import {
+  CommonInput,
+  CommonInputFile,
+  CommonInputNumber,
+} from "@/components/input";
 import { useEffect, useState } from "react";
 import { FaGlasses } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";
 import { CommonButtonFull } from "./button";
 import { API_URL } from "@/utils/constant";
-export default function NewProduct({ onClose, showScanner, scanResult }) {
-  const [inputData, setInputData] = useState({
-    description: "",
-    barcode: "",
-    unit: "",
-    category: "",
-    location: "",
-    initial_stock: "",
-  });
+import { compressImage } from "@/utils/compressimage";
+import { MdCameraAlt } from "react-icons/md";
+import { useMediaQuery } from "react-responsive";
+
+export default function NewProduct({
+  onClose,
+  showScanner,
+  scanResult,
+  showCamera,
+  cameraResult,
+  inputData,
+  setInputData,
+  file,
+  setFile,
+  filePreview,
+  setFilePreview,
+}) {
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
   const [inputDataError, setInputDataError] = useState([
     false,
     false,
@@ -21,11 +34,10 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
     false,
   ]);
 
-  const [file, setFile] = useState(null);
-  const [filePreview, setFilePreview] = useState();
   const [onSubmit, setOnSubmit] = useState(false);
   const [fileErrorMessage, setFileErrorMessage] = useState("");
   const [barcodeErrorMessage, setBarcodeErrorMessage] = useState("");
+  const [compressedImage, setCompressedImage] = useState(null);
 
   useEffect(() => {
     console.log(scanResult);
@@ -34,11 +46,41 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
   }, [scanResult]);
 
   const display_scanner = () => {
-    const temp = JSON.stringify(inputData);
-    localStorage.setItem("tempNewProduct", temp);
+    // const temp = JSON.stringify(inputData);
+    //localStorage.setItem("tempNewProduct", temp);
     showScanner();
   };
 
+  useEffect(() => {
+    if (cameraResult) {
+      setFile(cameraResult);
+      setFilePreview(URL.createObjectURL(cameraResult));
+    }
+  }, [cameraResult]);
+
+  const input_file_change = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const compressedFile = await compressImage(file, {
+        maxSizeMB: 0.5, // Compress to 0.5MB
+        maxWidthOrHeight: 1024, // Max width/height of 1024px
+      });
+
+      setCompressedImage(compressedFile);
+
+      //const selectedFile = event.target.files[0];
+      //setFile(selectedFile);
+      //setFilePreview(URL.createObjectURL(selectedFile));
+      setFile(compressedFile);
+      setFilePreview(URL.createObjectURL(compressedFile));
+    } catch (error) {
+      console.error("Failed to compress image:", error);
+    }
+  };
+
+  /*
   useEffect(() => {
     if (file) {
       if (file.size > 512000) {
@@ -52,6 +94,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
       }
     }
   }, [file]);
+  */
 
   const close_modal = () => {
     onClose(false);
@@ -146,12 +189,12 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
       <div className="mb-3 flex justify-evenly">
         <div className="w-1/2">Initial Stock</div>
         <div className="w-full">
-          <CommonInput
+          <CommonInputNumber
             input={inputData.initial_stock}
             onInputChange={(val) => {
               setInputData((prev) => ({ ...prev, initial_stock: val }));
             }}
-          ></CommonInput>
+          ></CommonInputNumber>
         </div>
       </div>
       <div className="mb-3 flex justify-evenly">
@@ -177,11 +220,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               type="file"
               input={file}
               accept=".jpeg"
-              onChange={(event) => {
-                const selectedFile = event.target.files[0];
-                setFile(selectedFile);
-                setFilePreview(URL.createObjectURL(selectedFile));
-              }}
+              onChange={input_file_change}
             />
             {inputDataError[4] ? (
               <span className="mt-1 text-sm text-red">{fileErrorMessage}</span>
@@ -189,6 +228,23 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
               <></>
             )}
           </div>
+          {isSmallScreen ? (
+            <div className="mt-2 flex items-center justify-start">
+              <span className="mr-2 ">or Take a Picture</span>
+              <span
+                onClick={() => {
+                  showCamera();
+
+                  console.log("dsd");
+                }}
+              >
+                {" "}
+                <MdCameraAlt className="h-6 w-6" />
+              </span>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       {file ? (
@@ -199,7 +255,7 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
         <></>
       )}
 
-      <div className="mt-5">
+      <div className="mt-8">
         <CommonButtonFull
           label={"Submit"}
           onload={onSubmit}
@@ -241,13 +297,14 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
             } else {
               localError[3] = false;
             }
-
+            /*
             if (!file) {
               error[4] = true;
               localError[4] = true;
               setInputDataError(error);
               setFileErrorMessage("Required");
             } else {
+              
               if (file.size > 512000) {
                 error[4] = true;
                 localError[4] = true;
@@ -257,15 +314,23 @@ export default function NewProduct({ onClose, showScanner, scanResult }) {
                 localError[4] = false;
                 setFileErrorMessage("");
               }
+                
+              localError[4] = false;
+              setFileErrorMessage("");
             }
-            console.log(file.size);
-            console.log(inputData);
+              */
 
             if (!localError.includes(true)) {
               setOnSubmit(true);
               const formData = new FormData();
               const apiurl = `${API_URL}/createproduct`;
-              formData.append("file", file);
+              if (file) {
+                formData.append("file", file);
+                formData.append("withImage", 1);
+              } else {
+                formData.append("withImage", 0);
+              }
+
               formData.append("description", inputData.description);
               formData.append("barcode", inputData.barcode);
               formData.append("unit", inputData.unit);

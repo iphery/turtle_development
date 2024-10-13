@@ -1,4 +1,8 @@
-import { CommonInput, CommonInputFile } from "@/components/input";
+import {
+  CommonInput,
+  CommonInputFile,
+  CommonInputNumber,
+} from "@/components/input";
 import { useEffect, useState } from "react";
 import { FaGlasses } from "react-icons/fa";
 import { IoScan } from "react-icons/io5";
@@ -6,20 +10,16 @@ import { CommonButtonFull } from "./button";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { AiOutlineScan } from "react-icons/ai";
 export default function EditProduct({
-  data,
   onClose,
   showScanner,
   scanResult,
+  inputData,
+  setInputData,
 }) {
   const router = useRouter();
-  const [inputData, setInputData] = useState({
-    description: "",
-    barcode: "",
-    unit: "",
-    category: "",
-    initial_stock: "",
-  });
+
   const [inputDataError, setInputDataError] = useState([
     false,
     false,
@@ -33,11 +33,6 @@ export default function EditProduct({
   const [onSubmit, setOnSubmit] = useState(false);
   const [fileErrorMessage, setFileErrorMessage] = useState("");
   const [barcodeErrorMessage, setBarcodeErrorMessage] = useState(false);
-
-  useEffect(() => {
-    console.log(data);
-    setInputData(data);
-  }, []);
 
   useEffect(() => {
     console.log("hasil secan");
@@ -93,10 +88,10 @@ export default function EditProduct({
         </div>
       </div>
       <div className="mb-3 flex justify-evenly">
-        <div className="flex w-1/2  justify-start">
+        <div className="flex w-1/2  items-center justify-start">
           <div>Barcode</div>
-          <div className="ml-3 text-danger " onClick={showScanner}>
-            <IoScan className="h-5 w-5" />
+          <div className="ml-1 text-danger " onClick={showScanner}>
+            <AiOutlineScan className="h-5 w-5" />
           </div>
         </div>
         <div className="w-full">
@@ -136,12 +131,12 @@ export default function EditProduct({
       <div className="mb-3 flex justify-evenly">
         <div className="w-1/2">Initial Stock</div>
         <div className="w-full">
-          <CommonInput
+          <CommonInputNumber
             input={inputData.initial_stock}
             onInputChange={(val) => {
               setInputData((prev) => ({ ...prev, initial_stock: val }));
             }}
-          ></CommonInput>
+          ></CommonInputNumber>
         </div>
       </div>
       <div className="mb-3 flex justify-evenly">

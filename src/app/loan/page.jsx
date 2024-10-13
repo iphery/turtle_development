@@ -64,7 +64,7 @@ export default function Page() {
     <UserAuth>
       <DefaultLayout>
         <div className="mb-3 flex items-center justify-between">
-          <div className=" text-xl font-bold">Loan List</div>
+          <div className=" text-xl font-bold">Loan Transaction</div>
           <div className="relative z-20">
             <button
               onClick={toggleDropdown}
@@ -139,7 +139,7 @@ export default function Page() {
                           <td
                             className="cursor-default px-1 py-2 hover:text-primary"
                             onClick={() => {
-                              router.push(`/product/${item["id_product"]}`);
+                              router.push(`/tool/${item["id_asset"]}`);
                             }}
                           >
                             {item["description"]}
@@ -155,15 +155,11 @@ export default function Page() {
                           </td>
                           <td>{item["name"]}</td>
                           <td>
-                            {item["status"] != 1 ? (
-                              <div className="rounded-md bg-red p-1 text-white">
-                                {item["sts"]}
-                              </div>
-                            ) : (
-                              <div className="rounded-md bg-success p-1 text-white">
-                                {item["sts"]}
-                              </div>
-                            )}
+                            <div
+                              className={` ${item["status"] == 1 ? "bg-red" : "bg-success"} px-1 text-center text-sm text-white`}
+                            >
+                              {item["sts"]}
+                            </div>
                           </td>
                         </tr>
                       );
@@ -181,9 +177,7 @@ export default function Page() {
                         <div className="flex justify-between">
                           <div
                             onClick={() => {
-                              router.push(
-                                `/transaction/${item["id_transaction"]}`,
-                              );
+                              router.push(`/loan/${item["id_transaction"]}`);
                             }}
                           >
                             {item["id_transaction"]}
@@ -202,12 +196,11 @@ export default function Page() {
                         <div>{item["description"]}</div>
                         <div className="flex justify-between">
                           <div className="flex items-center justify-center">
-                            <div className="text-sm"> {item["type"]}</div>
-                            {item["type"] == "OUT" ? (
-                              <FiArrowUpRight className="text-danger" />
-                            ) : (
-                              <FiArrowDownLeft className="text-success" />
-                            )}
+                            <div
+                              className={`${item["status"] == 1 ? "bg-red" : "bg-success"} px-1 text-sm text-white `}
+                            >
+                              {item["sts"]}
+                            </div>
                           </div>
                           <div className="">{`${item["quantity"]} ${item["unit"]}`}</div>
                         </div>

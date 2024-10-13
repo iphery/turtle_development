@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import UserAuth from "@/components/auth";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import axios from "axios";
-import { API_URL, IMAGE_URL } from "@/utils/constant";
+import { API_URL, ASSET_URL, IMAGE_URL } from "@/utils/constant";
 import { PageCard } from "@/components/card";
 import { CommonInput } from "@/components/input";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Link from "next/link";
 import { CustomModal } from "@/components/modal";
-import EditProduct from "@/components/editproduct";
-import EditPicture from "@/components/editpicture";
+import EditTool from "@/components/edittool";
+import EditToolPicture from "@/components/edittoolpicture";
 import { SearchScanner } from "@/components/searchscanner";
 import { useMediaQuery } from "react-responsive";
 import CameraPage from "../../../components/camera";
@@ -38,20 +38,23 @@ export default function Page({ params }) {
   const [inputData, setInputData] = useState({
     description: "",
     barcode: "",
+    quantity: "",
     unit: "",
     category: "",
-    initial_stock: "",
+    location: "",
+    detail_location: "",
+    note: "",
   });
 
   const fetch_data = async () => {
-    const apiurl = `${API_URL}/fetchdetailproduct`;
-    const response = await axios.post(apiurl, { idProduct: params.id_product });
-    console.log(params.id_product);
+    const apiurl = `${API_URL}/fetchdetailtool`;
+    const response = await axios.post(apiurl, { idAsset: params.id_asset });
+
     if (response.status == 200) {
       const data = response.data["details"][0];
       setDetail(data);
-      setInputData(data);
       console.log(data);
+      setInputData(detail);
     }
   };
 
@@ -137,7 +140,7 @@ export default function Page({ params }) {
           <div className="absolute z-0 h-full w-full">
             <DefaultLayout>
               <div className="mb-3 flex items-center justify-between">
-                <div className=" text-xl font-bold">Product Detail</div>
+                <div className=" text-xl font-bold">Tool Detail</div>
 
                 <div className="relative">
                   <button
@@ -160,7 +163,7 @@ export default function Page({ params }) {
                             setModalEdit(true);
                           }}
                         >
-                          Edit Product
+                          Edit Tool
                         </div>
 
                         <div
@@ -189,6 +192,10 @@ export default function Page({ params }) {
                       <div className="w-2/3 ">{detail.barcode}</div>
                     </div>
                     <div className="mb-2 flex justify-evenly">
+                      <div className="w-1/3">Quantity</div>
+                      <div className="w-2/3 ">{detail.quantity}</div>
+                    </div>
+                    <div className="mb-2 flex justify-evenly">
                       <div className="w-1/3">Unit</div>
                       <div className="w-2/3 ">{detail.unit}</div>
                     </div>
@@ -198,13 +205,17 @@ export default function Page({ params }) {
                     </div>
                     <div className="mb-2 flex justify-evenly">
                       <div className="w-1/3">Location</div>
-                      <div className="w-2/3 ">{detail.location}</div>
+                      <div className="w-2/3 ">{`${detail.location} ${detail.detail_location == "" ? "" : detail.detail_location}`}</div>
+                    </div>
+                    <div className="mb-2 flex justify-evenly">
+                      <div className="w-1/3">Note</div>
+                      <div className="w-2/3 ">{detail.note}</div>
                     </div>
                   </div>
                   {detail.image_url != "" ? (
                     <div className="flex w-full justify-center">
                       <img
-                        src={`${IMAGE_URL}/${detail.image_url}`}
+                        src={`${ASSET_URL}/${detail.image_url}`}
                         alt=""
                         className="h-40"
                       />
@@ -292,9 +303,8 @@ export default function Page({ params }) {
               setModalEdit(val);
             }}
           >
-            <EditProduct
-              inputData={inputData}
-              setInputData={setInputData}
+            <EditTool
+              idAsset={params.id_asset}
               showScanner={() => {
                 //setShowScanner(true);
                 setPageMode(2);
@@ -305,7 +315,9 @@ export default function Page({ params }) {
                 setModalEdit(val);
                 setRefresh(true);
               }}
-            ></EditProduct>
+              inputData={inputData}
+              setInputData={setInputData}
+            ></EditTool>
           </CustomModal>
           <CustomModal
             isVisible={modalPicture}
@@ -315,7 +327,8 @@ export default function Page({ params }) {
             }}
           >
             {" "}
-            <EditPicture
+            <EditToolPicture
+              idAsset={params.id_asset}
               data={detail}
               showCamera={() => {
                 console.log("hsow ");
@@ -326,7 +339,7 @@ export default function Page({ params }) {
                 setRefresh(true);
               }}
               cameraResult={imageFile}
-            ></EditPicture>
+            ></EditToolPicture>
           </CustomModal>
         </div>
       ) : pageMode == 1 ? (
@@ -343,8 +356,9 @@ export default function Page({ params }) {
             setScanResult(val);
           }}
           exit={() => {
-            setPageMode(0);
+            console.log("close scanner");
             setShowScanner(false);
+            setPageMode(0);
           }}
         ></QRScanner1>
       )}

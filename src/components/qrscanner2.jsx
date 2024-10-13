@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import { IoMdExit } from "react-icons/io";
 
 export default function QRScanner1({ onScanResult, exit }) {
   const [scanResult, setScanResult] = useState("");
@@ -70,6 +71,17 @@ export default function QRScanner1({ onScanResult, exit }) {
         ref={scannerRef}
         style={{ width: "100%", maxWidth: "600px" }}
       ></div>
+      <div className="mt-10">
+        <div
+          className="flex items-center justify-center text-red"
+          onClick={() => {
+            exit();
+          }}
+        >
+          <span>EXIT</span>
+          <IoMdExit className="h-6 w-6 " />
+        </div>
+      </div>
     </div>
   );
 }

@@ -8,11 +8,12 @@ import { useMediaQuery } from "react-responsive";
 import { MdCameraAlt } from "react-icons/md";
 import { compressImage } from "@/utils/compressimage";
 
-export default function EditPicture({
+export default function EditToolPicture({
   data,
   onClose,
   showCamera,
   cameraResult,
+  idAsset,
 }) {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
   const [inputData, setInputData] = useState({
@@ -100,7 +101,7 @@ export default function EditPicture({
           <div className="relative">
             <input
               className={`w-full rounded-sm border-[1.5px] bg-white  px-2 py-1 outline-none transition ${
-                inputDataError[4] ? "border-red" : "border-stroke"
+                inputDataError[0] ? "border-red" : "border-stroke"
               } bg-transparent text-black focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
               placeholder={"File"}
               type="file"
@@ -108,7 +109,7 @@ export default function EditPicture({
               accept=".jpeg"
               onChange={input_file_change}
             />
-            {inputDataError[4] ? (
+            {inputDataError[0] ? (
               <span className="mt-1 text-sm text-red">{fileErrorMessage}</span>
             ) : (
               <></>
@@ -150,6 +151,7 @@ export default function EditPicture({
             e.preventDefault();
             const localError = [false];
             const error = [...inputDataError];
+            console.log(file);
 
             if (!file) {
               error[0] = true;
@@ -175,9 +177,9 @@ export default function EditPicture({
             if (!localError.includes(true)) {
               setOnSubmit(true);
               const formData = new FormData();
-              const apiurl = `${API_URL}/editpicture`;
+              const apiurl = `${API_URL}/edittoolpicture`;
               formData.append("file", file);
-              formData.append("idProduct", data.id_product);
+              formData.append("idAsset", idAsset);
 
               const response = await fetch(apiurl, {
                 method: "POST",

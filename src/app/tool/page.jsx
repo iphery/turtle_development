@@ -11,6 +11,10 @@ import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useMediaQuery } from "react-responsive";
 import NewTool from "@/components/newtool";
+import QRScanner1 from "@/components/qrscanner2";
+import Camera1 from "@/components/camera1";
+import { dataURLtoBlob } from "@/utils/dataurltofile";
+import { compressImage } from "@/utils/compressimage";
 
 export default function Page() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
@@ -22,6 +26,21 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
   const [modalAdd, setModalAdd] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [inputData, setInputData] = useState({
+    barcode: "",
+    description: "",
+    quantity: "",
+    unit: "",
+    category: "",
+    location: "",
+    detail_location: "",
+    note: "",
+  });
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState("");
 
   const fetch_tool = async () => {
     const apiurl = `${API_URL}/fetchtool`;
@@ -62,9 +81,70 @@ export default function Page() {
     }
   }, [refresh]);
 
+  useEffect(() => {
+    console.log("hahaha scrolling");
+    if (modalAdd) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Cleanup when modal is closed
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [modalAdd]);
+
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
+
+  if (showScanner) {
+    return (
+      <QRScanner1
+        onScanResult={(val) => {
+          setScanResult(val);
+        }}
+        exit={() => {
+          setShowScanner(false);
+        }}
+      ></QRScanner1>
+    );
+  }
+
+  if (showCamera) {
+    return (
+      <Camera1
+        onResult={async (src) => {
+          const file = dataURLtoBlob(src);
+          console.log(file.size / 1024 / 1024, "MB");
+          console.log(src);
+          try {
+            const compressedFile = await compressImage(file, {
+              maxSizeMB: 0.5, // Compress to 0.5MB
+              maxWidthOrHeight: 1024, // Max width/height of 1024px
+            });
+            console.log(compressedFile.size / 1024 / 1024, "MB");
+
+            // setCompressedImage(compressedFile);
+            setImageFile(compressedFile);
+            //const selectedFile = event.target.files[0];
+            //setFile(selectedFile);
+            //setFilePreview(URL.createObjectURL(selectedFile));
+            // setFile(compressedFile);
+            //setFilePreview(URL.createObjectURL(compressedFile));
+          } catch (error) {
+            console.error("Failed to compress image:", error);
+          }
+
+          console.log(src);
+        }}
+        onComplete={() => {
+          setShowCamera(false);
+        }}
+      />
+    );
+  }
 
   return (
     <UserAuth>
@@ -90,6 +170,18 @@ export default function Page() {
                       <div
                         className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                         onClick={() => {
+                          setInputData({
+                            barcode: "",
+                            description: "",
+                            quantity: "",
+                            unit: "",
+                            category: "",
+                            location: "",
+                            detail_location: "",
+                            note: "",
+                          });
+                          setFile(null);
+                          setFilePreview(null);
                           toggleDropdown();
                           setModalAdd(true);
                         }}
@@ -140,14 +232,24 @@ export default function Page() {
                       <tbody>
                         {filteredTools.map((item, index) => {
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              onClick={() => {
+                                router.push(`/tool/${item["id_asset"]}`);
+                              }}
+                              className=" hover:bg-bodydark"
+                            >
                               <td className="p-1 text-center">{index + 1}</td>
                               <td className="p-1 ">{item["description"]}</td>
                               <td className="p-1 text-center">
-                                <img
-                                  className="h-20"
-                                  src={`${ASSET_URL}/${item["image_url"]}`}
-                                />
+                                {item["image_url"] != "" ? (
+                                  <img
+                                    className="h-20"
+                                    src={`${ASSET_URL}/${item["image_url"]}`}
+                                  />
+                                ) : (
+                                  <></>
+                                )}
                               </td>
                               <td className="p-1 text-center">
                                 {item["category"]}
@@ -158,7 +260,7 @@ export default function Page() {
                               <td className="p-1 text-center">
                                 {item["unit"]}
                               </td>
-                              <td className="p-1 text-center">{`${item["location"]} ${item["detail_location"]}`}</td>
+                              <td className="p-1 ">{`${item["location"]} ${item["detail_location"] == null ? "" : item["detail_location"]}`}</td>
                             </tr>
                           );
                         })}
@@ -169,13 +271,23 @@ export default function Page() {
                   <div className="py-3">
                     {filteredTools.map((item, index) => {
                       return (
-                        <div className="py-1" key={index} onClick={() => {}}>
+                        <div
+                          className="py-1"
+                          key={index}
+                          onClick={() => {
+                            router.push(`/tool/${item["id_asset"]}`);
+                          }}
+                        >
                           <div className="p-2 shadow-sm">
                             <div>{item["description"]}</div>
-                            <img
-                              className="h-20"
-                              src={`${ASSET_URL}/${item["image_url"]}`}
-                            />
+                            {item["image_url"] != "" ? (
+                              <img
+                                className="h-20"
+                                src={`${ASSET_URL}/${item["image_url"]}`}
+                              />
+                            ) : (
+                              <></>
+                            )}
                             <div className="mt-2 text-xs font-bold">
                               Category
                             </div>
@@ -183,7 +295,7 @@ export default function Page() {
                             <div className="mt-2 text-xs font-bold">
                               Location
                             </div>
-                            <div>{`${item["location"]} ${item["detail_location"]}`}</div>
+                            <div>{`${item["location"]} ${item["detail_location"] != null ? item["detail_location"] : ""}`}</div>
                             <div className="mt-2 text-xs font-bold">
                               Quantity
                             </div>
@@ -210,10 +322,25 @@ export default function Page() {
           }}
         >
           <NewTool
+            inputData={inputData}
+            setInputData={setInputData}
+            file={file}
+            setFile={setFile}
+            filePreview={filePreview}
+            setFilePreview={setFilePreview}
             onClose={(val) => {
               setModalAdd(val);
               setRefresh(true);
             }}
+            showScanner={() => {
+              //  localStorage.setItem("tempNewTool", "");
+              setShowScanner(true);
+            }}
+            showCamera={() => {
+              console.log("hsow ");
+              setShowCamera(true);
+            }}
+            cameraResult={imageFile}
           />
         </CustomModal>
       </div>

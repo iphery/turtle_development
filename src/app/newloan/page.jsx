@@ -5,7 +5,7 @@ import { useMediaQuery } from "react-responsive";
 import { IMAGE_ASSET, API_URL } from "@/utils/constant";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import UserAuth from "@/components/auth";
-import { CommonInput } from "@/components/input";
+import { CommonInput, CommonInputNumber } from "@/components/input";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { GoAlert, GoChevronRight } from "react-icons/go";
@@ -190,7 +190,7 @@ export default function Page() {
           setListOrder(response.data["result"]);
           NotifyError(response.data["message"]);
         } else {
-          router.push("/tool");
+          router.push("/loan");
         }
         //window.location.reload();
       }
@@ -400,10 +400,9 @@ export default function Page() {
 
                         <div className="ml-3"></div>
                         <div className="sm: w-2/3 w-full">
-                          <CommonInput
+                          <CommonInputNumber
                             placeholder={"Enter quantity"}
                             input={tempQuantity}
-                            type="number"
                             reference={focusTempQuantity}
                             onInputChange={(val) => {
                               setTempQuantity(val);
@@ -412,55 +411,58 @@ export default function Page() {
                               if (event.key == "Enter") {
                                 console.log(tempAvailableQuantity);
                                 console.log(tempQuantity);
-
-                                if (
-                                  parseInt(tempQuantity) >
-                                  parseInt(tempAvailableQuantity)
-                                ) {
-                                  console.log("tidak cukurp");
-                                  AlertMessage("Stock tidak cukup");
+                                if (tempQuantity == 0) {
+                                  NotifyError("Jumlah tidak valid");
                                 } else {
-                                  //cek jika exist
-                                  const newList = [...listOrder];
-                                  const findIndex = newList.findIndex(
-                                    (value) => value.id_part == tempIdPart,
-                                  );
+                                  if (
+                                    parseInt(tempQuantity) >
+                                    parseInt(tempAvailableQuantity)
+                                  ) {
+                                    console.log("tidak cukurp");
+                                    AlertMessage("Stock tidak cukup");
+                                  } else {
+                                    //cek jika exist
+                                    const newList = [...listOrder];
+                                    const findIndex = newList.findIndex(
+                                      (value) => value.id_part == tempIdPart,
+                                    );
 
-                                  if (findIndex != -1) {
-                                    const qty =
-                                      parseInt(newList[findIndex].quantity) +
-                                      parseInt(tempQuantity);
+                                    if (findIndex != -1) {
+                                      const qty =
+                                        parseInt(newList[findIndex].quantity) +
+                                        parseInt(tempQuantity);
 
-                                    if (qty > tempAvailableQuantity) {
-                                      AlertMessage("Stock tidak cukup");
+                                      if (qty > tempAvailableQuantity) {
+                                        AlertMessage("Stock tidak cukup");
+                                      } else {
+                                        newList[findIndex].quantity = qty;
+                                      }
+
+                                      //exist
                                     } else {
-                                      newList[findIndex].quantity = qty;
+                                      //not exist
+                                      const order = {
+                                        id_part: tempIdPart,
+                                        description: tempItem,
+                                        type: tempTypePart,
+                                        quantity: tempQuantity,
+                                        unit: tempUnit,
+                                        error: 0,
+                                      };
+                                      newList.push(order);
+                                      setEmptyListAlert(false);
                                     }
 
-                                    //exist
-                                  } else {
-                                    //not exist
-                                    const order = {
-                                      id_part: tempIdPart,
-                                      description: tempItem,
-                                      type: tempTypePart,
-                                      quantity: tempQuantity,
-                                      unit: tempUnit,
-                                      error: 0,
-                                    };
-                                    newList.push(order);
-                                    setEmptyListAlert(false);
+                                    //setListOrder();
+                                    setListOrder(newList);
                                   }
-
-                                  //setListOrder();
-                                  setListOrder(newList);
+                                  setTempItem("");
+                                  setTempQuantity("");
+                                  setTempUnit("");
+                                  setTempTypePart("");
+                                  focusKeyword.current.focus();
+                                  // console.log(listOrder);
                                 }
-                                setTempItem("");
-                                setTempQuantity("");
-                                setTempUnit("");
-                                setTempTypePart("");
-                                focusKeyword.current.focus();
-                                // console.log(listOrder);
                               }
                             }}
                           />

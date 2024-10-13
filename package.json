@@ -13,6 +13,8 @@
     "@yudiel/react-qr-scanner": "^2.0.8",
     "apexcharts": "^3.45.2",
     "axios": "^1.7.7",
+    "blob-util": "^2.0.2",
+    "browser-image-compression": "^2.0.2",
     "firebase": "^10.13.2",
     "flatpickr": "^4.6.13",
     "html5-qrcode": "^2.3.8",
