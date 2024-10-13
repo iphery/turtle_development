@@ -293,6 +293,7 @@ export default function Page({ params }) {
             }}
           >
             <EditProduct
+              idProduct={params.id_product}
               inputData={inputData}
               setInputData={setInputData}
               showScanner={() => {

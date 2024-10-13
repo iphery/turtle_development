@@ -17,6 +17,7 @@ export default function EditProduct({
   scanResult,
   inputData,
   setInputData,
+  idProduct,
 }) {
   const router = useRouter();
 
@@ -216,12 +217,11 @@ export default function EditProduct({
               const apiurl = `${API_URL}/updateproduct`;
               const response = await axios.post(apiurl, {
                 data: inputData,
-                idProduct: data.id_product,
+                idProduct: idProduct,
               });
 
               if (response.status == 200) {
                 const data = await response.data;
-                console.log(data);
 
                 if (data["error"] == 1) {
                   error[1] = true;
