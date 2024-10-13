@@ -25,6 +25,7 @@ import { CustomModal } from "@/components/modal";
 import Phonebook from "@/components/phonebook";
 import { Scanner } from "@/components/scanner";
 import QRScanner from "@/components/qrscan1";
+import QRScanner1 from "@/components/qrscanner2";
 
 export default function Page() {
   const router = useRouter();
@@ -646,7 +647,7 @@ export default function Page() {
           </div>
         </div>
       ) : (
-        <QRScanner
+        <QRScanner1
           exit={() => {
             console.log("stop deh");
             setDoScan(false);

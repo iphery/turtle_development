@@ -34,8 +34,6 @@ export default function Barcode() {
               value={`${item["barcode"]}`}
             />
             <div className="flex flex-col px-2 py-1">
-              <div className="text-sm font-bold">Category</div>
-              <div className="mb-1 text-xs">{item["category"]}</div>
               <div className=" text-sm font-bold">Description</div>
               <div className="text-xs">{item["description"]}</div>
             </div>

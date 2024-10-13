@@ -119,7 +119,7 @@ export default function Page() {
                         JSON.stringify(filterData),
                       );
 
-                      router.push("/barcode/print");
+                      router.push("/productcode/print");
                     }}
                     className="rounded-md bg-strokedark px-3 py-1 text-white"
                   >
@@ -149,8 +149,8 @@ export default function Page() {
                         <thead>
                           <tr className="bg-strokedark text-white">
                             <th>No</th>
-                            <th>Barcode</th>
                             <th>Description</th>
+                            <th>Barcode</th>
                             <th>Category</th>
                             <th>Option</th>
                           </tr>
@@ -160,10 +160,8 @@ export default function Page() {
                             return (
                               <tr key={index} className=" ">
                                 <td className="p-1 text-center">{index + 1}</td>
-                                <td className="p-1 text-center">
-                                  {item["barcode"]}
-                                </td>
                                 <td className="p-1">{item["description"]}</td>
+                                <td className="p-1 ">{item["barcode"]}</td>
 
                                 <td className="p-1 text-center">
                                   {item["category"]}

@@ -18,11 +18,13 @@ import Camera1 from "@/components/camera1";
 import { dataURLtoBlob } from "@/utils/dataurltofile";
 import { compressImage } from "@/utils/compressimage";
 import QRScanner1 from "@/components/qrscanner2";
+import { formatDateLocal1 } from "@/utils/dateformat";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }) {
   const [detail, setDetail] = useState({});
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
-
+  const router = useRouter();
   const [startDate, setStartDate] = useState(
     get_first_date().toISOString().substring(0, 10),
   );
@@ -60,9 +62,9 @@ export default function Page({ params }) {
 
   const fetch_stock_data = async () => {
     console.log("excdf");
-    const apiUrl = `${API_URL}/fetchstockcard`;
+    const apiUrl = `${API_URL}/fetchtoolcard`;
     const response = await axios.post(apiUrl, {
-      idProduct: params.id_product,
+      idAsset: params.id_asset,
       startDate: startDate,
       endDate: endDate,
     });
@@ -70,6 +72,8 @@ export default function Page({ params }) {
     if (response.status == 200) {
       const array = response.data["response"];
       const reverseArray = [...array].reverse();
+      console.log("ini dia");
+      console.log(array);
       setStockData(reverseArray);
     }
   };
@@ -265,10 +269,13 @@ export default function Page({ params }) {
                   <thead>
                     <tr className="bg-strokedark text-white">
                       <th className="w-1/7">Date</th>
-                      <th className="w-1/7">In</th>
-                      <th className="w-1/7">Out</th>
-                      <th className="w-1/7">Balance</th>
-                      <th className="w-1/7">From/To</th>
+                      <th className="w-1/7">ID Transaction</th>
+                      <th className="w-1/7">To</th>
+                      <th className="w-1/7">Receive</th>
+                      <th className="w-1/7">Quantity</th>
+                      <th className="w-1/7">Status</th>
+                      <th>QC</th>
+                      <th>Remark</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -276,18 +283,29 @@ export default function Page({ params }) {
                       return (
                         <tr key={index}>
                           <td className="p-1">
-                            {index == stockData.length - 1
-                              ? "Before date"
-                              : item["date"]}
+                            {formatDateLocal1(item["date"])}
                           </td>
-                          <td className="p-1 text-center">
-                            {index == stockData.length - 1 ? "" : item["in"]}
+                          <td className="cursor-default p-1 hover:text-strokedark">
+                            <div
+                              onClick={() => {
+                                router.push(`/loan/${item["id_transaction"]}`);
+                              }}
+                            >
+                              {item["id_transaction"]}
+                            </div>
                           </td>
-                          <td className="p-1 text-center">
-                            {index == stockData.length - 1 ? "" : item["out"]}
-                          </td>
-                          <td className="p-1 text-center">{item["balance"]}</td>
                           <td className="p-1">{item["subject"]}</td>
+                          <td className="p-1">{item["receiver"]}</td>
+                          <td className="p-1 text-center">
+                            {item["quantity"]}
+                          </td>
+                          <td className="p-1">
+                            <div
+                              className={`${item["status"] == 1 ? "bg-red" : "bg-success"} px-1 text-center text-white`}
+                            >{`${item["status"] == 1 ? "Close" : "Open"}`}</div>
+                          </td>
+                          <td className="p-1 text-center">{`${item["receive_status"] == 1 ? "OK" : item["receive_status"] == 2 ? "NOK" : ""}`}</td>
+                          <td className="p-1">{item["remark"]}</td>
                         </tr>
                       );
                     })}

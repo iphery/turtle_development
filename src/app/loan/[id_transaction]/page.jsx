@@ -373,7 +373,7 @@ export default function Page({ params }) {
           {status.map((item, index) => {
             if (item.nok) {
               return (
-                <div className="mt-3">
+                <div className="mt-3 " key={index}>
                   <div className="">
                     <div className="text-sm font-bold">
                       {detail[index].description}

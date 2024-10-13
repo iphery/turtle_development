@@ -5,7 +5,7 @@ import { useMediaQuery } from "react-responsive";
 import { IMAGE_ASSET, API_URL } from "@/utils/constant";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import UserAuth from "@/components/auth";
-import { CommonInput } from "@/components/input";
+import { CommonInput, CommonInputNumber } from "@/components/input";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { GoAlert, GoChevronRight } from "react-icons/go";
@@ -20,6 +20,7 @@ import { IoWarningSharp } from "react-icons/io5";
 import { IoMdRemoveCircle } from "react-icons/io";
 import { MdOutlineDocumentScanner } from "react-icons/md";
 import { SearchScanner } from "@/components/searchscanner";
+import QRScanner1 from "@/components/qrscanner2";
 
 export default function PartsOut() {
   const router = useRouter();
@@ -289,10 +290,9 @@ export default function PartsOut() {
 
                     <div className="ml-3"></div>
                     <div className="sm: w-2/3 w-full">
-                      <CommonInput
+                      <CommonInputNumber
                         placeholder={"Enter quantity"}
                         input={tempQuantity}
-                        type="number"
                         reference={focusTempQuantity}
                         onInputChange={(val) => {
                           setTempQuantity(val);
@@ -498,7 +498,7 @@ export default function PartsOut() {
           </DefaultLayout>
         </div>
       ) : (
-        <SearchScanner
+        <QRScanner1
           exit={() => {
             setDoScan(false);
           }}
