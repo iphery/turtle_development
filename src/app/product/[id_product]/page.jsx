@@ -43,6 +43,7 @@ export default function Page({ params }) {
     initial_stock: "",
   });
 
+  //test new update
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailproduct`;
     const response = await axios.post(apiurl, { idProduct: params.id_product });
