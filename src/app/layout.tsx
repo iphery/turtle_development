@@ -12,8 +12,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
-  title: "Logbook",
-  description: "Logistic Apps",
+  title: "mipa",
+  description: "Manangement Inventory Parts Application",
   // manifest: "/manifest.json",
 };
 

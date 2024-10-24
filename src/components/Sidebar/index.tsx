@@ -136,7 +136,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <div className="flex items-center justify-center">
               <img src={"/images/logo/logo-icon.svg"} alt="Logo" />
 
-              <div className="ml-2 text-2xl text-white">Logbook</div>
+              <div className="ml-2 text-2xl text-white">mipa</div>
             </div>
           </Link>
 
