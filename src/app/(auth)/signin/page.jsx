@@ -77,7 +77,7 @@ const SignIn = () => {
             <img src="/images/logo/logo-icon.svg" />
           </div>
           <div className="mx-1"></div>
-          <div className="text-2xl text-white">Logbook</div>
+          <div className="text-2xl text-white">mipa</div>
         </div>
 
         <div className="flex  w-full rounded-sm border border-strokedark bg-boxdark  shadow-default">
