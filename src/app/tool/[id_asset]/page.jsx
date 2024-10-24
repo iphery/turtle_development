@@ -159,16 +159,20 @@ export default function Page({ params }) {
                   {showDropdown && (
                     <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                       <div className="py-1">
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            setInputData(detail);
-                            toggleDropdown();
-                            setModalEdit(true);
-                          }}
-                        >
-                          Edit Tool
-                        </div>
+                        {parseInt(localStorage.getItem("userlevel")) <= 1 ? (
+                          <div
+                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                            onClick={() => {
+                              setInputData(detail);
+                              toggleDropdown();
+                              setModalEdit(true);
+                            }}
+                          >
+                            Edit Tool
+                          </div>
+                        ) : (
+                          <></>
+                        )}
 
                         <div
                           className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"

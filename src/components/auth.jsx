@@ -15,6 +15,7 @@ import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { PageLoader } from "./loader";
 import { useRouter } from "next/navigation";
+import NoVerify from "@/components/noverify";
 
 //const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL; // Your Supabase URL
 //const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Your Supabase Anon Key
@@ -69,6 +70,7 @@ export default function UserAuth({ children }) {
   const { user } = useProvider();
   const [onLoad, setOnload] = useState(true);
   const router = useRouter();
+  const [verify, setVerify] = useState(0);
 
   const fetch_user = async (uid) => {
     const apiUrl = `${API_URL}/loginaction`;
@@ -77,15 +79,17 @@ export default function UserAuth({ children }) {
     });
 
     if (response.status == 200) {
-      console.log("ini user");
-      console.log(response.data);
-      if (response.data["user"] === null) {
+      if (response.data["user"][0]["name"] === null) {
         setLogin(false);
+
         router.push("/");
       } else {
-        localStorage.setItem("username", response.data["user"]);
+        localStorage.setItem("username", response.data["user"][0]["name"]);
+        localStorage.setItem("userlevel", response.data["user"][0]["level"]);
         setLogin(true);
       }
+
+      setVerify(response.data["user"][0]["verify"]);
       setOnload(false);
     }
   };
@@ -116,7 +120,11 @@ export default function UserAuth({ children }) {
     if (!isLogin) {
       return <SignIn></SignIn>;
     } else {
-      return <div>{children}</div>;
+      if (verify == "1") {
+        return <div>{children}</div>;
+      } else {
+        return <NoVerify />;
+      }
     }
   }
 }
