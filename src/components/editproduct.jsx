@@ -85,6 +85,9 @@ export default function EditProduct({
               newdata[0] = false;
               setInputDataError(newdata);
             }}
+            readonly={
+              parseInt(localStorage.getItem("userlevel")) <= 1 ? false : true
+            }
           ></CommonInput>
         </div>
       </div>

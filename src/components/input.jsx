@@ -15,6 +15,7 @@ export const CommonInput = ({
   isDisabled,
   onChg,
   isAutoFocus,
+  readonly,
 }) => {
   return (
     <div className="relative">
@@ -22,6 +23,7 @@ export const CommonInput = ({
         value={input}
         type={type}
         ref={reference}
+        readOnly={readonly}
         placeholder={placeholder}
         disabled={isDisabled}
         autoFocus={isAutoFocus}
@@ -63,6 +65,7 @@ export const CommonInputNumber = ({
   isDisabled,
   onChg,
   isAutoFocus,
+  readonly,
 }) => {
   return (
     <div className="relative">
@@ -70,6 +73,7 @@ export const CommonInputNumber = ({
         value={input}
         type={type}
         ref={reference}
+        readOnly={readonly}
         placeholder={placeholder}
         disabled={isDisabled}
         autoFocus={isAutoFocus}
