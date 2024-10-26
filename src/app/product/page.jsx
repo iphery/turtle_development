@@ -18,13 +18,19 @@ import QRScanner1 from "../../components/qrscanner2";
 import Camera1 from "@/components/camera1";
 import { dataURLtoBlob } from "@/utils/dataurltofile";
 import { compressImage } from "@/utils/compressimage";
+import { useProvider } from "../appcontext";
 
 export default function Page() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
+  const {
+    products,
+    setProducts,
+    filteredProducts,
+    setFilteredProducts,
+    keywordProduct,
+    setKeywordProduct,
+  } = useProvider();
 
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [keyword, setKeyword] = useState("");
   const router = useRouter();
   const [modalAdd, setModalAdd] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -41,8 +47,12 @@ export default function Page() {
     if (response.status == 200) {
       const products = response.data["products"];
       setProducts(products);
-      setFilteredProducts(products);
-      console.log(products);
+      if (keywordProduct == "") {
+        setFilteredProducts(products);
+      }
+      //setFilteredProducts(products);
+      //search_product();
+      // console.log(products);
     }
   };
 
@@ -50,7 +60,9 @@ export default function Page() {
     const filterData = products.filter((item) => {
       const desc =
         item["description"] &&
-        item["description"].toLowerCase().includes(keyword.toLowerCase());
+        item["description"]
+          .toLowerCase()
+          .includes(keywordProduct.toLowerCase());
 
       return desc;
     });
@@ -70,7 +82,7 @@ export default function Page() {
 
   useEffect(() => {
     search_product();
-  }, [keyword]);
+  }, [keywordProduct]);
 
   useEffect(() => {
     if (modalAdd) {
@@ -212,9 +224,9 @@ export default function Page() {
                   <div className="z-10 mb-3 w-full sm:w-1/2">
                     <CommonInput
                       placeholder={"Search"}
-                      input={keyword}
+                      input={keywordProduct}
                       onInputChange={(val) => {
-                        setKeyword(val);
+                        setKeywordProduct(val);
                       }}
                     ></CommonInput>
                   </div>

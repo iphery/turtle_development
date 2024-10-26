@@ -4,12 +4,21 @@ const DataContext = createContext();
 
 export function DataProvider({ children }) {
   const [user, setUser] = useState("");
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [keywordProduct, setKeywordProduct] = useState("");
 
   return (
     <DataContext.Provider
       value={{
         user,
         setUser,
+        products,
+        setProducts,
+        filteredProducts,
+        setFilteredProducts,
+        keywordProduct,
+        setKeywordProduct,
       }}
     >
       {children}
