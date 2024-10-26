@@ -35,7 +35,7 @@ export const CustomModal = ({
             <HiOutlineXMark />
           </div>
         </div>
-        <div className="h-[calc(100vh-100px)] overflow-y-auto rounded-lg bg-white p-10">
+        <div className="max-h-[calc(100vh-100px)] overflow-y-auto rounded-lg bg-white p-10">
           {children}
         </div>
       </div>
