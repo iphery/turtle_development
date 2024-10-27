@@ -1,15 +1,19 @@
 "use client";
 import UserAuth from "@/components/auth";
 import { CommonButton, CommonButtonFull } from "@/components/button";
+import { PageCard } from "@/components/card";
 import { CommonInput } from "@/components/input";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { CustomModal } from "@/components/modal";
 import { API_URL } from "@/utils/constant";
+import { formatDateLocal, formatDateLocal1 } from "@/utils/dateformat";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 export default function Page() {
+  const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
   const [modalNew, setModalNew] = useState(false);
   const [inputDate, setInputDate] = useState("");
@@ -31,7 +35,9 @@ export default function Page() {
     setShowDropdown((prev) => !prev);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetch_stock_opname();
+  }, []);
   return (
     <UserAuth>
       <div className="relative">
@@ -71,6 +77,49 @@ export default function Page() {
                 )}
               </div>
             </div>
+
+            <PageCard>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-strokedark text-white">
+                    <tr className="">
+                      <th className="p-1">ID Report</th>
+                      <th className="p-1"> Date</th>
+                      <th className="p-1">Issued</th>
+                      <th className="p-1">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataSO.length > 0 ? (
+                      dataSO.map((item, index) => {
+                        return (
+                          <tr
+                            key={index}
+                            className="hover:bg-bodydark"
+                            onClick={() => {
+                              router.push(`/stockopname/${item["id_report"]}`);
+                            }}
+                          >
+                            <td className="p-1 text-center">
+                              {item["id_report"]}
+                            </td>
+                            <td className="p-1 text-center">
+                              {formatDateLocal1(item["date"])}
+                            </td>
+                            <td className="p-1 text-center">{item["name"]}</td>
+                            <td className="p-1 text-center">
+                              <div>{`${item["status"] == 0 ? "Open" : "Close"}`}</div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>No history found.</tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </PageCard>
           </DefaultLayout>
         </div>
         <CustomModal
