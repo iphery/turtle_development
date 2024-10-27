@@ -219,7 +219,7 @@ export default function Dashboard() {
 
                           <th className="p-1">Quantity</th>
                           <th className="p-1">Unit</th>
-                          <th className="p-1">Peminjam</th>
+                          <th className="p-1">Request By</th>
                           <th className="p-1">Status</th>
                         </tr>
                       </thead>
