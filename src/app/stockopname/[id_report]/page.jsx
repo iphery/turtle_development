@@ -1,8 +1,10 @@
 "use client";
 import UserAuth from "@/components/auth";
 import { PageCard } from "@/components/card";
+import { CommonInput } from "@/components/input";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { API_URL } from "@/utils/constant";
+import { formatDateLocal1 } from "@/utils/dateformat";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -11,6 +13,8 @@ export default function Page({ params }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [initialSO, setInitialSO] = useState([]);
   const [dataSO, setDataSO] = useState({});
+  const [filteredInitial, setFilteredInitial] = useState([]);
+  const [keyword, setKeyword] = useState("");
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/fetchdetailstockopname`;
@@ -19,7 +23,8 @@ export default function Page({ params }) {
       const result = response.data;
       const initial = JSON.parse(result["initial_data"]);
       setInitialSO(initial);
-      setDataSO(result["result"]);
+      setFilteredInitial(initial);
+      setDataSO(result["result"][0]);
       console.log(initial);
     }
   };
@@ -27,6 +32,21 @@ export default function Page({ params }) {
   useEffect(() => {
     fetch_data();
   }, []);
+
+  const search_item = () => {
+    const filterData = initialSO.filter((item) => {
+      const desc =
+        item["description"] &&
+        item["description"].toLowerCase().includes(keyword.toLowerCase());
+
+      return desc;
+    });
+    setFilteredInitial(filterData);
+  };
+
+  useEffect(() => {
+    search_item();
+  }, [keyword]);
 
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -36,6 +56,13 @@ export default function Page({ params }) {
       <div className="relative">
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
+            <div className="md mb-5 border  p-2 shadow">
+              <div className="flex justify-between">
+                <div>You are invited to be a member of this stock opname</div>
+                <div>Accept</div>
+              </div>
+            </div>
+
             <div className="mb-3 flex items-center justify-between">
               <div className=" text-xl font-bold">Stock Opname Detail</div>
 
@@ -78,20 +105,36 @@ export default function Page({ params }) {
               <div className="flex justify-evenly">
                 <div className="w-full">
                   <div className="flex justify-between">
-                    <div
-                      onClick={() => {
-                        console.log(dataSO);
-                      }}
-                    >
-                      ID Report
-                    </div>
-                    <div></div>
+                    <div>ID Report</div>
+                    <div>{dataSO.id_report}</div>
                   </div>
+                  <div className="flex justify-between">
+                    <div>Date</div>
+                    <div>{formatDateLocal1(dataSO.date)}</div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Issued By</div>
+                    <div>{dataSO.name}</div>
+                  </div>
+                </div>
+
+                <div className="mr-5"></div>
+                <div className="w-full">
+                  <div className="flex justify-between"></div>
                 </div>
               </div>
             </PageCard>
             <div className="mb-5"></div>
             <PageCard>
+              <div className="mb-3 w-full sm:w-1/2">
+                <CommonInput
+                  placeholder={"Search item"}
+                  input={keyword}
+                  onInputChange={(val) => {
+                    setKeyword(val);
+                  }}
+                ></CommonInput>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-strokedark text-white">
@@ -100,12 +143,12 @@ export default function Page({ params }) {
                       <th className="p-1">Quantity</th>
                       <th className="p-1">Actual</th>
                       <th className="p-1">Diff</th>
-                      <th className="p-1">Checked By</th>
-                      <th className="p-1">Checked At</th>
+                      <th className="w-30 p-1">Checked By</th>
+                      <th className="w-30 p-1">Checked At</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {initialSO.map((item, index) => {
+                    {filteredInitial.map((item, index) => {
                       return (
                         <tr key={index}>
                           <td className="p-1">{item["description"]}</td>
