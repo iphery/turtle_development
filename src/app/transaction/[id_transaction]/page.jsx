@@ -2,28 +2,43 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import UserAuth from "@/components/auth";
 import { PageCard } from "@/components/card";
+import { ButtonLoader } from "@/components/loader";
 import { API_URL } from "@/utils/constant";
+import { NotifySuccess } from "@/utils/notify";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 export default function Page({ params }) {
   const [trans, setTrans] = useState({});
   const [detail, setDetail] = useState([]);
+  const [resend, setResend] = useState(false);
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailtransaction`;
     const response = await axios.post(apiurl, {
       idTransaction: params.id_transaction,
     });
     if (response.status == 200) {
-      console.log(response.data);
       const newtrans = response.data["transactions"][0];
       const newdetail = response.data["details"];
       setTrans(newtrans);
       setDetail(newdetail);
-      console.log(newtrans);
-      console.log(newdetail);
     }
+  };
+
+  const resend_message = async () => {
+    setResend(true);
+    const apiurl = `${API_URL}/resendmessage`;
+    const response = await axios.post(apiurl, {
+      term: "stockout",
+      idTransaction: params.id_transaction,
+    });
+    if (response.status == 200) {
+      NotifySuccess("Message sent !");
+    }
+    setResend(false);
   };
 
   useEffect(() => {
@@ -105,18 +120,40 @@ export default function Page({ params }) {
                 <div className="flex items-center justify-start">
                   <div>Signed at :</div>
                   <div className="ml-3">{trans.signed_at}</div>
-                  <div
-                    className="ml-3 hover:text-warning"
-                    onClick={() => {
-                      window.open(
-                        `/receipt/${trans.token}`,
-                        "_blank",
-                        "noopener,noreferrer",
-                      );
-                    }}
-                  >
-                    <IoDocumentTextOutline />
-                  </div>
+                  {trans.signed == 0 ? (
+                    resend ? (
+                      <ButtonLoader />
+                    ) : (
+                      <>
+                        <div
+                          onClick={resend_message}
+                          data-tooltip-id="my-tooltip-1"
+                          className="cursor-default text-success hover:text-warning"
+                        >
+                          <FaWhatsapp />
+                        </div>
+
+                        <ReactTooltip
+                          id="my-tooltip-1"
+                          place="bottom"
+                          content="Resend message to requestor"
+                        />
+                      </>
+                    )
+                  ) : (
+                    <div
+                      className="ml-3 hover:text-warning"
+                      onClick={() => {
+                        window.open(
+                          `/receipt/${trans.token}`,
+                          "_blank",
+                          "noopener,noreferrer",
+                        );
+                      }}
+                    >
+                      <IoDocumentTextOutline />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="w-full">

@@ -260,3 +260,18 @@ export const getCurrentTimeFromDatetime = (datetime) => {
   const seconds = String(now.getSeconds()).padStart(2, "0");
   return `${hours}:${minutes}:${seconds}`;
 };
+
+// utils/getDateLabel.js
+
+export function getTodayLabel(dateString) {
+  const inputDate = new Date(dateString);
+  const today = new Date();
+
+  // Compare only the date parts (year, month, day)
+  const isToday =
+    inputDate.getFullYear() === today.getFullYear() &&
+    inputDate.getMonth() === today.getMonth() &&
+    inputDate.getDate() === today.getDate();
+
+  return isToday ? "Today" : formatDateLocal1(dateString);
+}

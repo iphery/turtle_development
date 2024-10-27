@@ -140,6 +140,9 @@ export default function EditProduct({
             onInputChange={(val) => {
               setInputData((prev) => ({ ...prev, initial_stock: val }));
             }}
+            readonly={
+              parseInt(localStorage.getItem("userlevel")) <= 1 ? false : true
+            }
           ></CommonInputNumber>
         </div>
       </div>

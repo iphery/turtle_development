@@ -13,7 +13,9 @@ import { CustomModal } from "@/components/modal";
 import { IoIosWarning, IoMdArrowDropdown } from "react-icons/io";
 import { CommonInput } from "@/components/input";
 import { CommonButton } from "@/components/button";
-import { NotifyError } from "@/utils/notify";
+import { NotifyError, NotifySuccess } from "@/utils/notify";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function Page({ params }) {
   const [trans, setTrans] = useState({});
@@ -24,6 +26,8 @@ export default function Page({ params }) {
   const [status, setStatus] = useState([]);
   const [uncompleted, setUncompleted] = useState([]);
   const [onSubmitUncompleted, setOnSubmitUncompleted] = useState(false);
+  const [submitPermission, setSubmitPermission] = useState(false);
+  const [resend, setResend] = useState(false);
 
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailloan`;
@@ -60,6 +64,11 @@ export default function Page({ params }) {
     }
   };
 
+  const validate_data = async (newdata) => {
+    const result = newdata.some((item) => !item.check_error);
+    setSubmitPermission(result);
+  };
+
   useEffect(() => {
     fetch_data();
   }, []);
@@ -83,6 +92,18 @@ export default function Page({ params }) {
     setShowDropdown((prev) => !prev);
   };
 
+  const resend_message = async () => {
+    setResend(true);
+    const apiurl = `${API_URL}/resendmessage`;
+    const response = await axios.post(apiurl, {
+      term: "loan",
+      idTransaction: params.id_transaction,
+    });
+    if (response.status == 200) {
+      NotifySuccess("Message sent !");
+    }
+    setResend(false);
+  };
   return (
     <UserAuth>
       <div className="relative">
@@ -113,10 +134,13 @@ export default function Page({ params }) {
                       <div
                         className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                         onClick={() => {
+                          console.log(uncompleted.length);
                           if (uncompleted.length > 0) {
                             setModalClose(true);
+                          } else {
+                            NotifyError("All tools already received");
                           }
-                          NotifyError("All tools already received");
+
                           toggleDropdown();
                         }}
                       >
@@ -260,8 +284,28 @@ export default function Page({ params }) {
                 <div className="sm:flex sm:justify-evenly">
                   <div className="w-full">
                     <div className="flex items-center justify-start">
-                      <div>Signed at :</div>
-                      {trans.signed == 1 ? (
+                      <div className="mr-2">Signed at :</div>
+                      {trans.signed == 0 ? (
+                        resend ? (
+                          <ButtonLoader />
+                        ) : (
+                          <>
+                            <div
+                              onClick={resend_message}
+                              data-tooltip-id="my-tooltip-1"
+                              className="cursor-default text-success hover:text-warning"
+                            >
+                              <FaWhatsapp />
+                            </div>
+
+                            <ReactTooltip
+                              id="my-tooltip-1"
+                              place="bottom"
+                              content="Resend message to requestor"
+                            />
+                          </>
+                        )
+                      ) : (
                         <>
                           <div className="ml-3">
                             {formatDateLocal2(trans.signed_at)}
@@ -279,8 +323,6 @@ export default function Page({ params }) {
                             <IoDocumentTextOutline />
                           </div>
                         </>
-                      ) : (
-                        <></>
                       )}
                     </div>
                   </div>
@@ -309,17 +351,12 @@ export default function Page({ params }) {
           <table className="w-full">
             <thead className="bg-strokedark text-white">
               <tr>
-                <th
-                  onClick={() => {
-                    console.log(status);
-                  }}
-                >
-                  No
-                </th>
-                <th>Item</th>
+                <th className="p-1">No</th>
+                <th className="p-1">Item</th>
 
-                <th>Quantity</th>
-                <th>Status</th>
+                <th className="p-1">Quantity</th>
+                <th className="p-1">Unit</th>
+                <th className="p-1">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -329,6 +366,7 @@ export default function Page({ params }) {
                     <td className="p-1 text-center">{index + 1}</td>
                     <td className="p-1">{item["description"]}</td>
                     <td className="p-1 text-center">{item["quantity"]}</td>
+                    <td className="p-1 text-center">{item["unit"]}</td>
                     <td className="p-1 text-center">
                       <div className="flex items-center justify-center ">
                         <span className="mr-1">OK</span>
@@ -342,6 +380,18 @@ export default function Page({ params }) {
                             if (value) {
                               newdata[index].nok = false;
                             }
+
+                            status.map((item, index) => {
+                              if (
+                                (!item.ok && item.nok) ||
+                                (item.ok && !item.nok)
+                              ) {
+                                newdata[index].check_error = false;
+                              } else {
+                                newdata[index].check_error = true;
+                              }
+                            });
+                            validate_data(newdata);
 
                             setStatus(newdata);
                           }}
@@ -358,6 +408,18 @@ export default function Page({ params }) {
                             if (value) {
                               newdata[index].ok = false;
                             }
+
+                            status.map((item, index) => {
+                              if (
+                                (!item.ok && item.nok) ||
+                                (item.ok && !item.nok)
+                              ) {
+                                newdata[index].check_error = false;
+                              } else {
+                                newdata[index].check_error = true;
+                              }
+                            });
+                            validate_data(newdata);
 
                             setStatus(newdata);
                           }}
@@ -397,56 +459,55 @@ export default function Page({ params }) {
                 </div>
               );
             }
-            return <></>;
+            return <div key={index}></div>;
           })}
           <div className="mt-10"></div>
-          <div className="flex justify-end">
-            {" "}
-            <CommonButton
-              label={"Receive"}
-              disabled={onSubmitUncompleted}
-              onload={onSubmitUncompleted}
-              onClick={async () => {
-                const newdata = [...status];
 
-                status.map((item, index) => {
-                  if ((!item.ok && item.nok) || (item.ok && !item.nok)) {
-                    newdata[index].check_error = false;
-                  } else {
-                    newdata[index].check_error = true;
-                  }
+          {submitPermission ? (
+            <div className="flex justify-end">
+              {" "}
+              <CommonButton
+                label={"Receive"}
+                disabled={onSubmitUncompleted}
+                onload={onSubmitUncompleted}
+                onClick={async () => {
+                  const newdata = [...status];
 
-                  if (item.nok && item.description == "") {
-                    newdata[index].desc_error = true;
-                  } else {
-                    newdata[index].desc_error = false;
-                  }
-                });
-                setStatus(newdata);
-
-                const error_checking = newdata.every(
-                  (item) => !item.desc_error,
-                );
-                if (error_checking) {
-                  console.log("good to go");
-                  setOnSubmitUncompleted(true);
-                  const apiurl = `${API_URL}/receivedtool`;
-                  const response = await axios.post(apiurl, {
-                    idTransaction: params.id_transaction,
-                    data: status,
-                    uid: localStorage.getItem("userUid"),
+                  status.map((item, index) => {
+                    if (item.nok && item.description == "") {
+                      newdata[index].desc_error = true;
+                    } else {
+                      newdata[index].desc_error = false;
+                    }
                   });
-                  if (response.status === 200) {
-                    console.log(response.data);
-                    setModalClose(false);
-                    fetch_data();
+                  setStatus(newdata);
+                  console.log(newdata);
+                  const error_checking = newdata.every(
+                    (item) => !item.desc_error,
+                  );
+
+                  if (error_checking) {
+                    console.log("good to go");
+                    setOnSubmitUncompleted(true);
+                    const apiurl = `${API_URL}/receivedtool`;
+                    const response = await axios.post(apiurl, {
+                      idTransaction: params.id_transaction,
+                      data: status,
+                      uid: localStorage.getItem("userUid"),
+                    });
+                    if (response.status === 200) {
+                      console.log(response.data);
+                      setModalClose(false);
+                      fetch_data();
+                    }
+                    setOnSubmitUncompleted(false);
                   }
-                  setOnSubmitUncompleted(false);
-                }
-                console.log(newdata);
-              }}
-            ></CommonButton>
-          </div>
+                }}
+              ></CommonButton>
+            </div>
+          ) : (
+            <></>
+          )}
         </CustomModal>
       </div>
     </UserAuth>

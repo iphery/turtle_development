@@ -232,8 +232,8 @@ export default function Page() {
                   </div>
                 </div>
                 {!isSmallScreen ? (
-                  <div className="">
-                    <table className="min-w-full ">
+                  <div className="overflow-x-auto">
+                    <table className="max-w-screen">
                       <thead>
                         <tr className="bg-strokedark text-white">
                           <th>No</th>

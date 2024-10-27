@@ -188,6 +188,7 @@ export default function Page({ params }) {
                   )}
                 </div>
               </div>
+
               <PageCard>
                 <div className="flex flex-col sm:flex-row sm:justify-evenly">
                   <div className="w-full">
@@ -269,52 +270,57 @@ export default function Page({ params }) {
                   </div>
                 </div>
                 <div className="mb-5"></div>
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-strokedark text-white">
-                      <th className="w-1/7">Date</th>
-                      <th className="w-1/7">ID Transaction</th>
-                      <th className="w-1/7">To</th>
-                      <th className="w-1/7">Receive</th>
-                      <th className="w-1/7">Quantity</th>
-                      <th className="w-1/7">Status</th>
-                      <th>QC</th>
-                      <th>Remark</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stockData.map((item, index) => {
-                      return (
-                        <tr key={index}>
-                          <td className="p-1">
-                            {formatDateLocal1(item["date"])}
-                          </td>
-                          <td className="cursor-default p-1 hover:text-strokedark">
-                            <div
-                              onClick={() => {
-                                router.push(`/loan/${item["id_transaction"]}`);
-                              }}
-                            >
-                              {item["id_transaction"]}
-                            </div>
-                          </td>
-                          <td className="p-1">{item["subject"]}</td>
-                          <td className="p-1">{item["receiver"]}</td>
-                          <td className="p-1 text-center">
-                            {item["quantity"]}
-                          </td>
-                          <td className="p-1">
-                            <div
-                              className={`${item["status"] == 1 ? "bg-red" : "bg-success"} px-1 text-center text-white`}
-                            >{`${item["status"] == 1 ? "Close" : "Open"}`}</div>
-                          </td>
-                          <td className="p-1 text-center">{`${item["receive_status"] == 1 ? "OK" : item["receive_status"] == 2 ? "NOK" : ""}`}</td>
-                          <td className="p-1">{item["remark"]}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+
+                <div className="overflow-x-auto">
+                  <table className="max-w-screen">
+                    <thead>
+                      <tr className="bg-strokedark text-white">
+                        <th className="w-1/7">Date</th>
+                        <th className="w-1/7">ID Transaction</th>
+                        <th className="w-1/7">To</th>
+                        <th className="w-1/7">Receive</th>
+                        <th className="w-1/7">Quantity</th>
+                        <th className="w-1/7">Status</th>
+                        <th>QC</th>
+                        <th>Remark</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stockData.map((item, index) => {
+                        return (
+                          <tr key={index}>
+                            <td className="p-1">
+                              {formatDateLocal1(item["date"])}
+                            </td>
+                            <td className="cursor-default p-1 hover:text-strokedark">
+                              <div
+                                onClick={() => {
+                                  router.push(
+                                    `/loan/${item["id_transaction"]}`,
+                                  );
+                                }}
+                              >
+                                {item["id_transaction"]}
+                              </div>
+                            </td>
+                            <td className="p-1">{item["subject"]}</td>
+                            <td className="p-1">{item["receiver"]}</td>
+                            <td className="p-1 text-center">
+                              {item["quantity"]}
+                            </td>
+                            <td className="p-1">
+                              <div
+                                className={`${item["status"] == 1 ? "bg-red" : "bg-success"} px-1 text-center text-white`}
+                              >{`${item["status"] == 1 ? "Close" : "Open"}`}</div>
+                            </td>
+                            <td className="p-1 text-center">{`${item["receive_status"] == 1 ? "OK" : item["receive_status"] == 2 ? "NOK" : ""}`}</td>
+                            <td className="p-1">{item["remark"]}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </PageCard>
             </DefaultLayout>
           </div>

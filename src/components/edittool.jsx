@@ -109,6 +109,9 @@ export default function EditTool({
               newdata[1] = false;
               setInputDataError(newdata);
             }}
+            readonly={
+              parseInt(localStorage.getItem("userlevel")) <= 1 ? false : true
+            }
           ></CommonInputNumber>
         </div>
       </div>
@@ -198,6 +201,7 @@ export default function EditTool({
           onload={onSubmit}
           disabled={onSubmit}
           onClick={async (e) => {
+            console.log("what the fuck");
             e.preventDefault();
             const localError = [false, false, false, false];
             const error = [...inputDataError];
@@ -225,7 +229,7 @@ export default function EditTool({
             } else {
               localError[2] = false;
             }
-
+            /*
             if (inputData.category == "") {
               error[3] = true;
               localError[3] = true;
@@ -233,6 +237,7 @@ export default function EditTool({
             } else {
               localError[3] = false;
             }
+              */
 
             if (inputData.location == "") {
               error[4] = true;

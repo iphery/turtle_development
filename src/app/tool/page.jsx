@@ -15,15 +15,21 @@ import QRScanner1 from "@/components/qrscanner2";
 import Camera1 from "@/components/camera1";
 import { dataURLtoBlob } from "@/utils/dataurltofile";
 import { compressImage } from "@/utils/compressimage";
+import { useProvider } from "../appcontext";
 
 export default function Page() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
   const router = useRouter();
 
   const [showDropdown, setShowDropdown] = useState(false);
-  const [tools, setTools] = useState([]);
-  const [filteredTools, setFileredTools] = useState([]);
-  const [keyword, setKeyword] = useState("");
+  const {
+    tools,
+    setTools,
+    filteredTools,
+    setFilteredTools,
+    keywordTool,
+    setKeywordTool,
+  } = useProvider();
   const [modalAdd, setModalAdd] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
@@ -50,7 +56,10 @@ export default function Page() {
       const data = response.data;
       const tools = data["tools"];
       setTools(tools);
-      setFileredTools(tools);
+
+      if (keywordTool == "") {
+        setFilteredTools(tools);
+      }
     }
     setRefresh(false);
   };
@@ -59,12 +68,12 @@ export default function Page() {
     const filtered_tool = tools.filter((item) => {
       const desc =
         item["description"] &&
-        item["description"].toLowerCase().includes(keyword.toLowerCase());
+        item["description"].toLowerCase().includes(keywordTool.toLowerCase());
 
       return desc;
     });
 
-    setFileredTools(filtered_tool);
+    setFilteredTools(filtered_tool);
   };
 
   useEffect(() => {
@@ -73,7 +82,7 @@ export default function Page() {
 
   useEffect(() => {
     search_tool();
-  }, [keyword]);
+  }, [keywordTool]);
 
   useEffect(() => {
     if (refresh) {
@@ -212,9 +221,9 @@ export default function Page() {
                   <div className="z-10 mb-3 w-full sm:w-1/2">
                     <CommonInput
                       placeholder={"Search"}
-                      input={keyword}
+                      input={keywordTool}
                       onInputChange={(val) => {
-                        setKeyword(val);
+                        setKeywordTool(val);
                       }}
                     ></CommonInput>
                   </div>
@@ -227,7 +236,7 @@ export default function Page() {
                           <th>No</th>
                           <th>Description</th>
                           <th>Image</th>
-                          <th>Category</th>
+
                           <th>Quantity</th>
                           <th>Unit</th>
                           <th>Location</th>
@@ -244,7 +253,9 @@ export default function Page() {
                               className=" hover:bg-bodydark"
                             >
                               <td className="p-1 text-center">{index + 1}</td>
-                              <td className="p-1 ">{item["description"]}</td>
+                              <td className="max-w-1/3 p-1">
+                                {item["description"]}
+                              </td>
                               <td className="p-1 text-center">
                                 {item["image_url"] != "" ? (
                                   <img
@@ -255,9 +266,7 @@ export default function Page() {
                                   <></>
                                 )}
                               </td>
-                              <td className="p-1 text-center">
-                                {item["category"]}
-                              </td>
+
                               <td className="p-1 text-center">
                                 {item["quantity"]}
                               </td>
