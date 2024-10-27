@@ -37,7 +37,7 @@ export default function Dashboard() {
       setLoan(result["tools"]);
       setTrans(result["transactions"]);
       setTransSum(result["count"]);
-      console.log(result["count"]);
+      console.log(result["tools"]);
     }
   };
 
@@ -352,7 +352,7 @@ export default function Dashboard() {
                                   {formatDateLocal1(item["date"])}
                                 </td>
                                 <td className="p-1 text-center">
-                                  {item["quantity"]}
+                                  {item["qty"]}
                                 </td>
                                 <td className="p-1 text-center">
                                   {item["unit"]}
