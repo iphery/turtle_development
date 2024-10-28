@@ -41,7 +41,7 @@ export const CommonButtonFull = ({
   return (
     <button
       onClick={onClick}
-      className="w-full cursor-default rounded-sm border border-bodydark bg-strokedark p-3 text-sm text-white shadow-md hover:bg-form-strokedark"
+      className={`w-full cursor-default rounded-sm border border-bodydark  p-3 text-sm text-white shadow-md ${disabled ? "bg-bodydark" : "bg-strokedark hover:bg-form-strokedark"}`}
       disabled={disabled}
     >
       {onload ? <ButtonLoader color={btnColor} /> : label}

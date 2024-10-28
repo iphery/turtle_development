@@ -167,6 +167,7 @@ export default function Page() {
                     setModalNew(false);
                     setInputDate("");
                     console.log(response.data);
+                    fetch_stock_opname();
                   }
                   setOnSubmit(false);
                 }

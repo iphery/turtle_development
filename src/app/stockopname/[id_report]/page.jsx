@@ -1,10 +1,17 @@
 "use client";
 import UserAuth from "@/components/auth";
+import { CommonButtonFull } from "@/components/button";
 import { PageCard } from "@/components/card";
-import { CommonInput } from "@/components/input";
+import { CommonInput, CommonInputNumber } from "@/components/input";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { ButtonLoader } from "@/components/loader";
+import { CustomModal } from "@/components/modal";
 import { API_URL } from "@/utils/constant";
-import { formatDateLocal1 } from "@/utils/dateformat";
+import {
+  formatDateLocal1,
+  formatDateTime,
+  getDateTime,
+} from "@/utils/dateformat";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -15,23 +22,74 @@ export default function Page({ params }) {
   const [dataSO, setDataSO] = useState({});
   const [filteredInitial, setFilteredInitial] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [selectedActual, setSelectedActual] = useState("");
+  const [selectedIdProduct, setSelectedIdProduct] = useState("");
+  const [modalActual, setModalActual] = useState(false);
+  const [onSaving, setOnSaving] = useState(false);
+  const [user, setUser] = useState({});
+  const [statusJoin, setStatusJoin] = useState(false);
+  const [statusInvite, setStatusInvite] = useState(false);
+  const [acceptInvitation, setAcceptInvitation] = useState(false);
+  const [isLead, setIsLead] = useState(false);
+  const [modalMember, setModalMember] = useState(false);
+  const [guest, setGuest] = useState([]);
+  const [onSentInvitation, setOnSentInvitation] = useState([]);
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/fetchdetailstockopname`;
-    const response = await axios.post(apiUrl, { idReport: params.id_report });
+    const response = await axios.post(apiUrl, {
+      idReport: params.id_report,
+      uid: localStorage.getItem("userUid"),
+    });
     if (response.status === 200) {
       const result = response.data;
       const initial = JSON.parse(result["initial_data"]);
       setInitialSO(initial);
       setFilteredInitial(initial);
       setDataSO(result["result"][0]);
-      console.log(initial);
+      const invitation = result["invitation"];
+      const user = result["user"];
+      setUser(user[0]);
+      if (user.length > 0) {
+        if (user[0].status_join == 0) {
+          //invite
+          setStatusInvite(false);
+          setStatusJoin(false);
+        } else {
+          setStatusInvite(true);
+          setStatusJoin(true);
+        }
+
+        if (user[0].lead == 1) {
+          setIsLead(true);
+        } else {
+          setIsLead(false);
+        }
+      } else {
+        setStatusJoin(false);
+        setIsLead(false);
+      }
+
+      setGuest(invitation);
+      let arr = [];
+      for (let i = 0; i < invitation.length; i++) {
+        arr.push(false);
+      }
+      setOnSentInvitation(arr);
     }
   };
 
   useEffect(() => {
     fetch_data();
   }, []);
+
+  const hide_button = () => {
+    if (selectedActual != "") {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const search_item = () => {
     const filterData = initialSO.filter((item) => {
@@ -56,12 +114,37 @@ export default function Page({ params }) {
       <div className="relative">
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
-            <div className="md mb-5 border  p-2 shadow">
-              <div className="flex justify-between">
-                <div>You are invited to be a member of this stock opname</div>
-                <div>Accept</div>
+            {!statusInvite && !isLead ? (
+              <div className="md mb-5 border  p-2 shadow">
+                <div className="flex justify-between">
+                  <div>You are invited to be a member of this stock opname</div>
+
+                  {acceptInvitation ? (
+                    <ButtonLoader />
+                  ) : (
+                    <div
+                      onClick={async () => {
+                        setAcceptInvitation(true);
+                        const apiUrl = `${API_URL}/acceptinvitation`;
+                        const response = await axios.post(apiUrl, {
+                          uid: localStorage.getItem("userUid"),
+                          idReport: params.id_report,
+                        });
+                        if (response.status == 200) {
+                          fetch_data();
+                        }
+                        setAcceptInvitation(false);
+                      }}
+                      className="shadow-nd cursor-default border px-2 hover:bg-strokedark hover:text-white"
+                    >
+                      Accept
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <></>
+            )}
 
             <div className="mb-3 flex items-center justify-between">
               <div className=" text-xl font-bold">Stock Opname Detail</div>
@@ -82,7 +165,10 @@ export default function Page({ params }) {
                       {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
                         <div
                           className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {}}
+                          onClick={() => {
+                            setModalMember(true);
+                            setShowDropdown(false);
+                          }}
                         >
                           Invite Member
                         </div>
@@ -101,6 +187,7 @@ export default function Page({ params }) {
                 )}
               </div>
             </div>
+
             <PageCard>
               <div className="flex justify-evenly">
                 <div className="w-full">
@@ -153,9 +240,29 @@ export default function Page({ params }) {
                         <tr key={index}>
                           <td className="p-1">{item["description"]}</td>
                           <td className="p-1 text-center">{item["balance"]}</td>
-                          <td className="p-1 text-center">{item["actual"]}</td>
+                          <td className="p-1 text-center">
+                            {dataSO.status == 0 && statusJoin == 1 ? (
+                              <p
+                                className="cursor-default bg-bodydark text-white hover:text-danger"
+                                onClick={() => {
+                                  setModalActual(true);
+                                  setSelectedActual("");
+                                  setSelectedIdProduct(item["id_product"]);
+                                }}
+                              >
+                                {item["actual"]}
+                              </p>
+                            ) : (
+                              <p>{item["actual"]}</p>
+                            )}
+                          </td>
                           <td className="p-1 text-center">{item["diff"]}</td>
-                          <td className="p-1">{item["checker"]}</td>
+                          <td className="p-1">{item["checked_name"]}</td>
+                          <td className="p-1">
+                            {item["checked_at"] != ""
+                              ? formatDateTime(item["checked_at"])
+                              : ""}
+                          </td>
                         </tr>
                       );
                     })}
@@ -165,6 +272,106 @@ export default function Page({ params }) {
             </PageCard>
           </DefaultLayout>
         </div>
+        <CustomModal
+          onClose={() => {
+            setModalActual(false);
+          }}
+          isVisible={modalActual}
+          isSmallWidth="sm"
+        >
+          <CommonInputNumber
+            type={"text"}
+            placeholder={"Input number"}
+            input={selectedActual}
+            onInputChange={(val) => {
+              setSelectedActual(val);
+            }}
+          ></CommonInputNumber>
+          <div className="mt-5">
+            <CommonButtonFull
+              onload={onSaving}
+              disabled={hide_button()}
+              label={"Save"}
+              onClick={async () => {
+                setOnSaving(true);
+                const lists = [...initialSO];
+
+                lists.map((item, index) => {
+                  if (item["id_product"] == selectedIdProduct) {
+                    item["actual"] = selectedActual;
+                    item["diff"] = item["balance"] - selectedActual;
+                    item["checked_at"] = getDateTime();
+                    item["checked_by"] = localStorage.getItem("userUid");
+                    item["checked_name"] = localStorage.getItem("username");
+
+                    return;
+                  }
+                });
+
+                const apiUrl = `${API_URL}/updateliststockopname`;
+                const response = await axios.post(apiUrl, {
+                  idReport: params.id_report,
+                  data: JSON.stringify(lists),
+                });
+                if (response.status === 200) {
+                  setModalActual(false);
+                  fetch_data();
+                }
+
+                setOnSaving(false);
+                setModalActual(false);
+              }}
+            ></CommonButtonFull>
+          </div>
+        </CustomModal>
+        <CustomModal
+          isVisible={modalMember}
+          isSmallWidth="sm"
+          onClose={() => {
+            setModalMember(false);
+          }}
+        >
+          {guest.map((item, index) => {
+            return (
+              <div key={index} className="mb-3">
+                <div className="flex justify-between">
+                  <p>{item["name"]}</p>
+                  {item["status"] == 0 ? (
+                    onSentInvitation[index] ? (
+                      <ButtonLoader />
+                    ) : (
+                      <div
+                        onClick={async () => {
+                          const newdata = [...onSentInvitation];
+                          newdata[index] = true;
+                          setOnSentInvitation(newdata);
+
+                          const apiUrl = `${API_URL}/sendinvitation`;
+                          const response = await axios.post(apiUrl, {
+                            uid: item["id"],
+                            idReport: params.id_report,
+                          });
+                          if (response.status == 200) {
+                            fetch_data();
+                            setModalMember(false);
+                          }
+                          const newdatapost = [...onSentInvitation];
+                          newdatapost[index] = false;
+                          setOnSentInvitation(newdatapost);
+                        }}
+                        className="cursor-default border px-1 shadow-md hover:bg-bodydark hover:text-white"
+                      >
+                        Sent invitation
+                      </div>
+                    )
+                  ) : (
+                    <p>Invited</p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </CustomModal>
       </div>
     </UserAuth>
   );
