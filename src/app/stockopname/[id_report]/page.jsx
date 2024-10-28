@@ -62,6 +62,7 @@ export default function Page({ params }) {
       console.log(user);
       setUser(user[0]);
       if (user.length > 0) {
+        console.log("sudah join");
         if (user[0].status_join == "0") {
           //invite
           setStatusInvite(false);
@@ -77,7 +78,9 @@ export default function Page({ params }) {
           setIsLead(false);
         }
       } else {
+        console.log("belum join");
         setStatusJoin(false);
+        setStatusInvite(false);
         setIsLead(false);
       }
 
@@ -209,7 +212,7 @@ export default function Page({ params }) {
       <div className="relative">
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
-            {!statusInvite && !isLead ? (
+            {statusInvite && !isLead ? (
               <div className="md mb-5 border  p-2 shadow">
                 <div className="flex justify-between">
                   <div>You are invited to be a member of this stock opname</div>
