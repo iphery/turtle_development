@@ -63,12 +63,13 @@ export default function Page({ params }) {
       setUser(user[0]);
       if (user.length > 0) {
         console.log("sudah join");
-        if (user[0].status_join == "0") {
+        if (user[0].status_join == 0) {
           //invite
-          setStatusInvite(false);
+          console.log(user[0].status_join);
+          setStatusInvite(true);
           setStatusJoin(false);
         } else {
-          setStatusInvite(true);
+          setStatusInvite(false);
           setStatusJoin(true);
         }
 
@@ -212,34 +213,40 @@ export default function Page({ params }) {
       <div className="relative">
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
-            {statusInvite && !isLead ? (
-              <div className="md mb-5 border  p-2 shadow">
-                <div className="flex justify-between">
-                  <div>You are invited to be a member of this stock opname</div>
-
-                  {acceptInvitation ? (
-                    <ButtonLoader />
-                  ) : (
-                    <div
-                      onClick={async () => {
-                        setAcceptInvitation(true);
-                        const apiUrl = `${API_URL}/acceptinvitation`;
-                        const response = await axios.post(apiUrl, {
-                          uid: localStorage.getItem("userUid"),
-                          idReport: params.id_report,
-                        });
-                        if (response.status == 200) {
-                          fetch_data();
-                        }
-                        setAcceptInvitation(false);
-                      }}
-                      className="shadow-nd cursor-default border px-2 hover:bg-strokedark hover:text-white"
-                    >
-                      Accept
+            {!isLead ? (
+              statusInvite ? (
+                <div className="md mb-5 border  p-2 shadow">
+                  <div className="flex justify-between">
+                    <div>
+                      You are invited to be a member of this stock opname
                     </div>
-                  )}
+
+                    {acceptInvitation ? (
+                      <ButtonLoader />
+                    ) : (
+                      <div
+                        onClick={async () => {
+                          setAcceptInvitation(true);
+                          const apiUrl = `${API_URL}/acceptinvitation`;
+                          const response = await axios.post(apiUrl, {
+                            uid: localStorage.getItem("userUid"),
+                            idReport: params.id_report,
+                          });
+                          if (response.status == 200) {
+                            fetch_data();
+                          }
+                          setAcceptInvitation(false);
+                        }}
+                        className="shadow-nd cursor-default border px-2 hover:bg-strokedark hover:text-white"
+                      >
+                        Accept
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <></>
+              )
             ) : (
               <></>
             )}
