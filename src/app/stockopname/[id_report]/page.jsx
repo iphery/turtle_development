@@ -43,6 +43,7 @@ export default function Page({ params }) {
   const [modalMember, setModalMember] = useState(false);
   const [guest, setGuest] = useState([]);
   const [onSentInvitation, setOnSentInvitation] = useState([]);
+  let email = "";
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/fetchdetailstockopname`;
@@ -58,9 +59,10 @@ export default function Page({ params }) {
       setDataSO(result["result"][0]);
       const invitation = result["invitation"];
       const user = result["user"];
+      console.log(user);
       setUser(user[0]);
       if (user.length > 0) {
-        if (user[0].status_join == 0) {
+        if (user[0].status_join == "0") {
           //invite
           setStatusInvite(false);
           setStatusJoin(false);
@@ -89,6 +91,7 @@ export default function Page({ params }) {
   };
 
   useEffect(() => {
+    email = localStorage.getItem("useremail");
     fetch_data();
   }, []);
 
@@ -119,7 +122,6 @@ export default function Page({ params }) {
     setShowDropdown((prev) => !prev);
   };
 
-  const email = localStorage.getItem("useremail");
   useEffect(() => {
     if (!email) return;
 
