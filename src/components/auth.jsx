@@ -86,6 +86,7 @@ export default function UserAuth({ children }) {
       } else {
         localStorage.setItem("username", response.data["user"][0]["name"]);
         localStorage.setItem("userlevel", response.data["user"][0]["level"]);
+        localStorage.setItem("useremail", response.data["user"][0]["email"]);
         setLogin(true);
       }
 
@@ -98,11 +99,13 @@ export default function UserAuth({ children }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user == null) {
         localStorage.setItem("userUid", "");
+
         setLogin(false);
         setOnload(false);
         router.push("/");
       } else {
         localStorage.setItem("userUid", user.uid);
+
         fetch_user(user.uid);
         console.log(user.uid);
         //setLogin(true);

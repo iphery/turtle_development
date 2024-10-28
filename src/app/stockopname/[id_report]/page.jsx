@@ -15,6 +15,15 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
+import {
+  doc,
+  onSnapshot,
+  updateDoc,
+  getDocs,
+  collection,
+  documentId,
+} from "firebase/firestore";
+import { db } from "@/app/firebase-config";
 
 export default function Page({ params }) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -109,6 +118,90 @@ export default function Page({ params }) {
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
+
+  const email = localStorage.getItem("useremail");
+  useEffect(() => {
+    if (!email) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, "stockopname", email),
+      (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          if (data.update) {
+            fetch_data();
+            update_firestore();
+          } else {
+            console.log("jangan update");
+          }
+          /*
+            setStatus({
+            update: data.update || false,
+            update_at: data.update_at?.toDate() || null,
+          });
+          */
+        }
+      },
+      (error) => console.error("Error:", error),
+    );
+
+    return () => unsubscribe();
+  }, [email]);
+
+  const update_firestore = async () => {
+    try {
+      const docRef = doc(db, "stockopname", email);
+
+      await updateDoc(docRef, {
+        update: false,
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating field: ", error);
+      return { success: false, error };
+    }
+  };
+
+  const update_firestore_all_async = async () => {
+    try {
+      // Get reference to the stockopname collection
+      const stockopnameRef = collection(db, "stockopname");
+
+      // Get all documents in the collection
+      const querySnapshot = await getDocs(stockopnameRef);
+      //console.log(querySnapshot);
+
+      // Array to store all update promises
+      const updatePromises = [];
+
+      // Loop through each document and update it
+      querySnapshot.forEach((document) => {
+        console.log(document.id);
+        const docRef = doc(db, "stockopname", document.id);
+        updatePromises.push(
+          updateDoc(docRef, {
+            update: true,
+          }),
+        );
+      });
+
+      // Wait for all updates to complete
+      await Promise.all(updatePromises);
+
+      return {
+        success: true,
+        updatedCount: querySnapshot.size,
+      };
+    } catch (error) {
+      console.error("Error updating documents: ", error);
+      return {
+        success: false,
+        error,
+      };
+    }
+  };
+
   return (
     <UserAuth>
       <div className="relative">
@@ -315,7 +408,8 @@ export default function Page({ params }) {
                 });
                 if (response.status === 200) {
                   setModalActual(false);
-                  fetch_data();
+                  //fetch_data();
+                  update_firestore_all_async();
                 }
 
                 setOnSaving(false);
