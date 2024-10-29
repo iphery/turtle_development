@@ -315,7 +315,18 @@ export default function Page({ params }) {
 
                 <div className="mr-5"></div>
                 <div className="w-full">
-                  <div className="flex justify-between"></div>
+                  <div className="flex justify-between">
+                    <div className="w-full">Member</div>
+                    <div className="w-full">
+                      {guest.map((item, index) => {
+                        if (item.join == 1) {
+                          return <div key={index}>{item.name}</div>;
+                        } else {
+                          return <div key={index}></div>;
+                        }
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
             </PageCard>
