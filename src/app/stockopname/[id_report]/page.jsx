@@ -80,8 +80,9 @@ export default function Page({ params }) {
         }
       } else {
         console.log("belum join");
+
         setStatusJoin(false);
-        setStatusInvite(false);
+        setStatusInvite(true);
         setIsLead(false);
       }
 
