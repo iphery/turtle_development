@@ -234,6 +234,42 @@ export default function Page({ params }) {
     update_progress();
   }, [initialSO]);
 
+  const update_list = async () => {
+    const apiUrl = `${API_URL}/product`;
+    const response = await axios.get(apiUrl);
+    if (response.status == 200) {
+      const product = response.data["products"];
+      const so = [...initialSO];
+
+      const combinedList = initialSO.map((initialItem) => {
+        const matchedItem = product.find(
+          (item) => item.id_product === initialItem.id_product,
+        );
+        return {
+          ...initialItem, // Spread the current item from initialSO
+          category: matchedItem ? matchedItem.category : "", // Add category, default to empty string if not found
+        };
+      });
+      const sortedCombinedList = combinedList.sort((a, b) => {
+        // Compare categories; handle empty strings by placing them at the end
+        if (a.category === "" && b.category === "") return 0; // Both are empty
+        if (a.category === "") return 1; // a is empty, place it after b
+        if (b.category === "") return -1; // b is empty, place it after a
+        return a.category.localeCompare(b.category); // Compare alphabetically
+      });
+      console.log(sortedCombinedList);
+
+      const apiUrl = `${API_URL}/updateliststockopname`;
+      const response2 = await axios.post(apiUrl, {
+        idReport: params.id_report,
+        data: JSON.stringify(combinedList),
+      });
+      if (response2.status === 200) {
+        console.log("ok");
+      }
+    }
+  };
+
   return (
     <UserAuth>
       <div className="relative">
@@ -381,9 +417,11 @@ export default function Page({ params }) {
                   <thead className="bg-strokedark text-white">
                     <tr>
                       <th className="p-1">Item</th>
+
                       <th className="p-1">Quantity</th>
                       <th className="p-1">Actual</th>
                       <th className="p-1">Diff</th>
+                      <th className="p-1">Category</th>
                       <th className="w-30 p-1">Checked By</th>
                       <th className="w-30 p-1">Checked At</th>
                     </tr>
@@ -411,6 +449,10 @@ export default function Page({ params }) {
                             )}
                           </td>
                           <td className="p-1 text-center">{item["diff"]}</td>
+                          <td className="p-1 text-center">
+                            {item["category"]}
+                          </td>
+
                           <td className="p-1">{item["checked_name"]}</td>
                           <td className="p-1">
                             {item["checked_at"] != ""
