@@ -7,6 +7,7 @@ import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { useProvider } from "@/app/appcontext";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -123,6 +124,7 @@ const menuGroups = [
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  const { testHide } = useProvider();
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>

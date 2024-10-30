@@ -44,12 +44,16 @@ export default function Page({ params }) {
   const [guest, setGuest] = useState([]);
   const [onSentInvitation, setOnSentInvitation] = useState([]);
   let email = "";
+  let uid = "";
+
+  const [completed, setCompleted] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/fetchdetailstockopname`;
     const response = await axios.post(apiUrl, {
       idReport: params.id_report,
-      uid: localStorage.getItem("userUid"),
+      uid: uid,
     });
     if (response.status === 200) {
       const result = response.data;
@@ -59,6 +63,7 @@ export default function Page({ params }) {
       setDataSO(result["result"][0]);
       const invitation = result["invitation"];
       const user = result["user"];
+      console.log("iniu user");
       console.log(user);
       setUser(user[0]);
       if (user.length > 0) {
@@ -82,7 +87,7 @@ export default function Page({ params }) {
         console.log("belum join");
 
         setStatusJoin(false);
-        setStatusInvite(true);
+        setStatusInvite(false);
         setIsLead(false);
       }
 
@@ -97,6 +102,7 @@ export default function Page({ params }) {
 
   useEffect(() => {
     email = localStorage.getItem("useremail");
+    uid = localStorage.getItem("userUid");
     fetch_data();
   }, []);
 
@@ -208,6 +214,25 @@ export default function Page({ params }) {
       };
     }
   };
+
+  const update_progress = () => {
+    const lists = [...initialSO];
+    let complete = 0;
+    let total = 0;
+    lists.map((item, index) => {
+      if (item["checked_name"] != "") {
+        complete++;
+      }
+      total++;
+      return;
+    });
+    setCompleted(complete);
+    setTotal(total);
+  };
+
+  useEffect(() => {
+    update_progress();
+  }, [initialSO]);
 
   return (
     <UserAuth>
@@ -333,15 +358,24 @@ export default function Page({ params }) {
             </PageCard>
             <div className="mb-5"></div>
             <PageCard>
-              <div className="mb-3 w-full sm:w-1/2">
-                <CommonInput
-                  placeholder={"Search item"}
-                  input={keyword}
-                  onInputChange={(val) => {
-                    setKeyword(val);
-                  }}
-                ></CommonInput>
+              <div className="mb-3  sm:flex  sm:items-center sm:justify-evenly">
+                <div className="w-full">
+                  <CommonInput
+                    placeholder={"Search item"}
+                    input={keyword}
+                    onInputChange={(val) => {
+                      setKeyword(val);
+                    }}
+                  ></CommonInput>
+                </div>
+                <div className="mb-3 mr-3"></div>
+                <div className="w-full">
+                  <div className="flex justify-end">
+                    {`${completed} / ${total} completed (${Math.round((completed / total) * 100)}%)`}
+                  </div>
+                </div>
               </div>
+
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-strokedark text-white">

@@ -10,6 +10,7 @@ export function DataProvider({ children }) {
   const [tools, setTools] = useState([]);
   const [filteredTools, setFilteredTools] = useState([]);
   const [keywordTool, setKeywordTool] = useState("");
+  const [testHide, setTestHide] = useState(false);
 
   return (
     <DataContext.Provider
@@ -28,6 +29,8 @@ export function DataProvider({ children }) {
         setFilteredTools,
         keywordTool,
         setKeywordTool,
+        testHide,
+        setTestHide,
       }}
     >
       {children}

@@ -9,6 +9,8 @@ import UserAuth from "@/components/auth";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import Dashboard from "@/components/dashboard";
+import { useEffect } from "react";
+import { useProvider } from "./appcontext";
 
 export default function Home() {
   const fetch_data_user = async () => {

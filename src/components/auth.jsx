@@ -107,6 +107,7 @@ export default function UserAuth({ children }) {
         localStorage.setItem("userUid", user.uid);
 
         fetch_user(user.uid);
+        console.log("ini dari auth");
         console.log(user.uid);
         //setLogin(true);
       }
