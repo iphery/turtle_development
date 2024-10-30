@@ -240,16 +240,34 @@ export default function Page({ params }) {
     if (response.status == 200) {
       const product = response.data["products"];
       const so = [...initialSO];
+      const combinedList = initialSO.map((initialItem) => {
+        if (initialItem.checked_by != "") {
+          initialItem.diff = initialItem.actual - initialItem.balance;
+        }
 
+        const matchedItem = product.find(
+          (item) => item.id_product === initialItem.id_product,
+        );
+
+        return {
+          ...initialItem,
+          unit: matchedItem ? matchedItem.unit : "",
+        };
+      });
+      console.log(combinedList);
+      /*
       const combinedList = initialSO.map((initialItem) => {
         const matchedItem = product.find(
           (item) => item.id_product === initialItem.id_product,
         );
         return {
           ...initialItem, // Spread the current item from initialSO
-          category: matchedItem ? matchedItem.category : "", // Add category, default to empty string if not found
+          unit: matchedItem ? matchedItem.unit : "", // Add category, default to empty string if not found
         };
       });
+      */
+
+      /*
       const sortedCombinedList = combinedList.sort((a, b) => {
         // Compare categories; handle empty strings by placing them at the end
         if (a.category === "" && b.category === "") return 0; // Both are empty
@@ -258,6 +276,7 @@ export default function Page({ params }) {
         return a.category.localeCompare(b.category); // Compare alphabetically
       });
       console.log(sortedCombinedList);
+*/
 
       const apiUrl = `${API_URL}/updateliststockopname`;
       const response2 = await axios.post(apiUrl, {
@@ -421,6 +440,7 @@ export default function Page({ params }) {
                       <th className="p-1">Quantity</th>
                       <th className="p-1">Actual</th>
                       <th className="p-1">Diff</th>
+                      <th className="p-1">Unit</th>
                       <th className="p-1">Category</th>
                       <th className="w-30 p-1">Checked By</th>
                       <th className="w-30 p-1">Checked At</th>
@@ -448,7 +468,13 @@ export default function Page({ params }) {
                               <p>{item["actual"]}</p>
                             )}
                           </td>
-                          <td className="p-1 text-center">{item["diff"]}</td>
+                          <td
+                            className={`p-1 text-center ${parseInt(item["diff"]) < 0 ? "text-danger" : "text-success"}`}
+                          >
+                            {item["diff"]}
+                          </td>
+                          <td className="p-1 text-center">{item["unit"]}</td>
+
                           <td className="p-1 text-center">
                             {item["category"]}
                           </td>
@@ -495,7 +521,7 @@ export default function Page({ params }) {
                 lists.map((item, index) => {
                   if (item["id_product"] == selectedIdProduct) {
                     item["actual"] = selectedActual;
-                    item["diff"] = item["balance"] - selectedActual;
+                    item["diff"] = selectedActual - item["balance"];
                     item["checked_at"] = getDateTime();
                     item["checked_by"] = localStorage.getItem("userUid");
                     item["checked_name"] = localStorage.getItem("username");
