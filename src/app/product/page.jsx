@@ -58,6 +58,8 @@ export default function Page() {
 
   const search_product = () => {
     const filterData = products.filter((item) => {
+      //  const desc = item["available_quantity"] < 0;
+
       const desc =
         item["description"] &&
         item["description"]
@@ -233,7 +235,7 @@ export default function Page() {
                 </div>
                 {!isSmallScreen ? (
                   <div className="overflow-x-auto">
-                    <table className="max-w-screen">
+                    <table className="w-full">
                       <thead>
                         <tr className="bg-strokedark text-white">
                           <th>No</th>

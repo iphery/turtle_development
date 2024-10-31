@@ -18,6 +18,9 @@ import Camera1 from "@/components/camera1";
 import { dataURLtoBlob } from "@/utils/dataurltofile";
 import { compressImage } from "@/utils/compressimage";
 import QRScanner1 from "@/components/qrscanner2";
+import { Lightbox } from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css"; // Import default styles
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 export default function Page({ params }) {
   const [detail, setDetail] = useState({});
@@ -29,7 +32,7 @@ export default function Page({ params }) {
   const [endDate, setEndDate] = useState(
     new Date().toISOString().substring(0, 10),
   );
-
+  const [openImage, setOpenImage] = useState(false);
   const [stockData, setStockData] = useState([]);
   const [scanResult, setScanResult] = useState("");
   const [refresh, setRefresh] = useState(false);
@@ -139,48 +142,51 @@ export default function Page({ params }) {
             <DefaultLayout>
               <div className="mb-3 flex items-center justify-between">
                 <div className=" text-xl font-bold">Product Detail</div>
+                {localStorage.getItem("userlevel") <= 2 ? (
+                  <div className="relative">
+                    <button
+                      onClick={toggleDropdown}
+                      className="rounded-md bg-strokedark px-3 py-1 text-white"
+                    >
+                      <div className="flex items-center justify-start">
+                        <IoMdArrowDropdown />
+                        <div>Option</div>
+                      </div>
+                    </button>
+                    {showDropdown && (
+                      <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                        <div className="py-1">
+                          {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+                            <div
+                              className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                setInputData(detail);
+                                toggleDropdown();
+                                setModalEdit(true);
+                              }}
+                            >
+                              Edit Product
+                            </div>
+                          ) : (
+                            <></>
+                          )}
 
-                <div className="relative">
-                  <button
-                    onClick={toggleDropdown}
-                    className="rounded-md bg-strokedark px-3 py-1 text-white"
-                  >
-                    <div className="flex items-center justify-start">
-                      <IoMdArrowDropdown />
-                      <div>Option</div>
-                    </div>
-                  </button>
-                  {showDropdown && (
-                    <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                      <div className="py-1">
-                        {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
                           <div
                             className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                             onClick={() => {
-                              setInputData(detail);
                               toggleDropdown();
-                              setModalEdit(true);
+                              setModalPicture(true);
                             }}
                           >
-                            Edit Product
+                            Update Picture
                           </div>
-                        ) : (
-                          <></>
-                        )}
-
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            toggleDropdown();
-                            setModalPicture(true);
-                          }}
-                        >
-                          Update Picture
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
               <PageCard>
                 <div className="flex flex-col sm:flex-row sm:justify-evenly">
@@ -207,13 +213,27 @@ export default function Page({ params }) {
                     </div>
                   </div>
                   {detail.image_url != "" ? (
-                    <div className="flex w-full justify-center">
-                      <img
-                        src={`${IMAGE_URL}/${detail.image_url}`}
-                        alt=""
-                        className="h-40"
+                    <>
+                      <div className="flex w-full justify-center">
+                        <img
+                          onClick={() => setOpenImage(true)}
+                          data-tooltip-id="my-tooltip-1"
+                          src={`${IMAGE_URL}/${detail.image_url}`}
+                          alt="aaaa"
+                          className="h-40"
+                        />
+                        <Lightbox
+                          open={openImage}
+                          close={() => setOpenImage(false)}
+                          slides={[{ src: `${IMAGE_URL}/${detail.image_url}` }]} // Pass the single image as a slide
+                        />
+                      </div>
+                      <ReactTooltip
+                        id="my-tooltip-1"
+                        place="bottom"
+                        content="Click to preview image."
                       />
-                    </div>
+                    </>
                   ) : (
                     <></>
                   )}
@@ -269,7 +289,7 @@ export default function Page({ params }) {
                     {stockData.map((item, index) => {
                       return (
                         <tr key={index}>
-                          <td className="p-1">
+                          <td className="p-1 text-center">
                             {index == stockData.length - 1
                               ? "Before date"
                               : item["date"]}
@@ -281,7 +301,7 @@ export default function Page({ params }) {
                             {index == stockData.length - 1 ? "" : item["out"]}
                           </td>
                           <td className="p-1 text-center">{item["balance"]}</td>
-                          <td className="p-1">{item["subject"]}</td>
+                          <td className="p-1 text-center">{item["subject"]}</td>
                         </tr>
                       );
                     })}

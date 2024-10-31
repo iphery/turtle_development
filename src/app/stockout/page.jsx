@@ -228,6 +228,10 @@ export default function PartsOut() {
     return null;
   }
 
+  if (parseInt(localStorage.getItem("userlevel")) > 2) {
+    router.push("/");
+  }
+
   return (
     <UserAuth>
       {!doScan ? (

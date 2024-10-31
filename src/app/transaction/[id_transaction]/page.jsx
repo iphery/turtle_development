@@ -121,26 +121,30 @@ export default function Page({ params }) {
                   <div>Signed at :</div>
                   <div className="ml-3">{trans.signed_at}</div>
                   {trans.signed == 0 ? (
-                    resend ? (
-                      <ButtonLoader />
-                    ) : (
-                      <>
-                        <div
-                          onClick={resend_message}
-                          data-tooltip-id="my-tooltip-1"
-                          className="cursor-default text-success hover:text-warning"
-                        >
-                          <FaWhatsapp />
-                        </div>
+                    parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+                      resend ? (
+                        <ButtonLoader />
+                      ) : (
+                        <>
+                          <div
+                            onClick={resend_message}
+                            data-tooltip-id="my-tooltip-1"
+                            className="cursor-default text-success hover:text-warning"
+                          >
+                            <FaWhatsapp />
+                          </div>
 
-                        <ReactTooltip
-                          id="my-tooltip-1"
-                          place="bottom"
-                          content="Resend message to requestor"
-                        />
-                      </>
+                          <ReactTooltip
+                            id="my-tooltip-1"
+                            place="bottom"
+                            content="Resend message to requestor"
+                          />
+                        </>
+                      )
+                    ) : (
+                      <></>
                     )
-                  ) : (
+                  ) : parseInt(localStorage.getItem("userlevel")) <= 2 ? (
                     <div
                       className="ml-3 hover:text-warning"
                       onClick={() => {
@@ -153,6 +157,8 @@ export default function Page({ params }) {
                     >
                       <IoDocumentTextOutline />
                     </div>
+                  ) : (
+                    <></>
                   )}
                 </div>
               </div>

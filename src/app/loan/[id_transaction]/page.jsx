@@ -118,38 +118,43 @@ export default function Page({ params }) {
               >
                 Loan Detail
               </div>
-              <div className="relative z-20">
-                <button
-                  onClick={toggleDropdown}
-                  className="rounded-md bg-strokedark px-3 py-1 text-white"
-                >
-                  <div className="flex items-center justify-start">
-                    <IoMdArrowDropdown />
-                    <div>Option</div>
-                  </div>
-                </button>
-                {showDropdown && (
-                  <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                    <div className="py-1">
-                      <div
-                        className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                        onClick={() => {
-                          console.log(uncompleted.length);
-                          if (uncompleted.length > 0) {
-                            setModalClose(true);
-                          } else {
-                            NotifyError("All tools already received");
-                          }
 
-                          toggleDropdown();
-                        }}
-                      >
-                        Receive Tool
+              {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+                <div className="relative z-20">
+                  <button
+                    onClick={toggleDropdown}
+                    className="rounded-md bg-strokedark px-3 py-1 text-white"
+                  >
+                    <div className="flex items-center justify-start">
+                      <IoMdArrowDropdown />
+                      <div>Option</div>
+                    </div>
+                  </button>
+                  {showDropdown && (
+                    <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                      <div className="py-1">
+                        <div
+                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                          onClick={() => {
+                            console.log(uncompleted.length);
+                            if (uncompleted.length > 0) {
+                              setModalClose(true);
+                            } else {
+                              NotifyError("All tools already received");
+                            }
+
+                            toggleDropdown();
+                          }}
+                        >
+                          Receive Tool
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
 
             <PageCard>
@@ -285,43 +290,52 @@ export default function Page({ params }) {
                   <div className="w-full">
                     <div className="flex items-center justify-start">
                       <div className="mr-2">Signed at :</div>
-                      {trans.signed == 0 ? (
-                        resend ? (
-                          <ButtonLoader />
-                        ) : (
-                          <>
-                            <div
-                              onClick={resend_message}
-                              data-tooltip-id="my-tooltip-1"
-                              className="cursor-default text-success hover:text-warning"
-                            >
-                              <FaWhatsapp />
-                            </div>
 
-                            <ReactTooltip
-                              id="my-tooltip-1"
-                              place="bottom"
-                              content="Resend message to requestor"
-                            />
-                          </>
+                      {trans.signed == 0 ? (
+                        parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+                          resend ? (
+                            <ButtonLoader />
+                          ) : (
+                            <>
+                              <div
+                                onClick={resend_message}
+                                data-tooltip-id="my-tooltip-1"
+                                className="cursor-default text-success hover:text-warning"
+                              >
+                                <FaWhatsapp />
+                              </div>
+
+                              <ReactTooltip
+                                id="my-tooltip-1"
+                                place="bottom"
+                                content="Resend message to requestor"
+                              />
+                            </>
+                          )
+                        ) : (
+                          <></>
                         )
                       ) : (
                         <>
                           <div className="ml-3">
                             {formatDateLocal2(trans.signed_at)}
                           </div>
-                          <div
-                            className="ml-3 hover:text-warning"
-                            onClick={() => {
-                              window.open(
-                                `/loanreceipt/${trans.token}`,
-                                "_blank",
-                                "noopener,noreferrer",
-                              );
-                            }}
-                          >
-                            <IoDocumentTextOutline />
-                          </div>
+                          {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+                            <div
+                              className="ml-3 hover:text-warning"
+                              onClick={() => {
+                                window.open(
+                                  `/loanreceipt/${trans.token}`,
+                                  "_blank",
+                                  "noopener,noreferrer",
+                                );
+                              }}
+                            >
+                              <IoDocumentTextOutline />
+                            </div>
+                          ) : (
+                            <></>
+                          )}
                         </>
                       )}
                     </div>

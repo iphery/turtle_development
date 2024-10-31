@@ -1,6 +1,6 @@
 "use client";
 import UserAuth from "@/components/auth";
-import { CommonButtonFull } from "@/components/button";
+import { CommonButton, CommonButtonFull } from "@/components/button";
 import { PageCard } from "@/components/card";
 import { CommonInput, CommonInputNumber } from "@/components/input";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
@@ -24,8 +24,12 @@ import {
   documentId,
 } from "firebase/firestore";
 import { db } from "@/app/firebase-config";
+import { useMediaQuery } from "react-responsive";
+import { NotifySuccess } from "@/utils/notify";
 
 export default function Page({ params }) {
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [initialSO, setInitialSO] = useState([]);
   const [dataSO, setDataSO] = useState({});
@@ -45,6 +49,7 @@ export default function Page({ params }) {
   const [onSentInvitation, setOnSentInvitation] = useState([]);
   let email = "";
   let uid = "";
+  const [opnameStatus, setOpnameStatus] = useState(false);
 
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(0);
@@ -63,8 +68,7 @@ export default function Page({ params }) {
       setDataSO(result["result"][0]);
       const invitation = result["invitation"];
       const user = result["user"];
-      console.log("iniu user");
-      console.log(user);
+      setOpnameStatus(result["status_opname"]);
       setUser(user[0]);
       if (user.length > 0) {
         console.log("sudah join");
@@ -120,6 +124,7 @@ export default function Page({ params }) {
         item["description"] &&
         item["description"].toLowerCase().includes(keyword.toLowerCase());
 
+      const empty = item["created_by"] == "";
       return desc;
     });
     setFilteredInitial(filterData);
@@ -234,6 +239,13 @@ export default function Page({ params }) {
     update_progress();
   }, [initialSO]);
 
+  const wrong_id = () => {
+    const filteredProducts = initialSO.filter(
+      (product) => product.id_product === "7B50kD",
+    );
+    console.log(filteredProducts);
+  };
+
   const update_list = async () => {
     const apiUrl = `${API_URL}/product`;
     const response = await axios.get(apiUrl);
@@ -289,6 +301,30 @@ export default function Page({ params }) {
     }
   };
 
+  const [adjustmentList, setAdjustmentList] = useState([]);
+  const [modalAdjustment, setModalAdjustment] = useState(false);
+  const [onSubmitAdjustment, setOnSubmitAdjusment] = useState(false);
+
+  const calc_adjusttment = async () => {
+    const combinedList = initialSO
+      .filter(
+        (initialItem) =>
+          initialItem.diff !== 0 && initialItem.description != "Kosong",
+      )
+
+      .map((initialItem) => {
+        // Perform any other mapping or processing if needed
+        return {
+          // Spread existing properties or select specific ones
+          ...initialItem,
+          // Add or modify properties if necessary
+        };
+      });
+
+    console.log(combinedList);
+    setAdjustmentList(combinedList);
+  };
+
   return (
     <UserAuth>
       <div className="relative">
@@ -334,7 +370,7 @@ export default function Page({ params }) {
 
             <div className="mb-3 flex items-center justify-between">
               <div className=" text-xl font-bold">Stock Opname Detail</div>
-              {isLead == 1 ? (
+              {isLead == 1 && opnameStatus == 0 ? (
                 <div className="relative">
                   <button
                     onClick={toggleDropdown}
@@ -364,7 +400,11 @@ export default function Page({ params }) {
 
                         <div
                           className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {}}
+                          onClick={() => {
+                            calc_adjusttment();
+                            setModalAdjustment(true);
+                            setShowDropdown(false);
+                          }}
                         >
                           Adjustment
                         </div>
@@ -391,6 +431,12 @@ export default function Page({ params }) {
                   <div className="flex justify-between">
                     <div>Issued By</div>
                     <div>{dataSO.name}</div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Status</div>
+                    <div
+                      className={`${opnameStatus == 0 ? "bg-success" : "bg-danger"} px-2 text-sm text-white`}
+                    >{`${opnameStatus == 0 ? "Open" : "Close"}`}</div>
                   </div>
                 </div>
 
@@ -594,6 +640,82 @@ export default function Page({ params }) {
               </div>
             );
           })}
+        </CustomModal>
+        <CustomModal
+          isVisible={modalAdjustment}
+          isSmallWidth="md"
+          onClose={() => {
+            setModalAdjustment(false);
+          }}
+        >
+          <>
+            <div className="mb-5 items-center   sm:flex sm:justify-between">
+              <div
+                className={`font-bold ${isSmallScreen ? "mb-5" : ""}`}
+              >{`Found ${adjustmentList.length} items discrepency`}</div>
+              <div className={`${isSmallScreen ? "flex justify-end" : ""}`}>
+                {" "}
+                <CommonButton
+                  label={"Adjust Stock"}
+                  disabled={onSubmitAdjustment}
+                  onload={onSubmitAdjustment}
+                  onClick={async () => {
+                    setOnSubmitAdjusment(true);
+                    const apiUrl = `${API_URL}/stockopnameadjust`;
+                    const response = await axios.post(apiUrl, {
+                      idReport: params.id_report,
+                      uid: localStorage.getItem("userUid"),
+                      list: adjustmentList,
+                    });
+                    if (response.status == 200) {
+                      console.log("OK");
+                      setModalAdjustment(false);
+                      NotifySuccess("Stocks have been succesfully adjusted");
+                      fetch_data();
+                    }
+                    setOnSubmitAdjusment(false);
+                  }}
+                />
+              </div>
+            </div>
+            <hr className="" />
+            <div className="oveflow-y-auto mt-5 overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Actual</th>
+                    <th>Diff</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adjustmentList.map((item, index) => {
+                    let qty = 0;
+                    if (parseInt(item["diff"]) > 0) {
+                      qty = `+${item["diff"]}`;
+                    } else {
+                      qty = item["diff"];
+                    }
+                    return (
+                      <tr key={index}>
+                        <td className="">{item["description"]}</td>
+                        <td className="text-center">{item["unit"]}</td>
+                        <td className="text-center">{item["balance"]}</td>
+                        <td className="text-center">{item["actual"]}</td>
+                        <td
+                          className={`text-center ${parseInt(item["diff"]) < 0 ? "text-danger" : "text-success"}`}
+                        >
+                          {qty}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         </CustomModal>
       </div>
     </UserAuth>

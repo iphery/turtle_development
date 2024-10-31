@@ -21,6 +21,7 @@ import { IoMdRemoveCircle } from "react-icons/io";
 import { MdOutlineDocumentScanner } from "react-icons/md";
 import { SearchScanner } from "@/components/searchscanner";
 import QRScanner1 from "@/components/qrscanner2";
+import Link from "next/link";
 
 export default function PartsOut() {
   const router = useRouter();
@@ -197,6 +198,10 @@ export default function PartsOut() {
 
   if (!isClient) {
     return null;
+  }
+
+  if (parseInt(localStorage.getItem("userlevel")) > 2) {
+    router.push("/");
   }
 
   return (
