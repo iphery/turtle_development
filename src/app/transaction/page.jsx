@@ -115,9 +115,73 @@ export default function Page() {
               ></CommonInput>
             </div>{" "}
           </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-strokedark text-white">
+                  <th>No</th>
 
-          {!isSmallScreen ? (
-            <div className="">
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                  <th>Unit</th>
+                  <th>Type</th>
+                  <th>Created By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTrans.length > 0 &&
+                  filteredTrans.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td className="p-1 text-center">{index + 1}</td>
+                        <td
+                          className="cursor-default p-1 text-center hover:text-primary"
+                          onClick={() => {
+                            router.push(
+                              `/transaction/${item["id_transaction"]}`,
+                            );
+                          }}
+                        >
+                          {item["id_transaction"]}
+                        </td>
+                        <td className="px-1 py-2 text-center">
+                          {item["date"]}
+                        </td>
+                        <td
+                          className="cursor-default px-1 py-2 hover:text-primary"
+                          onClick={() => {
+                            router.push(`/product/${item["id_product"]}`);
+                          }}
+                        >
+                          {item["description"]}
+                        </td>
+                        <td className="px-1 py-2 text-center">
+                          {item["quantity"]}
+                        </td>
+                        <td className="px-1 py-2 text-center">
+                          {item["unit"]}
+                        </td>
+                        <td className="px-1 py-2 text-center">
+                          <div className="flex items-center justify-center">
+                            <div className="text-sm"> {item["type"]}</div>
+                            {item["type"] == "OUT" ? (
+                              <FiArrowUpRight className="text-danger" />
+                            ) : (
+                              <FiArrowDownLeft className="text-success" />
+                            )}
+                          </div>
+                        </td>
+                        <td>{item["name"]}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          {/**!isSmallScreen ? (
+            <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead>
                   <tr className="bg-strokedark text-white">
@@ -227,7 +291,7 @@ export default function Page() {
                   );
                 })}
             </div>
-          )}
+          )*/}
         </PageCard>
       </DefaultLayout>
     </UserAuth>
