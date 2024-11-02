@@ -133,7 +133,6 @@ export default function Dashboard() {
                     <table className="w-full">
                       <thead className="bg-strokedark text-white">
                         <tr>
-                          <th className="p-1">Date</th>
                           <th className="p-1">Description</th>
                           <th className="p-1">Quantity</th>
                           <th className="p-1">Unit</th>
@@ -144,9 +143,6 @@ export default function Dashboard() {
                           {transSum.map((item, index) => {
                             return (
                               <tr key={index}>
-                                <td className="p-1 text-center">
-                                  {getTodayLabel(item["date"])}
-                                </td>
                                 <td className="p-1">
                                   <div
                                     className="cursor-default hover:text-strokedark"
