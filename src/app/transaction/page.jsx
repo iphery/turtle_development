@@ -127,6 +127,7 @@ export default function Page() {
                   <th>Quantity</th>
                   <th>Unit</th>
                   <th>Type</th>
+                  <th>Requested By</th>
                   <th>Created By</th>
                 </tr>
               </thead>
@@ -173,7 +174,8 @@ export default function Page() {
                             )}
                           </div>
                         </td>
-                        <td>{item["name"]}</td>
+                        <td className="p-1 text-center">{item["subject"]}</td>
+                        <td className="p-1 text-center">{item["name"]}</td>
                       </tr>
                     );
                   })}

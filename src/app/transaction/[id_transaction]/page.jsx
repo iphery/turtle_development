@@ -344,7 +344,10 @@ export default function Page({ params }) {
               {histories.length > 0 &&
                 histories.map((item, index) => {
                   return (
-                    <div className="text-sm">{`${formatDateLocal2(item["created_at"])} : ${item["name"]} : ${item["action"]}`}</div>
+                    <div
+                      key={index}
+                      className="text-sm"
+                    >{`${formatDateLocal2(item["created_at"])} : ${item["name"]} : ${item["action"]}`}</div>
                   );
                 })}
             </PageCard>
@@ -511,8 +514,8 @@ export default function Page({ params }) {
             <IoIosWarning className="h-12 w-12" />
           </div>
           <div className="mb-5">
-            Are you sure to delete this transaction ? This is can't not be
-            undone.
+            {`Are you sure to delete this transaction ? This is can't not be
+            undone.`}
           </div>
           <div className="flex justify-end">
             {" "}
