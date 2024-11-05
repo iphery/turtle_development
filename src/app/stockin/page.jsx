@@ -145,6 +145,14 @@ export default function PartsOut() {
       localErrorInfo[0] = false;
     }
 
+    if (inputDataInfo.note == "") {
+      newdataerror[3] = true;
+      setInputDataInfoError(newdataerror);
+      localErrorInfo[3] = true;
+    } else {
+      localErrorInfo[3] = false;
+    }
+
     console.log(listOrder);
 
     if (!localErrorInfo.includes(true)) {
@@ -225,9 +233,9 @@ export default function PartsOut() {
                 </div>
 
                 <PageCard>
-                  <div className="flex flex-row justify-evenly">
+                  <div className="w-full sm:w-1/2">
                     <div className="w-full">
-                      <div className="mb-2   sm:flex sm:justify-between ">
+                      <div className="mb-2    sm:flex sm:justify-between ">
                         <div>Tanggal</div>
                         <div className="w-full sm:w-1/2">
                           <CommonInput
@@ -244,6 +252,28 @@ export default function PartsOut() {
                             onChg={() => {
                               const newdata = [...inputDataInfoError];
                               newdata[0] = false;
+                              setInputDataInfoError(newdata);
+                            }}
+                          ></CommonInput>
+                        </div>
+                      </div>
+                      <div className="mb-2 sm:flex sm:justify-between ">
+                        <div className="flex items-center">Note</div>
+                        <div className="w-full sm:w-1/2">
+                          <CommonInput
+                            placeholder={"Write RF number"}
+                            input={inputDataInfo.note}
+                            error={inputDataInfoError[3]}
+                            errorMessage={"Required"}
+                            onInputChange={(val) => {
+                              setInputDataInfo((prev) => ({
+                                ...prev,
+                                note: val,
+                              }));
+                            }}
+                            onKeyChange={() => {
+                              const newdata = [...inputDataInfoError];
+                              newdata[3] = false;
                               setInputDataInfoError(newdata);
                             }}
                           ></CommonInput>
