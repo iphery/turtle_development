@@ -86,6 +86,7 @@ export default function PartsOut() {
   const [products, setProducts] = useState([]);
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [modalPhonebook, setModalPhonebook] = useState(false);
+  const [scanProcessing, SetScanProcessing] = useState(false);
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/stock`;
@@ -212,6 +213,17 @@ export default function PartsOut() {
   ]);
 
   const [doScan, setDoScan] = useState(false);
+
+  useEffect(() => {
+    if (scanProcessing) {
+      console.log("ini dari useEffect");
+      console.log(tempIdPart);
+      console.log(tempItem);
+      console.log(tempQuantity);
+      console.log(tempUnit);
+      SetScanProcessing(false);
+    }
+  }, [scanProcessing]);
 
   useEffect(() => {
     // This will trigger when 'result' is updated and focus on the input
@@ -375,6 +387,30 @@ export default function PartsOut() {
                                 //  fetch_data();
                                 setKeyword(val);
                                 setCurrentPage(1);
+                              }}
+                              onKeyChange={(event) => {
+                                if (event.key === "Enter") {
+                                  SetScanProcessing(true);
+                                  const filterProduct = products.filter(
+                                    (item) => {
+                                      const result =
+                                        item.id_product === keyword;
+
+                                      return result;
+                                    },
+                                  );
+
+                                  const result = filterProduct[0];
+                                  console.log(result);
+
+                                  setTempIdPart(result.id_product);
+                                  setTempItem(result.description);
+                                  setTempUnit(result.unit);
+                                  setTempAvailableQuantity(
+                                    result.available_quantity,
+                                  );
+                                  setTempQuantity(1);
+                                }
                               }}
                               placeholder={"Search"}
                             >

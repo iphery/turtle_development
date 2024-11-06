@@ -229,7 +229,7 @@ export default function Page() {
     return null;
   }
 
-  if (parseInt(localStorage.getItem("userlevel")) > 2) {
+  if (parseInt(localStorage.getItem("userlevel")) > 3) {
     router.push("/");
   }
 
@@ -245,14 +245,7 @@ export default function Page() {
                 ) : (
                   <div className="">
                     <div className="mb-3 flex items-center justify-start">
-                      <div
-                        className="text-lg"
-                        onClick={() => {
-                          console.log(localStorage.getItem("userUid"));
-                        }}
-                      >
-                        Tools Out
-                      </div>
+                      <div className="text-lg">Tools Out</div>
                     </div>
 
                     <PageCard>

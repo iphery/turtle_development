@@ -106,6 +106,11 @@ export default function Page({ params }) {
   const [showCamera, setShowCamera] = useState(false);
   const [pageMode, setPageMode] = useState(0); //0 normal, 1 scanner, 2 camera
 
+  useEffect(() => {
+    setUserlevel(parseInt(localStorage.getItem("userlevel")));
+    fetch_data();
+  }, []);
+
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };

@@ -28,6 +28,7 @@ export default function Page({ params }) {
   const [onSubmitUncompleted, setOnSubmitUncompleted] = useState(false);
   const [submitPermission, setSubmitPermission] = useState(false);
   const [resend, setResend] = useState(false);
+  const [userlevel, setUserlevel] = useState(3);
 
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailloan`;
@@ -42,6 +43,7 @@ export default function Page({ params }) {
       setTrans(newtrans);
       setDetail(newdetail);
       setUncompleted(uncompleted);
+      setUserlevel(parseInt(localStorage.getItem("userlevel")));
 
       console.log("ahahah");
       let sts = [];
@@ -119,7 +121,7 @@ export default function Page({ params }) {
                 Loan Detail
               </div>
 
-              {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+              {userlevel <= 2 ? (
                 <div className="relative z-20">
                   <button
                     onClick={toggleDropdown}
