@@ -105,6 +105,7 @@ export default function Page({ params }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [pageMode, setPageMode] = useState(0); //0 normal, 1 scanner, 2 camera
+  const [userlevel, setUserlevel] = useState(3);
 
   useEffect(() => {
     setUserlevel(parseInt(localStorage.getItem("userlevel")));
@@ -150,7 +151,7 @@ export default function Page({ params }) {
             <DefaultLayout>
               <div className="mb-3 flex items-center justify-between">
                 <div className=" text-xl font-bold">Tool Detail</div>
-                {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
+                {userlevel <= 2 ? (
                   <div className="relative">
                     <button
                       onClick={toggleDropdown}
