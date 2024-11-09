@@ -94,7 +94,7 @@ export default function PartsOut() {
 
     if (response.status == 200) {
       const product = response.data["products"];
-      console.log(product);
+      // console.log(product);
       setProducts(product);
       setFilteredProduct(product);
     }
@@ -114,7 +114,7 @@ export default function PartsOut() {
     } else {
       setSearchNotFound(false);
     }
-    console.log(filterData);
+    //console.log(filterData);
     setFilteredProduct(filterData);
   };
 
@@ -136,10 +136,10 @@ export default function PartsOut() {
   }, [listOrder]);
 
   const save_data = async () => {
-    console.log(listOrder);
-    console.log(inputDataInfo);
+    // console.log(listOrder);
+    //console.log(inputDataInfo);
     const user = localStorage.getItem("userUid");
-    console.log(user);
+    //console.log(user);
 
     setOnSubmit(true);
     const newdataerror = [...inputDataInfoError];
@@ -185,7 +185,7 @@ export default function PartsOut() {
       });
 
       if (response.status == 200) {
-        console.log(response.data);
+        // console.log(response.data);
         const responseError = response.data["error"];
         if (responseError == 1) {
           setListOrder(response.data["result"]);
@@ -216,11 +216,55 @@ export default function PartsOut() {
 
   useEffect(() => {
     if (scanProcessing) {
-      console.log("ini dari useEffect");
-      console.log(tempIdPart);
-      console.log(tempItem);
-      console.log(tempQuantity);
-      console.log(tempUnit);
+      // console.log("ini dari useEffect");
+      // console.log(tempAvailableQuantity);
+      // console.log(tempQuantity);
+
+      if (parseInt(tempQuantity) > parseInt(tempAvailableQuantity)) {
+        // console.log("tidak cukurp");
+        AlertMessage("Stock tidak cukup");
+      } else {
+        //cek jika exist
+        const newList = [...listOrder];
+        const findIndex = newList.findIndex(
+          (value) => value.id_part == tempIdPart,
+        );
+
+        if (findIndex != -1) {
+          const qty =
+            parseInt(newList[findIndex].quantity) + parseInt(tempQuantity);
+
+          if (qty > tempAvailableQuantity) {
+            AlertMessage("Stock tidak cukup");
+          } else {
+            newList[findIndex].quantity = qty;
+          }
+
+          //exist
+        } else {
+          //not exist
+          const order = {
+            id_part: tempIdPart,
+            description: tempItem,
+            type: tempTypePart,
+            quantity: tempQuantity,
+            unit: tempUnit,
+            error: 0,
+          };
+          newList.push(order);
+          setEmptyListAlert(false);
+        }
+
+        //setListOrder();
+        setListOrder(newList);
+      }
+      setTempItem("");
+      setTempQuantity("");
+      setTempUnit("");
+      setTempTypePart("");
+      focusKeyword.current.focus();
+      // console.log(listOrder);
+      setKeyword("");
       SetScanProcessing(false);
     }
   }, [scanProcessing]);
@@ -256,14 +300,7 @@ export default function PartsOut() {
                 ) : (
                   <div className="">
                     <div className="mb-3 flex items-center justify-start">
-                      <div
-                        className="text-lg"
-                        onClick={() => {
-                          console.log(localStorage.getItem("userUid"));
-                        }}
-                      >
-                        Stock Out
-                      </div>
+                      <div className="text-lg">Stock Out</div>
                     </div>
 
                     <PageCard>
@@ -390,7 +427,6 @@ export default function PartsOut() {
                               }}
                               onKeyChange={(event) => {
                                 if (event.key === "Enter") {
-                                  SetScanProcessing(true);
                                   const filterProduct = products.filter(
                                     (item) => {
                                       const result =
@@ -400,16 +436,22 @@ export default function PartsOut() {
                                     },
                                   );
 
-                                  const result = filterProduct[0];
-                                  console.log(result);
+                                  //  console.log(filterProduct);
 
-                                  setTempIdPart(result.id_product);
-                                  setTempItem(result.description);
-                                  setTempUnit(result.unit);
-                                  setTempAvailableQuantity(
-                                    result.available_quantity,
-                                  );
-                                  setTempQuantity(1);
+                                  if (filterProduct.length > 0) {
+                                    SetScanProcessing(true);
+                                    const result = filterProduct[0];
+                                    // console.log(result.id_product);
+                                    setTempIdPart(result.id_product);
+                                    setTempItem(result.description);
+                                    setTempUnit(result.unit);
+                                    setTempAvailableQuantity(
+                                      result.available_quantity,
+                                    );
+                                    setTempQuantity(1);
+
+                                    //   console.log(tempIdPart);
+                                  }
                                 }
                               }}
                               placeholder={"Search"}
@@ -449,14 +491,14 @@ export default function PartsOut() {
                             }}
                             onKeyChange={(event) => {
                               if (event.key == "Enter") {
-                                console.log(tempAvailableQuantity);
-                                console.log(tempQuantity);
+                                //  console.log(tempAvailableQuantity);
+                                // console.log(tempQuantity);
 
                                 if (
                                   parseInt(tempQuantity) >
                                   parseInt(tempAvailableQuantity)
                                 ) {
-                                  console.log("tidak cukurp");
+                                  //   console.log("tidak cukurp");
                                   AlertMessage("Stock tidak cukup");
                                 } else {
                                   //cek jika exist
@@ -523,12 +565,7 @@ export default function PartsOut() {
                       <div>
                         {keyword.length >= 2 ? (
                           searchNotFound ? (
-                            <div className="mt-3 flex items-center justify-start">
-                              <IoWarningSharp className="text-warning" />
-                              <div className="ml-2">
-                                Ups.. barang tidak ketemu
-                              </div>
-                            </div>
+                            <></>
                           ) : (
                             <div className=" py-2">
                               <div className="h-40 overflow-y-auto">
@@ -540,7 +577,7 @@ export default function PartsOut() {
                                           className={`cursor-default text-strokedark hover:bg-secondary  ${index % 2 === 0 ? "bg-gray" : "bg-white"}`}
                                           key={index}
                                           onClick={() => {
-                                            console.log(item.id_product);
+                                            //  console.log(item.id_product);
 
                                             setTempIdPart(item.id_product);
                                             setTempItem(item.description);
@@ -676,7 +713,7 @@ export default function PartsOut() {
                     phone: val.phone,
                   }));
 
-                  console.log(inputDataInfo);
+                  //  console.log(inputDataInfo);
                 }}
               ></Phonebook>
             </CustomModal>
