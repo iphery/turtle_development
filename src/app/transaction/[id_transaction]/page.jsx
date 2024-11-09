@@ -52,7 +52,7 @@ export default function Page({ params }) {
         newadd.push(false);
       });
       console.log("init");
-      console.log(neweditabledetail);
+      console.log(newtrans);
       setAddQuantity(newadd);
     }
   };
@@ -237,7 +237,10 @@ export default function Page({ params }) {
                       <div className="w-full">{trans.note}</div>
                     </div>
                   ) : (
-                    <></>
+                    <div className="mb-2 sm:flex sm:justify-evenly">
+                      <div className="w-full">RF No.</div>
+                      <div className="w-full">{trans.note}</div>
+                    </div>
                   )}
                 </div>
               </div>
