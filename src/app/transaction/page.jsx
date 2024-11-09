@@ -127,7 +127,7 @@ export default function Page() {
                   <th>Quantity</th>
                   <th>Unit</th>
                   <th>Type</th>
-                  <th>Requested By</th>
+                  <th>From/To</th>
                   <th>Created By</th>
                 </tr>
               </thead>
