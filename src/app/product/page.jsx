@@ -52,7 +52,7 @@ export default function Page() {
       }
       //setFilteredProducts(products);
       //search_product();
-      // console.log(products);
+      console.log(products);
     }
   };
 

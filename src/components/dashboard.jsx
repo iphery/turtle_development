@@ -19,6 +19,8 @@ import {
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../app/firebase-config";
 import { PageCard } from "./card";
+import { CommonInput } from "./input";
+import paginateData from "@/utils/pagination";
 
 export default function Dashboard() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
@@ -28,16 +30,33 @@ export default function Dashboard() {
   const [loan, setLoan] = useState([]);
   const [trans, setTrans] = useState([]);
   const [transSum, setTransSum] = useState([]);
+  const [startDate, setStartDate] = useState(
+    get_first_date().toISOString().substring(0, 10),
+  );
+  const [endDate, setEndDate] = useState(
+    new Date().toISOString().substring(0, 10),
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [initCount, setInitCount] = useState([]);
+  const [lastPage, setLastPage] = useState(0);
 
   const fetch_dashboard = async () => {
     const apiurl = `${API_URL}/fetchdashboard`;
-    const response = await axios.get(apiurl);
+    const response = await axios.post(apiurl, {
+      startDate: startDate,
+      endDate: endDate,
+    });
     if (response.status === 200) {
       const result = response.data;
       setLoan(result["tools"]);
       setTrans(result["transactions"]);
-      setTransSum(result["count"]);
-      console.log(result["tools"]);
+      setInitCount(result["count"]);
+      const { data, pageLast } = paginateData(result["count"], 1, 10);
+      setTransSum(data);
+      setLastPage(pageLast);
+
+      console.log(data);
     }
   };
 
@@ -59,6 +78,11 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    const { data } = paginateData(initCount, currentPage, 10);
+    setTransSum(data);
+  }, [currentPage]);
+
+  useEffect(() => {
     if (scanProduct != "") {
       console.log("cari server");
       find_product();
@@ -67,7 +91,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetch_dashboard();
-  }, []);
+  }, [startDate, endDate]);
+
+  function get_first_date() {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  }
 
   const email = "iphery@gmail.com";
   useEffect(() => {
@@ -126,49 +155,116 @@ export default function Dashboard() {
                   <div
                     className={`mb-3 font-bold ${isSmallScreen ? "bg-strokedark p-1 text-white" : ""}`}
                   >
-                    Today Stock Out
+                    <div className="flex items-center justify-start">
+                      <div className="mr-5"> Summary Stock Out</div>
+                      <div className="flex justify-center">
+                        <CommonInput
+                          type={"date"}
+                          input={startDate}
+                          onInputChange={(val) => {
+                            const datestart = new Date(val);
+                            const dateend = new Date(endDate);
+                            if (datestart > dateend) {
+                              setEndDate(val);
+                            }
+                            setStartDate(val);
+                          }}
+                        ></CommonInput>
+
+                        <div className="ml-2"></div>
+
+                        <CommonInput
+                          type={"date"}
+                          input={endDate}
+                          onInputChange={(val) => {
+                            const datestart = new Date(startDate);
+                            const dateend = new Date(val);
+                            if (datestart > dateend) {
+                              setStartDate(val);
+                            }
+                            setEndDate(val);
+                          }}
+                        ></CommonInput>
+                      </div>
+                    </div>
                   </div>
 
                   {!isSmallScreen ? (
-                    <table className="w-full">
-                      <thead className="bg-strokedark text-white">
-                        <tr>
-                          <th className="p-1">Description</th>
-                          <th className="p-1">Quantity</th>
-                          <th className="p-1">Unit</th>
-                        </tr>
-                      </thead>
-                      {transSum.length > 0 ? (
-                        <tbody>
-                          {transSum.map((item, index) => {
-                            return (
-                              <tr key={index}>
-                                <td className="p-1">
-                                  <div
-                                    className="cursor-default hover:text-strokedark"
-                                    onClick={() => {
-                                      router.push(
-                                        `/product/${item["id_product"]}`,
-                                      );
-                                    }}
-                                  >
-                                    {item["description"]}
-                                  </div>
-                                </td>
-                                <td className="p-1 text-center">
-                                  {item["quantity"]}
-                                </td>
-                                <td className="p-1 text-center">
-                                  {item["unit"]}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      ) : (
-                        <div className="p-3">No history found</div>
-                      )}
-                    </table>
+                    <div>
+                      <table className="w-full">
+                        <thead className="bg-strokedark text-white">
+                          <tr>
+                            <th className="p-1">Description</th>
+                            <th className="p-1">Quantity Out</th>
+                            <th className="p-1">Available Stock</th>
+
+                            <th className="p-1">Unit</th>
+                            <th className="p-1">Category</th>
+                          </tr>
+                        </thead>
+                        {transSum.length > 0 ? (
+                          <tbody>
+                            {transSum.map((item, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td className="p-1">
+                                    <div
+                                      className="cursor-default hover:text-strokedark"
+                                      onClick={() => {
+                                        router.push(
+                                          `/product/${item["id_product"]}`,
+                                        );
+                                      }}
+                                    >
+                                      {item["description"]}
+                                    </div>
+                                  </td>
+                                  <td className="p-1 text-center">
+                                    {item["total_quantity"]}
+                                  </td>
+                                  <td className="p-1 text-center">
+                                    {item["available_quantity"]}
+                                  </td>
+                                  <td className="p-1 text-center">
+                                    {item["unit"]}
+                                  </td>
+                                  <td className="p-1 text-center text-sm">
+                                    {item["category"]}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        ) : (
+                          <div className="p-3">No history found</div>
+                        )}
+                      </table>
+                      <hr className="py-3" />
+                      <div className="flex justify-center">
+                        <div
+                          className={`cursor-default border px-2 text-sm shadow-md ${currentPage == 1 ? "text-bodydark" : ""}`}
+                          onClick={() => {
+                            if (currentPage > 1) {
+                              setCurrentPage(currentPage - 1);
+                            }
+                          }}
+                        >
+                          Prev
+                        </div>
+                        <div className="px-5">{currentPage}</div>
+
+                        <div
+                          className={`cursor-default border px-2 text-sm shadow-md ${currentPage == lastPage ? "text-bodydark" : ""}`}
+                          onClick={() => {
+                            if (currentPage < lastPage) {
+                              setCurrentPage(currentPage + 1);
+                            }
+                          }}
+                        >
+                          Next
+                        </div>
+                      </div>
+                    </div>
                   ) : transSum.length > 0 ? (
                     transSum.map((item, index) => {
                       return (
@@ -186,7 +282,7 @@ export default function Dashboard() {
                             <div>{item["description"]}</div>
                             <div className="text-sm font-bold">Quantity</div>
                             <div className="flex items-center justify-between">
-                              <div> {item["quantity"]}</div>
+                              <div> {item["total_quantity"]}</div>
                               <div>{item["unit"]}</div>
                             </div>
                           </div>

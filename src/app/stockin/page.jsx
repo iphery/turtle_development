@@ -153,6 +153,14 @@ export default function PartsOut() {
       localErrorInfo[3] = false;
     }
 
+    if (inputDataInfo.from == "") {
+      newdataerror[4] = true;
+      setInputDataInfoError(newdataerror);
+      localErrorInfo[4] = true;
+    } else {
+      localErrorInfo[4] = false;
+    }
+
     console.log(listOrder);
 
     if (!localErrorInfo.includes(true)) {
@@ -183,8 +191,10 @@ export default function PartsOut() {
     receiver: "",
     phone: "",
     note: "",
+    from: "Buyer",
   });
   const [inputDataInfoError, setInputDataInfoError] = useState([
+    false,
     false,
     false,
     false,
@@ -252,6 +262,27 @@ export default function PartsOut() {
                             onChg={() => {
                               const newdata = [...inputDataInfoError];
                               newdata[0] = false;
+                              setInputDataInfoError(newdata);
+                            }}
+                          ></CommonInput>
+                        </div>
+                      </div>
+                      <div className="mb-2    sm:flex sm:justify-between ">
+                        <div>From</div>
+                        <div className="w-full sm:w-1/2">
+                          <CommonInput
+                            input={inputDataInfo.from}
+                            error={inputDataInfoError[4]}
+                            errorMessage={"Required"}
+                            onInputChange={(val) => {
+                              setInputDataInfo((prev) => ({
+                                ...prev,
+                                from: val,
+                              }));
+                            }}
+                            onChg={() => {
+                              const newdata = [...inputDataInfoError];
+                              newdata[4] = false;
                               setInputDataInfoError(newdata);
                             }}
                           ></CommonInput>

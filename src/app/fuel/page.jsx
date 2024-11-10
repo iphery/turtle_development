@@ -63,33 +63,6 @@ export default function Page() {
       <DefaultLayout>
         <div className="mb-3 flex items-center justify-between">
           <div className=" text-xl font-bold">Fuel</div>
-          <div className="relative z-20">
-            <button
-              onClick={toggleDropdown}
-              className="rounded-md bg-strokedark px-3 py-1 text-white"
-            >
-              <div className="flex items-center justify-start">
-                <IoMdArrowDropdown />
-                <div>Option</div>
-              </div>
-            </button>
-            {showDropdown && (
-              <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                <div className="py-1">
-                  <Link legacyBehavior href="/stockin">
-                    <a className="text-md text-gray-800 block w-full px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white">
-                      Stock In
-                    </a>
-                  </Link>
-                  <Link legacyBehavior href="/stockout">
-                    <a className="text-md text-gray-800 block w-full px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white">
-                      Stock Out
-                    </a>
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
         <PageCard>
           <div className="relative-z10">
