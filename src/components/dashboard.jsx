@@ -90,6 +90,7 @@ export default function Dashboard() {
   }, [scanProduct]);
 
   useEffect(() => {
+    setCurrentPage(1);
     fetch_dashboard();
   }, [startDate, endDate]);
 
