@@ -106,25 +106,26 @@ export default function Page() {
           </div>
 
           {!isSmallScreen ? (
-            <div className="">
-              <table className="min-w-full">
+            <div className="overflow-x-auto">
+              <table className="w-full">
                 <thead>
                   <tr className="bg-strokedark text-white">
-                    <th>No</th>
+                    <th className="p-1">No</th>
 
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Vehicle No</th>
-                    <th>Last KM</th>
-                    <th>Current KM</th>
-                    <th>
+                    <th className="p-1">ID</th>
+                    <th className="p-1">Date</th>
+                    <th className="p-1">Vehicle No</th>
+                    <th className="p-1">Last KM</th>
+                    <th className="p-1">Current KM</th>
+                    <th className="p-1">
                       <div className="flex flex-col">
                         <div>Amount</div>
                         <div>(Liter)</div>
                       </div>
                     </th>
-                    <th>Ratio</th>
-                    <th>Reported By</th>
+                    <th className="p-1">Ratio</th>
+                    <th className="p-1">Reported By</th>
+                    <th className="p-1">Name</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -133,23 +134,13 @@ export default function Page() {
                       return (
                         <tr key={index}>
                           <td className="p-1 text-center">{index + 1}</td>
-                          <td
-                            className="cursor-default p-1 text-center hover:text-primary"
-                            onClick={() => {
-                              ///detail
-                            }}
-                          >
+                          <td className="cursor-default p-1 text-center ">
                             {item["id_register"]}
                           </td>
                           <td className="px-1 py-2 text-center">
                             {formatDateLocal1(item["date"])}
                           </td>
-                          <td
-                            className="cursor-default px-1 py-2 hover:text-primary"
-                            onClick={() => {
-                              router.push(`/product/${item["id_product"]}`);
-                            }}
-                          >
+                          <td className="cursor-default px-1 py-2 ">
                             {item["id_asset"]}
                           </td>
                           <td className="px-1 py-2 text-center">
@@ -169,6 +160,7 @@ export default function Page() {
                             }`}
                           </td>
                           <td>{item["reported_by"]}</td>
+                          <td>{item["type"]}</td>
                         </tr>
                       );
                     })}
