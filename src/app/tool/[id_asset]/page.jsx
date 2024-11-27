@@ -20,6 +20,9 @@ import { compressImage } from "@/utils/compressimage";
 import QRScanner1 from "@/components/qrscanner2";
 import { formatDateLocal1 } from "@/utils/dateformat";
 import { useRouter } from "next/navigation";
+import { Lightbox } from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css"; // Import default styles
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 export default function Page({ params }) {
   const [detail, setDetail] = useState({});
@@ -31,6 +34,7 @@ export default function Page({ params }) {
   const [endDate, setEndDate] = useState(
     new Date().toISOString().substring(0, 10),
   );
+  const [openImage, setOpenImage] = useState(false);
 
   const [stockData, setStockData] = useState([]);
   const [scanResult, setScanResult] = useState("");
@@ -231,13 +235,28 @@ export default function Page({ params }) {
                     </div>
                   </div>
                   {detail.image_url != "" ? (
-                    <div className="flex w-full justify-center">
-                      <img
-                        src={`${ASSET_URL}/${detail.image_url}`}
-                        alt=""
-                        className="h-40"
+                    <>
+                      <div className="flex w-full justify-center">
+                        <img
+                          data-tooltip-id="my-tooltip-1"
+                          onClick={() => setOpenImage(true)}
+                          src={`${ASSET_URL}/${detail.image_url}`}
+                          alt=""
+                          className="h-40"
+                        />
+                        <Lightbox
+                          open={openImage}
+                          close={() => setOpenImage(false)}
+                          slides={[{ src: `${ASSET_URL}/${detail.image_url}` }]} // Pass the single image as a slide
+                        />
+                      </div>
+
+                      <ReactTooltip
+                        id="my-tooltip-1"
+                        place="bottom"
+                        content="Click to preview image."
                       />
-                    </div>
+                    </>
                   ) : (
                     <></>
                   )}

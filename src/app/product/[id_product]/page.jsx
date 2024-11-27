@@ -6,7 +6,7 @@ import axios from "axios";
 import { API_URL, IMAGE_URL } from "@/utils/constant";
 import { PageCard } from "@/components/card";
 import { CommonInput } from "@/components/input";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoIosWarning, IoMdArrowDropdown } from "react-icons/io";
 import Link from "next/link";
 import { CustomModal } from "@/components/modal";
 import EditProduct from "@/components/editproduct";
@@ -21,8 +21,12 @@ import QRScanner1 from "@/components/qrscanner2";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css"; // Import default styles
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { CommonButton } from "@/components/button";
+import { useRouter } from "next/navigation";
+import { useProvider } from "@/app/appcontext";
 
 export default function Page({ params }) {
+  const router = useRouter();
   const [detail, setDetail] = useState({});
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
@@ -45,6 +49,19 @@ export default function Page({ params }) {
     category: "",
     initial_stock: "",
   });
+
+  const {
+    products,
+    setProducts,
+    filteredProducts,
+    setFilteredProducts,
+    keywordProduct,
+    setKeywordProduct,
+  } = useProvider();
+
+  const [modalDelete, setModalDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [onDelete, setOnDelete] = useState(false);
 
   //test new update
   const fetch_data = async () => {
@@ -72,6 +89,32 @@ export default function Page({ params }) {
       const array = response.data["response"];
       const reverseArray = [...array].reverse();
       setStockData(reverseArray);
+    }
+  };
+
+  const refresh_product = async () => {
+    const apiUrl = `${API_URL}/product`;
+    const response = await axios.get(apiUrl);
+
+    if (response.status == 200) {
+      const products = response.data["products"];
+      setProducts(products);
+      if (keywordProduct == "") {
+        setFilteredProducts(products);
+      } else {
+        const filterData = products.filter((item) => {
+          //  const desc = item["available_quantity"] < 0;
+
+          const desc =
+            item["description"] &&
+            item["description"]
+              .toLowerCase()
+              .includes(keywordProduct.toLowerCase());
+
+          return desc;
+        });
+        setFilteredProducts(filterData);
+      }
     }
   };
 
@@ -166,6 +209,20 @@ export default function Page({ params }) {
                               }}
                             >
                               Edit Product
+                            </div>
+                          ) : (
+                            <></>
+                          )}
+
+                          {parseInt(localStorage.getItem("userlevel")) <= 1 ? (
+                            <div
+                              className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                setModalDelete(true);
+                                toggleDropdown();
+                              }}
+                            >
+                              Delete Product
                             </div>
                           ) : (
                             <></>
@@ -275,38 +332,44 @@ export default function Page({ params }) {
                   </div>
                 </div>
                 <div className="mb-5"></div>
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-strokedark text-white">
-                      <th className="w-1/7">Date</th>
-                      <th className="w-1/7">In</th>
-                      <th className="w-1/7">Out</th>
-                      <th className="w-1/7">Balance</th>
-                      <th className="w-1/7">From/To</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stockData.map((item, index) => {
-                      return (
-                        <tr key={index}>
-                          <td className="p-1 text-center">
-                            {index == stockData.length - 1
-                              ? "Before date"
-                              : item["date"]}
-                          </td>
-                          <td className="p-1 text-center">
-                            {index == stockData.length - 1 ? "" : item["in"]}
-                          </td>
-                          <td className="p-1 text-center">
-                            {index == stockData.length - 1 ? "" : item["out"]}
-                          </td>
-                          <td className="p-1 text-center">{item["balance"]}</td>
-                          <td className="p-1 text-center">{item["subject"]}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                <div className=" h-75 overflow-auto">
+                  <table className="w-full">
+                    <thead className="sticky top-0">
+                      <tr className="bg-strokedark text-white">
+                        <th className="w-1/7">Date</th>
+                        <th className="w-1/7">In</th>
+                        <th className="w-1/7">Out</th>
+                        <th className="w-1/7">Balance</th>
+                        <th className="w-1/7">From/To</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stockData.map((item, index) => {
+                        return (
+                          <tr key={index}>
+                            <td className="p-1 text-center">
+                              {index == stockData.length - 1
+                                ? "Before date"
+                                : item["date"]}
+                            </td>
+                            <td className="p-1 text-center">
+                              {index == stockData.length - 1 ? "" : item["in"]}
+                            </td>
+                            <td className="p-1 text-center">
+                              {index == stockData.length - 1 ? "" : item["out"]}
+                            </td>
+                            <td className="p-1 text-center">
+                              {item["balance"]}
+                            </td>
+                            <td className="p-1 text-center">
+                              {item["subject"]}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </PageCard>
             </DefaultLayout>
           </div>
@@ -353,6 +416,48 @@ export default function Page({ params }) {
               }}
               cameraResult={imageFile}
             ></EditPicture>
+          </CustomModal>
+          <CustomModal
+            isVisible={modalDelete}
+            isSmallWidth="sm"
+            onClose={() => {
+              setModalDelete(false);
+            }}
+          >
+            <div>
+              <div className="flex justify-center text-danger">
+                <IoIosWarning className="h-15 w-15" />
+              </div>
+              <div className="flex justify-center font-bold">
+                <h1>Are you sure want to delete ?</h1>
+              </div>
+              <div className="flex justify-center text-sm">
+                <p> Please re-check the transaction.</p>
+              </div>
+
+              <div className="mt-10 flex justify-center">
+                <CommonButton
+                  label={"Ok, Delete"}
+                  onload={onDelete}
+                  disabled={onDelete}
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    setOnDelete(true);
+                    const apiUrl = `${API_URL}/deleteproduct`;
+                    const response = await axios.post(apiUrl, {
+                      idProduct: params.id_product,
+                    });
+                    console.log(params.id_product);
+                    if (response.status === 200) {
+                      console.log(response.data);
+                      refresh_product();
+                      router.back();
+                    }
+                    setOnDelete(false);
+                  }}
+                />
+              </div>
+            </div>
           </CustomModal>
         </div>
       ) : pageMode == 1 ? (

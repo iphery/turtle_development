@@ -157,7 +157,15 @@ export default function Dashboard() {
                     className={`mb-3 font-bold ${isSmallScreen ? "bg-strokedark p-1 text-white" : ""}`}
                   >
                     <div className="flex items-center justify-start">
-                      <div className="mr-5"> Summary Stock Out</div>
+                      <div
+                        className="mr-5"
+                        onClick={() => {
+                          NotifyError("aad");
+                        }}
+                      >
+                        {" "}
+                        Summary Stock Out
+                      </div>
                       <div className="flex justify-center">
                         <CommonInput
                           type={"date"}
