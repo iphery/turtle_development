@@ -13,7 +13,7 @@ import SignIn from "@/app/(auth)/signin/page";
 import { useProvider } from "@/app/appcontext";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
-import { PageLoader } from "./loader";
+import { PageLoader, PageLoader1 } from "./loader";
 import { useRouter } from "next/navigation";
 import NoVerify from "@/components/noverify";
 
@@ -119,7 +119,7 @@ export default function UserAuth({ children }) {
   }, []);
 
   if (onLoad) {
-    return <PageLoader></PageLoader>;
+    return <PageLoader1 />;
   } else {
     if (!isLogin) {
       return <SignIn></SignIn>;

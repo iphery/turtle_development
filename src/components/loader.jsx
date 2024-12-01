@@ -1,4 +1,5 @@
 import React from "react";
+import "@/css/loader1.css";
 
 export const ButtonLoader = ({ color }) => {
   return (
@@ -43,6 +44,27 @@ export const PageLoader = ({ color }) => {
           alt="Inside Loader"
           className="absolute inset-0 h-full w-full rounded-full  object-cover p-1"
         />
+      </div>
+    </div>
+  );
+};
+
+export const PageLoader1 = ({ color = "#474bff" }) => {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="flex justify-start">
+        <div className="mr-10">
+          <div className="text-2xl font-bold">M I P A</div>
+          <i className="text-sm">"Manage your inventory, anytime, anywhere"</i>
+        </div>
+        <div className="spinner ">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       </div>
     </div>
   );
