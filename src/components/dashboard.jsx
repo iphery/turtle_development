@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [initCount, setInitCount] = useState([]);
   const [lastPage, setLastPage] = useState(0);
+  const [keyword, setKeyword] = useState("");
 
   const fetch_dashboard = async () => {
     const apiurl = `${API_URL}/fetchdashboard`;
@@ -52,12 +53,22 @@ export default function Dashboard() {
       setLoan(result["tools"]);
       setTrans(result["transactions"]);
       setInitCount(result["count"]);
-      const { data, pageLast } = paginateData(result["count"], 1, 10);
-      setTransSum(data);
-      setLastPage(pageLast);
-
-      console.log(data);
+      console.log(result["count"]);
+      //const { data, pageLast } = paginateData(result["count"], 1, 10);
+      //setTransSum(data);
+      //setLastPage(pageLast);
+      process_data(result["count"]);
+      //console.log(data);
     }
+  };
+
+  const process_data = (rawdata) => {
+    const filteredData = rawdata.filter((item) =>
+      item["description"].toLowerCase().includes(keyword.toLowerCase()),
+    );
+    const { data, pageLast } = paginateData(filteredData, 1, 10);
+    setTransSum(data);
+    setLastPage(pageLast);
   };
 
   const find_product = async () => {
@@ -98,6 +109,10 @@ export default function Dashboard() {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), 1);
   }
+
+  useEffect(() => {
+    process_data(initCount);
+  }, [keyword]);
 
   const email = "iphery@gmail.com";
   useEffect(() => {
@@ -154,9 +169,11 @@ export default function Dashboard() {
               <div>
                 <PageCard>
                   <div
-                    className={`mb-3 font-bold ${isSmallScreen ? "bg-strokedark p-1 text-white" : ""}`}
+                    className={`mb-3 font-bold ${isSmallScreen ? "flex flex-col" : "flex justify-between"} `}
                   >
-                    <div className="flex items-center justify-start">
+                    <div
+                      className={`${isSmallScreen ? "flex flex-col" : "flex items-center justify-start"}`}
+                    >
                       <div
                         className="mr-5"
                         onClick={() => {
@@ -196,111 +213,96 @@ export default function Dashboard() {
                         ></CommonInput>
                       </div>
                     </div>
+                    <div>
+                      <CommonInput
+                        placeholder={"Search"}
+                        input={keyword}
+                        onInputChange={(val) => {
+                          setKeyword(val);
+                        }}
+                      ></CommonInput>
+                    </div>
                   </div>
 
-                  {!isSmallScreen ? (
-                    <div>
-                      <table className="w-full">
-                        <thead className="bg-strokedark text-white">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-strokedark text-white">
+                        <tr>
+                          <th className="p-1">Description</th>
+                          <th className="p-1">Quantity Out</th>
+                          <th className="p-1">Available Stock</th>
+
+                          <th className="p-1">Unit</th>
+                          <th className="p-1">Category</th>
+                        </tr>
+                      </thead>
+                      {transSum.length > 0 ? (
+                        <tbody>
+                          {transSum.map((item, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className="p-1">
+                                  <div
+                                    className="cursor-default hover:text-strokedark"
+                                    onClick={() => {
+                                      router.push(
+                                        `/product/${item["id_product"]}`,
+                                      );
+                                    }}
+                                  >
+                                    {item["description"]}
+                                  </div>
+                                </td>
+                                <td className="p-1 text-center">
+                                  {item["total_quantity"]}
+                                </td>
+                                <td className="p-1 text-center">
+                                  {item["available_quantity"]}
+                                </td>
+                                <td className="p-1 text-center">
+                                  {item["unit"]}
+                                </td>
+                                <td className="p-1 text-center text-sm">
+                                  {item["category"]}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      ) : (
+                        <tbody>
                           <tr>
-                            <th className="p-1">Description</th>
-                            <th className="p-1">Quantity Out</th>
-                            <th className="p-1">Available Stock</th>
-
-                            <th className="p-1">Unit</th>
-                            <th className="p-1">Category</th>
+                            <td>No History Found</td>
                           </tr>
-                        </thead>
-                        {transSum.length > 0 ? (
-                          <tbody>
-                            {transSum.map((item, index) => {
-                              return (
-                                <tr key={index}>
-                                  <td className="p-1">
-                                    <div
-                                      className="cursor-default hover:text-strokedark"
-                                      onClick={() => {
-                                        router.push(
-                                          `/product/${item["id_product"]}`,
-                                        );
-                                      }}
-                                    >
-                                      {item["description"]}
-                                    </div>
-                                  </td>
-                                  <td className="p-1 text-center">
-                                    {item["total_quantity"]}
-                                  </td>
-                                  <td className="p-1 text-center">
-                                    {item["available_quantity"]}
-                                  </td>
-                                  <td className="p-1 text-center">
-                                    {item["unit"]}
-                                  </td>
-                                  <td className="p-1 text-center text-sm">
-                                    {item["category"]}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        ) : (
-                          <div className="p-3">No history found</div>
-                        )}
-                      </table>
-                      <hr className="py-3" />
-                      <div className="flex justify-center">
-                        <div
-                          className={`cursor-default border px-2 text-sm shadow-md ${currentPage == 1 ? "text-bodydark" : ""}`}
-                          onClick={() => {
-                            if (currentPage > 1) {
-                              setCurrentPage(currentPage - 1);
-                            }
-                          }}
-                        >
-                          Prev
-                        </div>
-                        <div className="px-5">{currentPage}</div>
+                        </tbody>
+                      )}
+                    </table>
+                    <hr className="py-3" />
+                    <div className="flex justify-center">
+                      <div
+                        className={`cursor-default border px-2 text-sm shadow-md ${currentPage == 1 ? "text-bodydark" : ""}`}
+                        onClick={() => {
+                          if (currentPage > 1) {
+                            setCurrentPage(currentPage - 1);
+                          }
+                        }}
+                      >
+                        Prev
+                      </div>
+                      <div className="px-5">{currentPage}</div>
 
-                        <div
-                          className={`cursor-default border px-2 text-sm shadow-md ${currentPage == lastPage ? "text-bodydark" : ""}`}
-                          onClick={() => {
-                            if (currentPage < lastPage) {
-                              setCurrentPage(currentPage + 1);
-                            }
-                          }}
-                        >
-                          Next
-                        </div>
+                      <div
+                        className={`cursor-default border px-2 text-sm shadow-md ${currentPage == lastPage ? "text-bodydark" : ""}`}
+                        onClick={() => {
+                          if (currentPage < lastPage) {
+                            setCurrentPage(currentPage + 1);
+                          }
+                        }}
+                      >
+                        Next
                       </div>
                     </div>
-                  ) : transSum.length > 0 ? (
-                    transSum.map((item, index) => {
-                      return (
-                        <div className="mb-2" key={index}>
-                          <div
-                            className="p-3 shadow-md"
-                            onClick={() => {
-                              router.push(`/product/${item["id_product"]}`);
-                            }}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div> {getTodayLabel(item["date"])}</div>
-                            </div>
-                            <div className="text-sm font-bold">Description</div>
-                            <div>{item["description"]}</div>
-                            <div className="text-sm font-bold">Quantity</div>
-                            <div className="flex items-center justify-between">
-                              <div> {item["total_quantity"]}</div>
-                              <div>{item["unit"]}</div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="p-1">No history found</div>
-                  )}
+                  </div>
                 </PageCard>
                 <div className="mt-5"></div>
                 <PageCard>
