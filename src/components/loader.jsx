@@ -55,7 +55,7 @@ export const PageLoader1 = ({ color = "#474bff" }) => {
       <div className="flex justify-start">
         <div className="mr-10">
           <div className="text-2xl font-bold">M I P A</div>
-          <i className="text-sm">"Manage your inventory, anytime, anywhere"</i>
+          <i className="text-sm">{`"Manage your inventory, anytime, anywhere"`}</i>
         </div>
         <div className="spinner ">
           <div></div>
