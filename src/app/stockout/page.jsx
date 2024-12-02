@@ -474,9 +474,10 @@ export default function PartsOut() {
                                 //  fetch_data();
                                 setKeyword(val);
                                 setCurrentPage(1);
+                                setScanWithScanner(true);
                               }}
                               onChg={(event) => {
-                                setScanWithScanner(true);
+                                // setScanWithScanner(true);
                                 /*
                                 //alert(event.key);
                                 console.log(event.key);
