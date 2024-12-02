@@ -87,7 +87,6 @@ export default function PartsOut() {
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [modalPhonebook, setModalPhonebook] = useState(false);
   const [scanProcessing, SetScanProcessing] = useState(false);
-  const [scanWithScanner, setScanWithScanner] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -523,7 +522,7 @@ export default function PartsOut() {
                         </div>
                       </div>
                     </PageCard>
-                    <div className="mb-5">fff20</div>
+                    <div className="mb-5"></div>
                     <PageCard>
                       <div className="flex-row sm:flex">
                         <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
@@ -537,7 +536,6 @@ export default function PartsOut() {
                                 //  fetch_data();
                                 setKeyword(val);
                                 setCurrentPage(1);
-                                setScanWithScanner(true);
                               }}
                               onChg={(event) => {
                                 // setScanWithScanner(true);
