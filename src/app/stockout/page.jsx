@@ -127,7 +127,9 @@ export default function PartsOut() {
     search_product();
   }, [keyword]);
 
+  /*
   useEffect(() => {
+    
     const match = keyword.match(/^(.*?)20FF\/FF\/FF FF:FF:FF$/);
     console.log(match);
     if (match) {
@@ -160,14 +162,7 @@ export default function PartsOut() {
         AlertMessage("Barcode is not registered");
         setKeyword("");
         focusKeyword.current.focus();
-        /*
-        setTempItem("");
-        setTempQuantity("");
-        setTempUnit("");
-        setTempTypePart("");
-        focusKeyword.current.focus();
-        AlertMessage("Barcode is not registered");
-        */
+       
       }
     } else {
       console.log("ga match");
@@ -175,6 +170,7 @@ export default function PartsOut() {
 
     setScanWithScanner(false);
   }, [scanWithScanner]);
+*/
 
   const [showButton, setShowButton] = useState(false);
   useEffect(() => {
@@ -327,6 +323,52 @@ export default function PartsOut() {
       // Check for Enter key (end of scan)
       console.log("ini dari scanner event");
       console.log(e.key);
+      if (e.key === "Enter") {
+        const match = keyword.match(/^(.*?)20FF\/FF\/FF FF:FF:FF$/);
+        console.log(match);
+        if (match) {
+          console.log("match");
+          const scanResult = match[1].trim();
+          console.log(match[1]);
+
+          const filterProduct = products.filter((item) => {
+            const result = item.barcode === scanResult;
+
+            return result;
+          });
+          console.log("hasil filter");
+          console.log(filterProduct);
+
+          //  console.log(filterProduct);
+
+          if (filterProduct.length > 0) {
+            SetScanProcessing(true);
+            const result = filterProduct[0];
+            // console.log(result.id_product);
+            setTempIdPart(result.id_product);
+            setTempItem(result.description);
+            setTempUnit(result.unit);
+            setTempAvailableQuantity(result.available_quantity);
+            setTempQuantity(1);
+
+            //   console.log(tempIdPart);
+          } else {
+            AlertMessage("Barcode is not registered");
+            setKeyword("");
+            focusKeyword.current.focus();
+            /*
+            setTempItem("");
+            setTempQuantity("");
+            setTempUnit("");
+            setTempTypePart("");
+            focusKeyword.current.focus();
+            AlertMessage("Barcode is not registered");
+            */
+          }
+        } else {
+          console.log("ga match");
+        }
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -477,7 +519,7 @@ export default function PartsOut() {
                         </div>
                       </div>
                     </PageCard>
-                    <div className="mb-5">fff9</div>
+                    <div className="mb-5">fff19</div>
                     <PageCard>
                       <div className="flex-row sm:flex">
                         <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
