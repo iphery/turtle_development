@@ -322,7 +322,7 @@ export default function PartsOut() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Start capturing if not already scanning
-      if (!isScanning) setIsScanning(true);
+      //if (!isScanning) setIsScanning(true);
 
       // Check for Enter key (end of scan)
       console.log("ini dari scanner event");
@@ -477,7 +477,7 @@ export default function PartsOut() {
                         </div>
                       </div>
                     </PageCard>
-                    <div className="mb-5">fff8</div>
+                    <div className="mb-5">fff9</div>
                     <PageCard>
                       <div className="flex-row sm:flex">
                         <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
