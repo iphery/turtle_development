@@ -410,7 +410,7 @@ export default function PartsOut() {
                         </div>
                       </div>
                     </PageCard>
-                    <div className="mb-5">fff</div>
+                    <div className="mb-5">fff2</div>
                     <PageCard>
                       <div className="flex-row sm:flex">
                         <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
@@ -426,7 +426,14 @@ export default function PartsOut() {
                                 setCurrentPage(1);
                               }}
                               onKeyChange={(event) => {
-                                alert(event.key);
+                                //alert(event.key);
+                                const match = keyword.match(
+                                  /^(.*?)20FF\/FF\/FF FF:FF:FF$/,
+                                );
+                                if (match) {
+                                  const result = match[1];
+                                  alert(result);
+                                }
                                 /*
                                 if (event.key === "Enter") {
                                   const filterProduct = products.filter(
