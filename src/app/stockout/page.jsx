@@ -320,6 +320,23 @@ export default function PartsOut() {
   }, [scanProcessing]);
 
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Start capturing if not already scanning
+      if (!isScanning) setIsScanning(true);
+
+      // Check for Enter key (end of scan)
+      console.log("ini dari scanner event");
+      console.log(e.key);
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
     // This will trigger when 'result' is updated and focus on the input
     if (focusTempQuantity.current) {
       focusTempQuantity.current.focus();
