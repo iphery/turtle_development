@@ -324,7 +324,9 @@ export default function PartsOut() {
       console.log("ini dari scanner event");
       console.log(e.key);
       if (e.key === "Enter") {
-        const match = keyword.match(/^(.*?)20FF\/FF\/FF FF:FF:FF$/);
+        const scanValue = focusKeyword.current.value;
+        console.log(scanValue);
+        const match = scanValue.match(/^(.*?)20FF\/FF\/FF FF:FF:FF$/);
         console.log(match);
         if (match) {
           console.log("match");
