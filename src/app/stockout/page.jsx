@@ -410,7 +410,7 @@ export default function PartsOut() {
                         </div>
                       </div>
                     </PageCard>
-                    <div className="mb-5">fff4</div>
+                    <div className="mb-5">fff5</div>
                     <PageCard>
                       <div className="flex-row sm:flex">
                         <div className="mb-2 flex flex-row items-center sm:mb-0 sm:w-full">
@@ -428,43 +428,50 @@ export default function PartsOut() {
                               onKeyChange={(event) => {
                                 //alert(event.key);
                                 console.log(event.key);
-                                if (event.key === "Enter") {
-                                  const match = keyword.match(
-                                    /^(.*?)20FF\/FF\/FF FF:FF:FF$/,
+                                //if (event.key === "Enter") {
+                                const match = keyword.match(
+                                  /^(.*?)20FF\/FF\/FF FF:FF:FF$/,
+                                );
+                                console.log(match);
+                                if (match) {
+                                  const scanResult = match[1].trim();
+                                  console.log(match[1]);
+
+                                  const filterProduct = products.filter(
+                                    (item) => {
+                                      const result =
+                                        item.barcode === scanResult;
+
+                                      return result;
+                                    },
                                   );
-                                  console.log(match);
-                                  if (match) {
-                                    const scanResult = match[1].trim();
-                                    console.log(match[1]);
+                                  console.log(filterProduct);
 
-                                    const filterProduct = products.filter(
-                                      (item) => {
-                                        const result =
-                                          item.barcode === scanResult;
+                                  //  console.log(filterProduct);
 
-                                        return result;
-                                      },
+                                  if (filterProduct.length > 0) {
+                                    SetScanProcessing(true);
+                                    const result = filterProduct[0];
+                                    // console.log(result.id_product);
+                                    setTempIdPart(result.id_product);
+                                    setTempItem(result.description);
+                                    setTempUnit(result.unit);
+                                    setTempAvailableQuantity(
+                                      result.available_quantity,
                                     );
-                                    console.log(filterProduct);
+                                    setTempQuantity(1);
 
-                                    //  console.log(filterProduct);
-
-                                    if (filterProduct.length > 0) {
-                                      SetScanProcessing(true);
-                                      const result = filterProduct[0];
-                                      // console.log(result.id_product);
-                                      setTempIdPart(result.id_product);
-                                      setTempItem(result.description);
-                                      setTempUnit(result.unit);
-                                      setTempAvailableQuantity(
-                                        result.available_quantity,
-                                      );
-                                      setTempQuantity(1);
-
-                                      //   console.log(tempIdPart);
-                                    }
+                                    //   console.log(tempIdPart);
                                   }
+                                } else {
+                                  alert("ga match");
                                 }
+                                //}
+                                setTempItem("");
+                                setTempQuantity("");
+                                setTempUnit("");
+                                setTempTypePart("");
+                                focusKeyword.current.focus();
                               }}
                               placeholder={"Search"}
                             >
