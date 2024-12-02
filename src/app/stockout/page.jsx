@@ -426,6 +426,8 @@ export default function PartsOut() {
                                 setCurrentPage(1);
                               }}
                               onKeyChange={(event) => {
+                                alert(event.key);
+                                /*
                                 if (event.key === "Enter") {
                                   const filterProduct = products.filter(
                                     (item) => {
@@ -453,6 +455,7 @@ export default function PartsOut() {
                                     //   console.log(tempIdPart);
                                   }
                                 }
+                                  */
                               }}
                               placeholder={"Search"}
                             >
