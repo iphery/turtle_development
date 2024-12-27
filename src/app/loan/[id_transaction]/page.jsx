@@ -29,6 +29,7 @@ export default function Page({ params }) {
   const [submitPermission, setSubmitPermission] = useState(false);
   const [resend, setResend] = useState(false);
   const [userlevel, setUserlevel] = useState(3);
+  const [histories, setHistories] = useState([]);
 
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailloan`;
@@ -355,6 +356,12 @@ export default function Page({ params }) {
             ) : (
               <></>
             )}
+            <div className="mb-5"></div>
+            <PageCard>
+              <div className="mb-3">Logs :</div>
+
+              <div className="text-sm">{`${formatDateLocal2(trans["created_at"])} : ${trans["name"]} : 'CREATE TRANSACTION'}`}</div>
+            </PageCard>
           </DefaultLayout>
         </div>
         <CustomModal

@@ -34,8 +34,8 @@ export default function Barcode() {
               value={`${item["barcode"]}`}
             />
             <div className="flex flex-col px-2 py-1">
-              <div className=" text-sm font-bold">Description</div>
-              <div className="text-xs">{item["description"]}</div>
+              <div className=" text-xs font-bold text-black">Description</div>
+              <div className="text-sm text-black">{item["description"]}</div>
             </div>
           </div>
         </div>

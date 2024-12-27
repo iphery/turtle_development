@@ -1,0 +1,12 @@
+@media print {
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  
+    .printable-area {
+      width: 1.9685in; /* Custom size, e.g., A4 width */
+      height: 0.7874in; /* Custom size, e.g., A4 height */
+      page-break-inside: avoid; /* Prevent content from breaking within elements */
+    }
+  }
