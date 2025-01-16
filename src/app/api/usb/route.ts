@@ -13,4 +13,5 @@ export async function GET() {
 
   return Response.json({ a: "i" });
   */
+  return Response.json("ok");
 }
