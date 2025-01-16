@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { usb, getDeviceList } from "usb";
 
 export async function GET() {
+  /*
   try {
     const devices = getDeviceList();
   } catch (error) {
@@ -11,4 +12,5 @@ export async function GET() {
   }
 
   return Response.json({ a: "i" });
+  */
 }

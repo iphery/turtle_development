@@ -7,6 +7,7 @@ const USBDevices = () => {
   const [loading, setLoading] = useState(true);
 
   const check_usb = async () => {
+    /*
     try {
       const response = await axios.get("/api/usb");
       //const data = await response.json();
@@ -19,14 +20,17 @@ const USBDevices = () => {
     } finally {
       //setLoading(false);
     }
+      */
   };
 
   const check = async () => {
+    /*
     const device = await navigator.usb.requestDevice({
       filters: [], // Empty filters allow listing all available devices
     });
 
     console.log("kkk", device);
+    */
   };
 
   /*
@@ -37,7 +41,7 @@ const USBDevices = () => {
 
   return (
     <div>
-      <button onClick={check_usb}>check</button>
+      {/**  <button onClick={check_usb}>check</button>
       <h1>USB Devices</h1>
       {devices.length === 0 ? (
         <p>No USB devices found.</p>
@@ -68,7 +72,7 @@ const USBDevices = () => {
             </li>
           ))}
         </ul>
-      )}
+      )}*/}
     </div>
   );
 };
