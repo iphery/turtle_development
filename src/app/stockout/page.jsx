@@ -159,7 +159,10 @@ export default function PartsOut() {
       //console.log("ini dari scanner event");
       //console.log(e.key);
       //console.log("hahaha");
-      if (e.key === "Enter") {
+      if (
+        e.key === "Enter" &&
+        document.activeElement === focusKeyword.current
+      ) {
         const scanResult = focusKeyword.current.value;
         const filterProduct = products.filter((item) => {
           const result = item.barcode === scanResult;
@@ -167,7 +170,7 @@ export default function PartsOut() {
           return result;
         });
         //  console.log("hasil filter");
-        // console.log(filterProduct);
+        console.log(filterProduct);
 
         if (filterProduct.length > 0) {
           SetScanProcessing(true);
@@ -213,6 +216,7 @@ export default function PartsOut() {
       setProducts(product);
       setFilteredProduct(product);
     }
+    setLoader(false);
   };
 
   const search_product = () => {
@@ -455,7 +459,7 @@ export default function PartsOut() {
           <div className="relative">
             <div className="absolute z-0 h-full w-full">
               <DefaultLayout>
-                {!loader ? (
+                {loader ? (
                   <div className="flex items-center justify-center"></div>
                 ) : (
                   <div className="">

@@ -42,6 +42,7 @@ export default function PartsOut() {
   const [tempTypePart, setTempTypePart] = useState("");
   const focusTempQuantity = useRef();
   const focusKeyword = useRef();
+  const [onload, setOnload] = useState(false);
 
   const [searchNotFound, setSearchNotFound] = useState(false);
   const [searchAssetNotFound, setSearchAssetNotFound] = useState(false);
@@ -91,7 +92,10 @@ export default function PartsOut() {
       // Check for Enter key (end of scan)
       console.log("ini dari scanner event");
       console.log(e.key);
-      if (e.key === "Enter") {
+      if (
+        e.key === "Enter" &&
+        document.activeElement === focusKeyword.current
+      ) {
         const scanResult = focusKeyword.current.value;
 
         const filterProduct = products.filter((item) => {
@@ -194,6 +198,7 @@ export default function PartsOut() {
       setProducts(product);
       setFilteredProduct(product);
     }
+    setLoader(false);
   };
 
   const search_product = () => {
@@ -384,7 +389,7 @@ export default function PartsOut() {
       {!doScan ? (
         <div className="min-h-screen  ">
           <DefaultLayout>
-            {!loader ? (
+            {loader ? (
               <div className="flex items-center justify-center"></div>
             ) : (
               <div className="">
