@@ -92,6 +92,52 @@ export default function PartsOut() {
       console.log("ini dari scanner event");
       console.log(e.key);
       if (e.key === "Enter") {
+        const scanResult = focusKeyword.current.value;
+
+        const filterProduct = products.filter((item) => {
+          const result = item.barcode === scanResult;
+
+          return result;
+        });
+
+        //  console.log(filterProduct);
+
+        if (filterProduct.length > 0) {
+          SetScanProcessing(true);
+          const result = filterProduct[0];
+          // console.log(result.id_product);
+          setTempIdPart(result.id_product);
+          setTempItem(result.description);
+          setTempUnit(result.unit);
+          setTempAvailableQuantity(result.available_quantity);
+          setTempQuantity(1);
+
+          //   console.log(tempIdPart);
+        } else {
+          AlertMessage("Barcode is not registered");
+          setKeyword("");
+          focusKeyword.current.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [keyword]);
+
+  /*
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Start capturing if not already scanning
+      //if (!isScanning) setIsScanning(true);
+
+      // Check for Enter key (end of scan)
+      console.log("ini dari scanner event");
+      console.log(e.key);
+      if (e.key === "Enter") {
         const scanValue = focusKeyword.current.value;
         console.log(scanValue);
         const match = scanValue.match(/^(.*?)20FF\/FF\/FF FF:FF:FF$/);
@@ -136,6 +182,7 @@ export default function PartsOut() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [keyword]);
+  */
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/stock`;

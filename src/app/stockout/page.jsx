@@ -87,7 +87,7 @@ export default function PartsOut() {
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [modalPhonebook, setModalPhonebook] = useState(false);
   const [scanProcessing, SetScanProcessing] = useState(false);
-
+  /**  pakai FFF
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Start capturing if not already scanning
@@ -133,7 +133,58 @@ export default function PartsOut() {
             AlertMessage("Barcode is not registered");
             setKeyword("");
             focusKeyword.current.focus();
-            /*
+            
+          }
+        } else {
+          console.log("ga match");
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [keyword]);
+
+  */
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Start capturing if not already scanning
+      //if (!isScanning) setIsScanning(true);
+
+      // Check for Enter key (end of scan)
+      //console.log("ini dari scanner event");
+      //console.log(e.key);
+      //console.log("hahaha");
+      if (e.key === "Enter") {
+        const scanResult = focusKeyword.current.value;
+        const filterProduct = products.filter((item) => {
+          const result = item.barcode === scanResult;
+
+          return result;
+        });
+        //  console.log("hasil filter");
+        // console.log(filterProduct);
+
+        if (filterProduct.length > 0) {
+          SetScanProcessing(true);
+          const result = filterProduct[0];
+          // console.log(result.id_product);
+          setTempIdPart(result.id_product);
+          setTempItem(result.description);
+          setTempUnit(result.unit);
+          setTempAvailableQuantity(result.available_quantity);
+          setTempQuantity(1);
+
+          //   console.log(tempIdPart);
+        } else {
+          AlertMessage("Barcode is not registered");
+          setKeyword("");
+          focusKeyword.current.focus();
+          /*
             setTempItem("");
             setTempQuantity("");
             setTempUnit("");
@@ -141,9 +192,6 @@ export default function PartsOut() {
             focusKeyword.current.focus();
             AlertMessage("Barcode is not registered");
             */
-          }
-        } else {
-          console.log("ga match");
         }
       }
     };
