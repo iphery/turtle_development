@@ -165,14 +165,13 @@ export default function PartsOut() {
         //document.activeElement === focusKeyword.current
       ) {
         const scanResult = focusKeyword.current.value;
-        console.log(scanResult);
-        const filterProduct = products.filter((item) => {
-          const result = item.barcode === scanResult;
-
-          return result;
-        });
+        // console.log(scanResult);
+        //console.log(products);
+        const filterProduct = products.filter(
+          (item) => item.barcode === scanResult,
+        );
         //  console.log("hasil filter");
-        console.log(filterProduct);
+        //console.log(filterProduct);
 
         if (filterProduct.length > 0) {
           SetScanProcessing(true);
@@ -456,7 +455,7 @@ export default function PartsOut() {
 
   return (
     <UserAuth>
-      <div>aaa</div>
+      <div>bbb</div>
       {!doScan ? (
         <div className="min-h-screen  ">
           <div className="relative">

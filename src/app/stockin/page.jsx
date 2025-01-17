@@ -93,8 +93,9 @@ export default function PartsOut() {
       console.log("ini dari scanner event");
       console.log(e.key);
       if (
-        e.key === "Enter" &&
-        document.activeElement === focusKeyword.current
+        e.key === "Enter"
+        // &&
+        //document.activeElement === focusKeyword.current
       ) {
         const scanResult = focusKeyword.current.value;
 
