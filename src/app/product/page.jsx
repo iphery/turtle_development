@@ -65,8 +65,13 @@ export default function Page() {
         item["description"]
           .toLowerCase()
           .includes(keywordProduct.toLowerCase());
+      const barcode =
+        item["description"] &&
+        item["description"]
+          .toLowerCase()
+          .includes(keywordProduct.toLowerCase());
 
-      return desc;
+      return desc || barcode;
     });
     setFilteredProducts(filterData);
   };

@@ -455,7 +455,6 @@ export default function PartsOut() {
 
   return (
     <UserAuth>
-      <div>bbb</div>
       {!doScan ? (
         <div className="min-h-screen  ">
           <div className="relative">
