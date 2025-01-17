@@ -66,10 +66,8 @@ export default function Page() {
           .toLowerCase()
           .includes(keywordProduct.toLowerCase());
       const barcode =
-        item["description"] &&
-        item["description"]
-          .toLowerCase()
-          .includes(keywordProduct.toLowerCase());
+        item["barcode"] &&
+        item["barcode1"].toLowerCase().includes(keywordProduct.toLowerCase());
 
       return desc || barcode;
     });
