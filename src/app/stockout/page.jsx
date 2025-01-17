@@ -160,10 +160,12 @@ export default function PartsOut() {
       //console.log(e.key);
       //console.log("hahaha");
       if (
-        e.key === "Enter" &&
-        document.activeElement === focusKeyword.current
+        e.key === "Enter"
+        //&&
+        //document.activeElement === focusKeyword.current
       ) {
         const scanResult = focusKeyword.current.value;
+        console.log(scanResult);
         const filterProduct = products.filter((item) => {
           const result = item.barcode === scanResult;
 
@@ -454,6 +456,7 @@ export default function PartsOut() {
 
   return (
     <UserAuth>
+      <div>aaa</div>
       {!doScan ? (
         <div className="min-h-screen  ">
           <div className="relative">
