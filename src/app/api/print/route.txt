@@ -1,0 +1,66 @@
+export default async function handler(req, res) {
+  if (req.method == "POST") {
+    return res
+      .status(200)
+      .json({ success: true, message: "Data sent to printer successfully!" });
+  }
+  const { description, product } = req.body;
+
+  if (!description || !product) {
+    return res
+      .status(400)
+      .json({ error: "Description and Product are required" });
+  }
+
+  // Generate ZPL with dynamic variables
+  const zplData = `
+    ^XA
+    ^FO50,50
+    ^BQN,2,10
+    ^FD>:ABCD^FS
+    ^FO200,50
+    ^ADN,36,20
+    ^FD${description}^FS
+    ^FO200,90
+    ^ADN,36,20
+    ^FD${product}^FS
+    ^XZ
+  `;
+  return res
+    .status(200)
+    .json({ success: true, message: "Data sent to printer successfully!" });
+
+  try {
+    const printer = usb.findByIds(0x0a5f, 0x0101); // Replace with your Vendor and Product IDs
+    if (!printer) {
+      return res.status(404).json({ error: "Zebra printer not found" });
+    }
+
+    printer.open();
+
+    const endpoint = printer.interface(0).endpoint(0x01); // Update endpoint as needed
+    const buffer = Buffer.from(zplData, "utf-8");
+
+    await new Promise((resolve, reject) => {
+      endpoint.transfer(buffer, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+
+    printer.close();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Data sent to printer successfully!" });
+  } catch (error) {
+    console.error("Error printing ZPL:", error);
+    return res.status(500).json({
+      error: "Failed to send data to printer",
+      details: error.message,
+    });
+  }
+}

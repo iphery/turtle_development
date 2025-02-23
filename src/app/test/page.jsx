@@ -7,20 +7,21 @@ const USBDevices = () => {
   const [loading, setLoading] = useState(true);
 
   const check_usb = async () => {
-    /*
     try {
-      const response = await axios.get("/api/usb");
+      const response = await axios.post("/api/print", {
+        description: "abc",
+        product: "xyz",
+      });
       //const data = await response.json();
       console.log(response);
       if (response.status == 200) {
         console.log(response);
       }
     } catch (error) {
-      //console.error("Error fetching USB devices:", error);
+      console.error("Error fetching USB devices:", error);
     } finally {
       //setLoading(false);
     }
-      */
   };
 
   const check = async () => {
@@ -39,6 +40,9 @@ const USBDevices = () => {
   }
     */
 
+  useEffect(() => {
+    check_usb();
+  }, []);
   return (
     <div>
       {/**  <button onClick={check_usb}>check</button>

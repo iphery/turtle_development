@@ -16,8 +16,10 @@ import { CommonButton } from "@/components/button";
 import { NotifyError, NotifySuccess } from "@/utils/notify";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FaWhatsapp } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }) {
+  const router = useRouter();
   const [trans, setTrans] = useState({});
   const [detail, setDetail] = useState([]);
   const [onClose, setOnClose] = useState(false);
@@ -30,6 +32,8 @@ export default function Page({ params }) {
   const [resend, setResend] = useState(false);
   const [userlevel, setUserlevel] = useState(3);
   const [histories, setHistories] = useState([]);
+  const [modalVoid, setModalVoid] = useState(false);
+  const [submitDelete, setSubmitDelete] = useState(false);
 
   const fetch_data = async () => {
     const apiurl = `${API_URL}/fetchdetailloan`;
@@ -151,6 +155,17 @@ export default function Page({ params }) {
                         >
                           Receive Tool
                         </div>
+                        {userlevel <= 1 && (
+                          <div
+                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                            onClick={() => {
+                              setModalVoid(true);
+                              toggleDropdown();
+                            }}
+                          >
+                            Void Transaction
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -531,6 +546,43 @@ export default function Page({ params }) {
           ) : (
             <></>
           )}
+        </CustomModal>
+        <CustomModal
+          isVisible={modalVoid}
+          onClose={() => {
+            setModalVoid(false);
+          }}
+          isSmallWidth="sm"
+        >
+          <div className=" flex justify-center text-danger">
+            <IoIosWarning className="h-12 w-12" />
+          </div>
+          <div className="mb-5">
+            {`Are you sure to delete this transaction ? This is can't not be
+            undone.`}
+          </div>
+          <div className="flex justify-end">
+            {" "}
+            <CommonButton
+              label={"Yes, delete it."}
+              onload={submitDelete}
+              disabled={submitDelete}
+              onClick={async (e) => {
+                e.preventDefault();
+                setSubmitDelete(true);
+                const apiUrl = `${API_URL}/deletetooltransaction`;
+                const response = await axios.post(apiUrl, {
+                  idTransaction: params.id_transaction,
+                });
+                if (response.status == 200) {
+                  NotifySuccess(response.data["message"]);
+                  router.push("/loan");
+                }
+
+                setSubmitDelete(false);
+              }}
+            ></CommonButton>
+          </div>
         </CustomModal>
       </div>
     </UserAuth>
