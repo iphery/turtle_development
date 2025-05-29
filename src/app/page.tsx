@@ -24,6 +24,5 @@ export default function Home() {
     }
   };
 
-  return <div>This application is under maintenance</div>;
   return <Dashboard />;
 }
