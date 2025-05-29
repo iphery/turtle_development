@@ -413,6 +413,7 @@ export default function PartsOut() {
                         <div className="w-full sm:w-1/2">
                           <CommonInput
                             type={"date"}
+                            maxEnabled={true}
                             input={inputDataInfo.date}
                             error={inputDataInfoError[0]}
                             errorMessage={"Required"}

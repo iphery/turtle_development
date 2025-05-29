@@ -16,7 +16,9 @@ export const CommonInput = ({
   onChg,
   isAutoFocus,
   readonly,
+  maxEnabled,
 }) => {
+  const today = new Date().toISOString().split("T")[0];
   return (
     <div className="relative">
       <input
@@ -27,6 +29,7 @@ export const CommonInput = ({
         placeholder={placeholder}
         disabled={isDisabled}
         autoFocus={isAutoFocus}
+        {...(maxEnabled ? { max: today } : {})}
         onInput={(event) => {
           const value = event.target.value;
 
