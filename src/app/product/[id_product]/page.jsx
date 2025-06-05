@@ -62,6 +62,7 @@ export default function Page({ params }) {
   const [modalDelete, setModalDelete] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [onDelete, setOnDelete] = useState(false);
+  const [transactionExists, setTransactionExists] = useState(false);
 
   //test new update
   const fetch_data = async () => {
@@ -122,6 +123,19 @@ export default function Page({ params }) {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), 1);
   }
+
+  const delete_product_confirm = async () => {
+    const apiUrl = `${API_URL}/deleteproductconfirm`;
+    const response = await axios.post(apiUrl, {
+      idProduct: params.id_product,
+    });
+
+    if (response.status == 200) {
+      console.log(response.data);
+      setTransactionExists(response.data.exists);
+    }
+    setModalDelete(true);
+  };
   useEffect(() => {
     fetch_data();
     fetch_stock_data();
@@ -218,8 +232,9 @@ export default function Page({ params }) {
                             <div
                               className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                               onClick={() => {
-                                setModalDelete(true);
+                                //setModalDelete(true);
                                 toggleDropdown();
+                                delete_product_confirm();
                               }}
                             >
                               Delete Product
@@ -432,7 +447,14 @@ export default function Page({ params }) {
                 <h1>Are you sure want to delete ?</h1>
               </div>
               <div className="flex justify-center text-sm">
-                <p> Please re-check the transaction.</p>
+                {transactionExists == "1" ? (
+                  <h1 className="text-xl text-red">
+                    {" "}
+                    Transaction exists. Please make sure again !!
+                  </h1>
+                ) : (
+                  <p> Please re-check the transaction.</p>
+                )}
               </div>
 
               <div className="mt-10 flex justify-center">
