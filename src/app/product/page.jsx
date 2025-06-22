@@ -48,7 +48,7 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
 
   const fetch_product = async () => {
-    const apiUrl = `${API_URL}/product1?page=${currentPage}&keyword=${currentSearch}`;
+    const apiUrl = `${API_URL}/product?page=${currentPage}&keyword=${currentSearch}`;
     console.log(apiUrl);
     const response = await axios.get(apiUrl);
 
@@ -197,7 +197,6 @@ export default function Page() {
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
             <div className="mb-3 flex items-center justify-between">
-              <div>{productList.length}</div>
               <div className=" text-xl font-bold">Product</div>
 
               <div className="relative z-20">
