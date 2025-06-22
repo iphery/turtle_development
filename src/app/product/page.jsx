@@ -48,7 +48,8 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
 
   const fetch_product = async () => {
-    const apiUrl = `${API_URL}/product?page=${currentPage}&keyword=${currentSearch}`;
+    //const apiUrl = `${API_URL}/product?page=${currentPage}&keyword=${currentSearch}`;
+    const apiUrl = `${API_URL}/product`;
     console.log(apiUrl);
     const response = await axios.get(apiUrl);
 
@@ -56,12 +57,12 @@ export default function Page() {
       const data = response.data;
       const products = response.data["products"];
       setProducts(products);
-      setProductList(data.products);
-      setTotalPage(data.totalPages);
+      //setProductList(data.products);
+      //setTotalPage(data.totalPages);
       // if (keywordProduct == "") {
       //   setFilteredProducts(products);
       // }
-      //setFilteredProducts(products);
+      setFilteredProducts(products);
       //search_product();
       console.log(response.data);
     }
@@ -278,7 +279,7 @@ export default function Page() {
                         </tr>
                       </thead>
                       <tbody>
-                        {productList.map((item, index) => {
+                        {filteredProducts.map((item, index) => {
                           return (
                             <tr
                               key={index}
@@ -308,7 +309,7 @@ export default function Page() {
                   </div>
                 ) : (
                   <div className="py-3">
-                    {productList.map((item, index) => {
+                    {filteredProducts.map((item, index) => {
                       return (
                         <div
                           className="py-1"
