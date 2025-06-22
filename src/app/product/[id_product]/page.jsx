@@ -352,6 +352,8 @@ export default function Page({ params }) {
                     <thead className="sticky top-0">
                       <tr className="bg-strokedark text-white">
                         <th className="w-1/7">Date</th>
+                        <th className="w-1/7">Transaction</th>
+
                         <th className="w-1/7">In</th>
                         <th className="w-1/7">Out</th>
                         <th className="w-1/7">Balance</th>
@@ -366,6 +368,14 @@ export default function Page({ params }) {
                               {index == stockData.length - 1
                                 ? "Before date"
                                 : item["date"]}
+                            </td>
+                            <td
+                              className="p-1 text-center hover:cursor-pointer"
+                              onClick={() => {
+                                router.push(`/transaction/${item.id}`);
+                              }}
+                            >
+                              {item.id}
                             </td>
                             <td className="p-1 text-center">
                               {index == stockData.length - 1 ? "" : item["in"]}

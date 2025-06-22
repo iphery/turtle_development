@@ -16,6 +16,7 @@ import axios from "axios";
 import { PageLoader, PageLoader1 } from "./loader";
 import { useRouter } from "next/navigation";
 import NoVerify from "@/components/noverify";
+import DefaultLayout from "./Layouts/DefaultLayout";
 
 //const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL; // Your Supabase URL
 //const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Your Supabase Anon Key
@@ -115,11 +116,12 @@ export default function UserAuth({ children }) {
       //fetch_user(user.uid);
     });
 
-    //return () => unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   if (onLoad) {
     return <PageLoader1 />;
+    //return <DefaultLayout />;
   } else {
     if (!isLogin) {
       return <SignIn></SignIn>;

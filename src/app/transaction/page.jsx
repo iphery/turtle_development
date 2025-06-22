@@ -159,6 +159,7 @@ export default function Page() {
                       <th>ID</th>
                       <th>Date</th>
                       <th>Description</th>
+                      <th>Barcode</th>
                       <th>Quantity</th>
                       <th>Unit</th>
                       <th>Type</th>
@@ -192,6 +193,10 @@ export default function Page() {
                               }}
                             >
                               {item["description"]}
+                            </td>
+
+                            <td className="px-1 py-2 text-center">
+                              <div className="w-40"> {item["barcode"]}</div>
                             </td>
                             <td className="px-1 py-2 text-center">
                               {item["quantity"]}

@@ -8,7 +8,7 @@ import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import NewProduct from "@/components/newproduct";
 import { SearchScanner } from "@/components/searchscanner";
@@ -22,7 +22,6 @@ import { useProvider } from "../appcontext";
 
 export default function Page() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
-  const isInitialMount = useRef(true);
   const {
     products,
     setProducts,
@@ -40,27 +39,17 @@ export default function Page() {
   const [imageFile, setImageFile] = useState(null);
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState();
-  const [productList, setProductList] = useState([]);
-  const [totalPage, setTotalPage] = useState(0);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentSearch, setCurrentSearch] = useState("");
-  const [keyword, setKeyword] = useState("");
 
   const fetch_product = async () => {
-    const apiUrl = `${API_URL}/product1?page=${currentPage}&keyword=${currentSearch}`;
-    console.log(apiUrl);
+    const apiUrl = `${API_URL}/product`;
     const response = await axios.get(apiUrl);
 
     if (response.status == 200) {
-      const data = response.data;
       const products = response.data["products"];
       setProducts(products);
-      setProductList(data.products);
-      setTotalPage(data.totalPages);
-      // if (keywordProduct == "") {
-      //   setFilteredProducts(products);
-      // }
+      if (keywordProduct == "") {
+        setFilteredProducts(products);
+      }
       //setFilteredProducts(products);
       //search_product();
       console.log(response.data);
@@ -83,34 +72,16 @@ export default function Page() {
     setFilteredProducts(filterData);
   };
 
-  // useEffect(() => {
-  //   fetch_product();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (refresh) {
-  //     fetch_product();
-  //     setRefresh(false);
-  //   }
-  // }, [refresh]);
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const paramsPage = params.get("page") || "1";
-      const paramsSearch = params.get("q") || "";
-      setCurrentPage(paramsPage);
-      setCurrentSearch(paramsSearch);
-    }
+    fetch_product();
   }, []);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return; // Skip fetch pertama jika page=1
+    if (refresh) {
+      fetch_product();
+      setRefresh(false);
     }
-    fetch_product();
-  }, [currentPage, currentSearch]);
+  }, [refresh]);
 
   useEffect(() => {
     search_product();
@@ -197,7 +168,6 @@ export default function Page() {
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
             <div className="mb-3 flex items-center justify-between">
-              <div>{productList.length}</div>
               <div className=" text-xl font-bold">Product</div>
 
               <div className="relative z-20">
@@ -279,7 +249,7 @@ export default function Page() {
                         </tr>
                       </thead>
                       <tbody>
-                        {productList.map((item, index) => {
+                        {filteredProducts.map((item, index) => {
                           return (
                             <tr
                               key={index}
@@ -309,7 +279,7 @@ export default function Page() {
                   </div>
                 ) : (
                   <div className="py-3">
-                    {productList.map((item, index) => {
+                    {filteredProducts.map((item, index) => {
                       return (
                         <div
                           className="py-1"
