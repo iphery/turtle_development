@@ -164,7 +164,8 @@ export default function Page() {
                       <th>Unit</th>
                       <th>Type</th>
                       <th>From/To</th>
-                      <th>Created By</th>
+
+                      <th>Note</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -217,7 +218,7 @@ export default function Page() {
                             <td className="p-1 text-center">
                               {item["subject"]}
                             </td>
-                            <td className="p-1 text-center">{item["name"]}</td>
+                            <td className="p-1 text-start">{item["note"]}</td>
                           </tr>
                         );
                       })}
