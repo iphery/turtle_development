@@ -7,7 +7,11 @@ import { API_URL } from "@/utils/constant";
 import axios from "axios";
 import { CommonButton, CommonButtonFull } from "@/components/button";
 import { TextLoader } from "@/components/loader";
-import { formatDateLocal1, formatDateLocal2 } from "@/utils/dateformat";
+import {
+  formatDateLocal1,
+  formatDateLocal2,
+  shortDate,
+} from "@/utils/dateformat";
 
 export default function Page({ params }) {
   const [trimmedDataURL, setTrimmedDataURL] = useState([]);
@@ -117,7 +121,7 @@ export default function Page({ params }) {
           </div>
           <div className="flex justify-center">
             <div className="text-center text-sm">{`No. ${trans.id_transaction}`}</div>
-            <div className="ml-1 text-sm">{`| ${formatDateLocal1(trans.date)}`}</div>
+            <div className="ml-1 text-sm">{`| ${shortDate(trans.date)}`}</div>
           </div>
           <p className="mb-2 mt-4">
             Telah diserahkan barang-barang sebagai berikut:

@@ -6,7 +6,11 @@ import { PageCard } from "@/components/card";
 import { ButtonLoader } from "@/components/loader";
 import { CustomModal } from "@/components/modal";
 import { API_URL } from "@/utils/constant";
-import { formatDateLocal1, formatDateLocal2 } from "@/utils/dateformat";
+import {
+  formatDateLocal1,
+  formatDateLocal2,
+  shortDate,
+} from "@/utils/dateformat";
 import { NotifySuccess } from "@/utils/notify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -217,7 +221,7 @@ export default function Page({ params }) {
                   </div>
                   <div className="mb-2 sm:flex sm:justify-evenly">
                     <div className="w-full">Date</div>
-                    <div className="w-full">{trans.date}</div>
+                    <div className="w-full">{shortDate(trans.date)}</div>
                   </div>
                   <div className="mb-2 sm:flex sm:justify-evenly">
                     <div className="w-full">Type</div>
