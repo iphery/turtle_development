@@ -61,7 +61,7 @@ export default function Page() {
 
       console.log(response.data);
       window.location.href =
-        "https://logbook.pbfobat.com/download-monthly-export";
+        "https://mipa.farmaguru.cloud/download-monthly-export";
     } catch (error) {
       console.log(error);
     }
