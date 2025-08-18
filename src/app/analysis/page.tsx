@@ -121,6 +121,7 @@ const PurchaseAnalyze = () => {
     days_display: "",
     buffer_display: "",
   });
+  const [userlevel, setUserLevel] = useState("");
 
   const [onDownload, setOnDownload] = useState(false);
 
@@ -277,16 +278,27 @@ const PurchaseAnalyze = () => {
   useEffect(() => {
     fetch_data();
     //console.log(currentMargin);
+    const user = localStorage.getItem("userlevel") ?? "";
+    setUserLevel(user);
   }, [currentPage, currentSearch]);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
+
+  if (parseInt(userlevel) > 1) {
+    return (
+      <DefaultLayout>
+        <div></div>
+      </DefaultLayout>
+    );
+  }
+
   return (
     <div className="relative">
       <div className="relative z-0">
-        <DefaultLayout onload={onload}>
+        <DefaultLayout>
           <div className="mb-3 flex items-center justify-between">
             <div className=" text-xl font-bold">Analysis</div>
 
