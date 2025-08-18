@@ -41,6 +41,7 @@ export default function Dashboard() {
   const [initCount, setInitCount] = useState([]);
   const [lastPage, setLastPage] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [onload, setOnload] = useState(true);
 
   const fetch_dashboard = async () => {
     const apiurl = `${API_URL}/fetchdashboard`;
@@ -60,6 +61,7 @@ export default function Dashboard() {
       process_data(result["count"]);
       //console.log(data);
     }
+    setOnload(false);
   };
 
   const process_data = (rawdata) => {
@@ -146,7 +148,7 @@ export default function Dashboard() {
     <>
       {!showScanner ? (
         <UserAuth>
-          <DefaultLayout>
+          <DefaultLayout onload={onload}>
             <div>
               <div className="flex justify-start  ">
                 <div

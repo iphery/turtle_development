@@ -5,10 +5,13 @@ import Header from "@/components/Header";
 
 export default function DefaultLayout({
   children,
+  onload = false,
 }: {
   children: React.ReactNode;
+  onload?: boolean;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
@@ -25,8 +28,20 @@ export default function DefaultLayout({
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-              {children}
+            <div className={`mx-auto  max-w-screen-2xl p-4 md:p-6 2xl:p-10`}>
+              {onload ? (
+                <div className="relative ">
+                  {" "}
+                  <div className="flex flex-row justify-center">
+                    <div
+                      className={`h-5 w-5 animate-spin rounded-full border-2 border-solid border-bodydark border-t-transparent`}
+                    ></div>
+                    <div className={`pl-2 text-bodydark`}>Memuat data..</div>
+                  </div>
+                </div>
+              ) : (
+                children
+              )}
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}

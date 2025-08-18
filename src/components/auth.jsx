@@ -120,8 +120,8 @@ export default function UserAuth({ children }) {
   }, []);
 
   if (onLoad) {
-    return <PageLoader1 />;
-    //return <DefaultLayout />;
+    //return <PageLoader1 />;
+    return <DefaultLayout onload={onload} />;
   } else {
     if (!isLogin) {
       return <SignIn></SignIn>;

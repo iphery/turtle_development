@@ -32,6 +32,7 @@ const menuGroups = [
           { label: "List", route: "/product" },
           { label: "Transaction", route: "/transaction" },
           { label: "Stock Opname", route: "/stockopname" },
+          { label: "Analysis", route: "/analysis" },
         ],
       },
 
