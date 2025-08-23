@@ -1,3 +1,6 @@
+import NextIcon from "../components/Icon/nextIcon";
+import PrevIcon from "../components/Icon/prevIcon";
+
 export default function PaginationDataButton({
   currentPage,
   totalPage,
@@ -47,10 +50,10 @@ export default function PaginationDataButton({
       {totalPage == 0 || currentPage > totalPage ? (
         <></>
       ) : (
-        <div className="flex justify-start p-8">
+        <div className="flex items-center justify-start p-8">
           <div className="text-sm">
             <button
-              className={`rounded bg-gray px-3 py-1 text-black ${
+              className={`rounded  px-3  text-black ${
                 currentPage === 1 && "cursor-not-allowed opacity-50"
               }`}
               onClick={() => {
@@ -59,7 +62,7 @@ export default function PaginationDataButton({
               }}
               disabled={currentPage === 1}
             >
-              prev
+              <PrevIcon />
             </button>
             {getPaginationRange().map((page, index) => (
               <button
@@ -76,7 +79,7 @@ export default function PaginationDataButton({
               </button>
             ))}
             <button
-              className={`bg-gray-300 rounded px-3 py-1 text-black ${
+              className={`rounded  px-3 py-1 text-black ${
                 currentPage === totalPage && "cursor-not-allowed opacity-50"
               }`}
               onClick={() => {
@@ -85,7 +88,7 @@ export default function PaginationDataButton({
               }}
               disabled={currentPage === totalPage}
             >
-              next
+              <NextIcon />
             </button>
           </div>
         </div>
