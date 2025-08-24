@@ -14,79 +14,36 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-interface MenuItem {
-  icon: string; // Icon kembali ke MenuItem
-  label: string;
-  route: string;
-  maxLevel?: number;
-  children?: MenuItem[];
-}
-
-interface MenuGroup {
-  name: string;
-  menuItems: MenuItem[];
-}
-
-const menuGroups: MenuGroup[] = [
+const menuGroups = [
   {
     name: "MENU",
     menuItems: [
       {
-        icon: "dashboard", // Icon di MenuItem
+        icon: "dashboard",
         label: "Dashboard",
         route: "/",
         maxLevel: 3,
       },
       {
-        icon: "product", // Icon di MenuItem
+        icon: "product",
         label: "Product",
         route: "#",
         maxLevel: 3,
         children: [
-          {
-            icon: "list", // Icon untuk child item
-            label: "List",
-            route: "/product",
-            maxLevel: 3,
-          },
-          {
-            icon: "transaction",
-            label: "Transaction",
-            route: "/transaction",
-            maxLevel: 3,
-          },
-          {
-            icon: "stock",
-            label: "Stock Opname",
-            route: "/stockopname",
-            maxLevel: 1,
-          },
-          {
-            icon: "analysis",
-            label: "Analysis",
-            route: "/analysis",
-            maxLevel: 1,
-          },
+          { label: "List", route: "/product", maxLevel: 3 },
+          { label: "Transaction", route: "/transaction", maxLevel: 3 },
+          { label: "Stock Opname", route: "/stockopname", maxLevel: 1 },
+          { label: "Analysis", route: "/analysis", maxLevel: 1 },
         ],
       },
       {
-        icon: "tool", // Icon di MenuItem
+        icon: "tool",
         label: "Tools",
         route: "#",
         maxLevel: 2,
         children: [
-          {
-            icon: "list",
-            label: "List",
-            route: "/tool",
-            maxLevel: 2,
-          },
-          {
-            icon: "loan",
-            label: "Loan Transaction",
-            route: "/loan",
-            maxLevel: 2,
-          },
+          { label: "List", route: "/tool", maxLevel: 2 },
+          { label: "Loan Transaction", route: "/loan", maxLevel: 2 },
         ],
       },
     ],
@@ -96,44 +53,12 @@ const menuGroups: MenuGroup[] = [
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
-  const [userlevel, setUserlevel] = useState<string>("");
+  const [userlevel, setUserlevel] = useState("");
 
   useEffect(() => {
     const level = localStorage.getItem("userlevel") ?? "";
     setUserlevel(level);
   }, []);
-
-  // Fungsi untuk memfilter menu berdasarkan level user
-  const filterMenuByLevel = (menuItems: MenuItem[]): MenuItem[] => {
-    return menuItems
-      .filter((menuItem) => {
-        if (!menuItem.hasOwnProperty("maxLevel")) return true;
-        return parseInt(userlevel) <= (menuItem.maxLevel || 0);
-      })
-      .map((menuItem) => {
-        // Filter children jika ada
-        const filteredChildren = menuItem.children
-          ? menuItem.children.filter((child) => {
-              if (!child.hasOwnProperty("maxLevel")) return true;
-              return parseInt(userlevel) <= (child.maxLevel || 0);
-            })
-          : undefined;
-
-        // Return menu item dengan children yang sudah difilter
-        return {
-          ...menuItem,
-          children:
-            filteredChildren && filteredChildren.length > 0
-              ? filteredChildren
-              : undefined,
-        };
-      })
-      .filter((menuItem) => {
-        // Hapus menu item yang memiliki children tapi setelah difilter menjadi kosong
-        if (menuItem.children && menuItem.children.length === 0) return false;
-        return true;
-      });
-  };
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
@@ -147,6 +72,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <Link href="/">
             <div className="flex items-center justify-center">
               <img src={"/images/logo/logo-icon.svg"} alt="Logo" />
+
               <div className="ml-2 text-2xl text-white">mipa</div>
             </div>
           </Link>
@@ -176,26 +102,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
           {/* <!-- Sidebar Menu --> */}
           <nav className="mt-5 px-4 py-4 lg:mt-9 lg:px-6">
-            {menuGroups.map((group, groupIndex) => (
+            {/* {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex}>
-                <h3 className="mb-4 text-sm font-semibold text-bodydark2">
+                <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
                   {group.name}
                 </h3>
 
                 <ul className="mb-6 flex flex-col gap-1.5">
-                  {filterMenuByLevel(group.menuItems).map(
-                    (menuItem, menuIndex) => (
-                      <SidebarItem
-                        key={menuIndex}
-                        item={menuItem}
-                        pageName={pageName}
-                        setPageName={setPageName}
-                      />
-                    ),
-                  )}
+                  {group.menuItems.map((menuItem, menuIndex) => {
+                   
+                    return <SidebarItem
+                      key={menuIndex}
+                      item={menuItem}
+                      pageName={pageName}
+                      setPageName={setPageName}
+                    />
+                  })}
                 </ul>
               </div>
-            ))}
+            ))} */}
           </nav>
           {/* <!-- Sidebar Menu --> */}
         </div>

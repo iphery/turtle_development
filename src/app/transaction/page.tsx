@@ -215,62 +215,66 @@ const Products = () => {
                     </div>
                   )}
                 </div>
-                <div className="">
-                  <button
-                    onClick={toggleDropdown}
-                    className="inline-flex items-center justify-end gap-2.5 rounded-md bg-black px-5 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-4"
-                  >
-                    <span>
-                      <svg
-                        width="14"
-                        height="8"
-                        viewBox="0 0 14 8"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M0 0.5L7 7.5L14 0.5H0Z" fill="#EAE9FC" />
-                      </svg>
-                    </span>
-                    Options
-                  </button>
-                  {showDropdown && (
-                    <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                      <div className="py-1">
-                        {userLevel && parseInt(userLevel) <= 1 && (
-                          <div
-                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                            onClick={() => {
-                              router.push("/stockin");
-                              toggleDropdown();
-                            }}
-                          >
-                            Stock In
-                          </div>
-                        )}
-                        {userLevel && parseInt(userLevel) <= 1 && (
-                          <div
-                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                            onClick={() => {
-                              router.push("/stockout");
-                              toggleDropdown();
-                            }}
-                          >
-                            Stock Out
-                          </div>
-                        )}
-                        <button
-                          className="text-md text-gray-800 block w-full px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            setShowDropdown(false);
-                            setModalPeriod(true);
-                          }}
+                {parseInt(userLevel) <= 1 && (
+                  <div className="">
+                    <button
+                      onClick={toggleDropdown}
+                      className="inline-flex items-center justify-end gap-2.5 rounded-md bg-black px-5 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-4"
+                    >
+                      <span>
+                        <svg
+                          width="14"
+                          height="8"
+                          viewBox="0 0 14 8"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          Download Report
-                        </button>
+                          <path d="M0 0.5L7 7.5L14 0.5H0Z" fill="#EAE9FC" />
+                        </svg>
+                      </span>
+                      Options
+                    </button>
+                    {showDropdown && (
+                      <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                        <div className="py-1">
+                          {userLevel && parseInt(userLevel) <= 1 && (
+                            <div
+                              className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                router.push("/stockin");
+                                toggleDropdown();
+                              }}
+                            >
+                              Stock In
+                            </div>
+                          )}
+                          {userLevel && parseInt(userLevel) <= 1 && (
+                            <div
+                              className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                router.push("/stockout");
+                                toggleDropdown();
+                              }}
+                            >
+                              Stock Out
+                            </div>
+                          )}
+                          {parseInt(userLevel) <= 1 && (
+                            <button
+                              className="text-md text-gray-800 block w-full px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                setShowDropdown(false);
+                                setModalPeriod(true);
+                              }}
+                            >
+                              Download Report
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="px-5">
@@ -296,6 +300,11 @@ const Products = () => {
                           <tr
                             key={key}
                             className="border-b border-bodydark1 hover:cursor-pointer hover:text-strokedark "
+                            onClick={() => {
+                              router.push(
+                                `/transaction/${item["id_transaction"]}`,
+                              );
+                            }}
                           >
                             <td className="p-3 text-left">
                               <div className="">{item.id_transaction}</div>

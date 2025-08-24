@@ -8,7 +8,8 @@ import { auth } from "@/app/firebase-config";
 import UserAuth from "@/components/auth";
 import { API_URL } from "@/utils/constant";
 import axios from "axios";
-import Dashboard from "@/components/dashboard";
+//import Dashboard from "@/components/dashboard";
+import Dashboard1 from "@/components/dashboard1";
 import { useEffect } from "react";
 import { useProvider } from "./appcontext";
 
@@ -24,5 +25,6 @@ export default function Home() {
     }
   };
 
-  return <Dashboard />;
+  //return <Dashboard />;
+  return <Dashboard1 />;
 }

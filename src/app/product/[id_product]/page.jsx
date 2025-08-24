@@ -59,6 +59,8 @@ export default function Page({ params }) {
     setKeywordProduct,
   } = useProvider();
 
+  const [userLevel, setUserLevel] = useState("");
+
   const [modalDelete, setModalDelete] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [onDelete, setOnDelete] = useState(false);
@@ -139,7 +141,10 @@ export default function Page({ params }) {
   useEffect(() => {
     fetch_data();
     fetch_stock_data();
-    console.log(params.id_product);
+
+    const userlevel = localStorage.getItem("userlevel") ?? "";
+
+    setUserLevel(userlevel);
   }, []);
 
   useEffect(() => {
@@ -191,6 +196,9 @@ export default function Page({ params }) {
     );
   }
 
+  if (parseInt(userLevel) >= 3) {
+    router.push("/");
+  }
   return (
     <UserAuth>
       {pageMode == 0 ? (

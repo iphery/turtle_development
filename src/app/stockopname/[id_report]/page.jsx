@@ -26,6 +26,8 @@ import {
 import { db } from "@/app/firebase-config";
 import { useMediaQuery } from "react-responsive";
 import { NotifySuccess } from "@/utils/notify";
+import { MdClear } from "react-icons/md";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 export default function Page({ params }) {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
@@ -53,6 +55,8 @@ export default function Page({ params }) {
 
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(0);
+  const [category, setCategory] = useState("APD");
+  const [userLevel, setUserLevel] = useState("");
 
   const fetch_data = async () => {
     const apiUrl = `${API_URL}/fetchdetailstockopname`;
@@ -62,9 +66,11 @@ export default function Page({ params }) {
     });
     if (response.status === 200) {
       const result = response.data;
+      console.log(result);
       const initial = JSON.parse(result["initial_data"]);
       setInitialSO(initial);
       setFilteredInitial(initial);
+
       setDataSO(result["result"][0]);
       const invitation = result["invitation"];
       const user = result["user"];
@@ -107,6 +113,9 @@ export default function Page({ params }) {
   useEffect(() => {
     email = localStorage.getItem("useremail");
     uid = localStorage.getItem("userUid");
+    const userlevel = localStorage.getItem("userlevel") ?? "";
+
+    setUserLevel(userlevel);
     fetch_data();
   }, []);
 
@@ -120,12 +129,17 @@ export default function Page({ params }) {
 
   const search_item = () => {
     const filterData = initialSO.filter((item) => {
-      const desc =
+      const descMatch =
         item["description"] &&
         item["description"].toLowerCase().includes(keyword.toLowerCase());
 
-      const empty = item["created_by"] == "";
-      return desc;
+      const categoryMatch =
+        !category || // Jika category kosong, tampilkan semua
+        category === "all" || // Atau jika category adalah "all"
+        (item["category"] &&
+          item["category"].toLowerCase() === category.toLowerCase());
+
+      return descMatch && categoryMatch;
     });
     setFilteredInitial(filterData);
   };
@@ -330,6 +344,7 @@ export default function Page({ params }) {
       <div className="relative">
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
+            <Breadcrumb pageName="Product" />
             {!isLead ? (
               statusInvite ? (
                 <div className="md mb-5 border  p-2 shadow">
@@ -368,56 +383,7 @@ export default function Page({ params }) {
               <></>
             )}
 
-            <div className="mb-3 flex items-center justify-between">
-              <div className=" text-xl font-bold">Stock Opname Detail</div>
-              {isLead == 1 && opnameStatus == 0 ? (
-                <div className="relative">
-                  <button
-                    onClick={toggleDropdown}
-                    className="rounded-md bg-strokedark px-3 py-1 text-white"
-                  >
-                    <div className="flex items-center justify-start">
-                      <IoMdArrowDropdown />
-                      <div>Option</div>
-                    </div>
-                  </button>
-                  {showDropdown && (
-                    <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                      <div className="py-1">
-                        {parseInt(localStorage.getItem("userlevel")) <= 2 ? (
-                          <div
-                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                            onClick={() => {
-                              setModalMember(true);
-                              setShowDropdown(false);
-                            }}
-                          >
-                            Invite Member
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            calc_adjusttment();
-                            setModalAdjustment(true);
-                            setShowDropdown(false);
-                          }}
-                        >
-                          Adjustment
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-
-            <PageCard>
+            {/* <PageCard>
               <div className="flex justify-evenly">
                 <div className="w-full">
                   <div className="flex justify-between">
@@ -456,9 +422,266 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
-            </PageCard>
-            <div className="mb-5"></div>
-            <PageCard>
+            </PageCard> */}
+
+            <div className=" mb-5 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="relative flex  items-center justify-between border-b border-stroke px-4 py-5 md:px-6 xl:px-7.5">
+                <div>Information</div>
+                {isLead == 1 &&
+                  opnameStatus == 0 &&
+                  parseInt(userLevel) <= 1 && (
+                    <div className="">
+                      <button
+                        onClick={toggleDropdown}
+                        className="inline-flex items-center justify-end gap-2.5 rounded-md bg-black px-5 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-4"
+                      >
+                        <span>
+                          <svg
+                            width="14"
+                            height="8"
+                            viewBox="0 0 14 8"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M0 0.5L7 7.5L14 0.5H0Z" fill="#EAE9FC" />
+                          </svg>
+                        </span>
+                        Options
+                      </button>
+                      {showDropdown && (
+                        <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                          <div className="py-1">
+                            {parseInt(localStorage.getItem("userlevel")) <=
+                            2 ? (
+                              <div
+                                className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                                onClick={() => {
+                                  setModalMember(true);
+                                  setShowDropdown(false);
+                                }}
+                              >
+                                Invite Member
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+
+                            <div
+                              className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                calc_adjusttment();
+                                setModalAdjustment(true);
+                                setShowDropdown(false);
+                              }}
+                            >
+                              Adjustment
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+              </div>
+              <div className="p-5">
+                <div className="justify-evenly sm:flex">
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <div>ID Report</div>
+                      <div>{dataSO.id_report}</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>Date</div>
+                      <div>{formatDateLocal1(dataSO.date)}</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>Issued By</div>
+                      <div>{dataSO.name}</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>Status</div>
+                      <div
+                        className={`${opnameStatus == 0 ? "bg-success" : "bg-danger"} px-2 text-sm text-white`}
+                      >{`${opnameStatus == 0 ? "Open" : "Close"}`}</div>
+                    </div>
+                    <div className="mt-3 flex justify-between">
+                      <div>Progress</div>
+                      <div>
+                        {" "}
+                        {`${completed} / ${total} completed (${Math.round((completed / total) * 100)}%)`}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mr-5"></div>
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <div className="w-full">Member</div>
+                      <div className="w-full">
+                        {guest.map((item, index) => {
+                          if (item.join == 1) {
+                            return <div key={index}>{item.name}</div>;
+                          } else {
+                            return <div key={index}></div>;
+                          }
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="relative flex  items-center justify-between px-4 py-5 md:px-6 xl:px-7.5">
+                <div className="relative w-full">
+                  <button className="absolute left-0 top-1/2 -translate-y-1/2">
+                    <svg
+                      className="fill-body hover:fill-primary dark:fill-bodydark dark:hover:fill-primary"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M9.16666 3.33332C5.945 3.33332 3.33332 5.945 3.33332 9.16666C3.33332 12.3883 5.945 15 9.16666 15C12.3883 15 15 12.3883 15 9.16666C15 5.945 12.3883 3.33332 9.16666 3.33332ZM1.66666 9.16666C1.66666 5.02452 5.02452 1.66666 9.16666 1.66666C13.3088 1.66666 16.6667 5.02452 16.6667 9.16666C16.6667 13.3088 13.3088 16.6667 9.16666 16.6667C5.02452 16.6667 1.66666 13.3088 1.66666 9.16666Z"
+                        fill=""
+                      />
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M13.2857 13.2857C13.6112 12.9603 14.1388 12.9603 14.4642 13.2857L18.0892 16.9107C18.4147 17.2362 18.4147 17.7638 18.0892 18.0892C17.7638 18.4147 17.2362 18.4147 16.9107 18.0892L13.2857 14.4642C12.9603 14.1388 12.9603 13.6112 13.2857 13.2857Z"
+                        fill=""
+                      />
+                    </svg>
+                  </button>
+
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={keyword}
+                      onChange={(val) => {
+                        const value = val.target.value;
+                        setKeyword(value); // Update the state
+                      }}
+                      placeholder="Type keyword..."
+                      className="w-full bg-transparent py-2 pl-9 pr-4 font-medium focus:outline-none "
+                    />
+                  </div>
+                  {/* </form> */}
+                  {keyword.length > 3 && (
+                    <div
+                      className="absolute left-50 top-1/2 -translate-y-1/2 pl-2 hover:cursor-pointer hover:text-red"
+                      onClick={() => {
+                        setKeyword("");
+                        //setClearKeyword(true);
+                      }}
+                    >
+                      <MdClear />
+                    </div>
+                  )}
+                </div>
+                <div className="w-full"></div>
+              </div>
+
+              <div className="px-5">
+                <div className="overflow-x-auto  ">
+                  <table className="w-full">
+                    <thead className="border-b border-t border-bodydark1">
+                      <tr className="select-none">
+                        <th className="p-3 text-left">Item</th>
+                        <th className="p-3 text-left">Quantity</th>
+
+                        <th className="p-3 text-left">Actual</th>
+                        <th className="p-3 text-left">Diff</th>
+                        <th className="p-3 text-left">Category</th>
+                        <th className="p-3 text-left">Recent Transaction</th>
+                        <th className="p-3 text-left">Checked By</th>
+                        <th className="p-3 text-left">Checked At</th>
+                      </tr>
+                    </thead>
+                    <tbody className="">
+                      {filteredInitial.map((item, key) => {
+                        return (
+                          <tr
+                            key={key}
+                            className="border-b border-bodydark1 hover:cursor-pointer hover:text-strokedark "
+                          >
+                            <td className="p-3 text-left">
+                              <div className="">{item["description"]}</div>
+                            </td>
+                            <td className=" p-3 text-center ">
+                              <div className="overflow-wrap: break-word w-[100px]">
+                                {item["balance"]}
+                              </div>
+                            </td>
+                            <td className="p-3 text-center">
+                              <div className="">
+                                {dataSO.status == 0 && statusJoin == 1 ? (
+                                  <p
+                                    className="cursor-default bg-bodydark text-white hover:text-danger"
+                                    onClick={() => {
+                                      setModalActual(true);
+                                      setSelectedActual("");
+                                      setSelectedIdProduct(item["id_product"]);
+                                    }}
+                                  >
+                                    {item["actual"]}
+                                  </p>
+                                ) : (
+                                  <p>{item["actual"]}</p>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 text-center">
+                              <div className="">{item["diff"]}</div>
+                            </td>
+                            <td className="p-3 text-left">
+                              <div className="">{item["category"]}</div>
+                            </td>
+                            <td className="p-3 text-center">
+                              {item["has_recent_transaction"] &&
+                              item["has_recent_transaction"] == 0 ? (
+                                <></>
+                              ) : (
+                                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                                  Y
+                                </span>
+                              )}
+                            </td>
+                            <td className="p-3 text-left">
+                              <div className="">{item["checked_name"]}</div>
+                            </td>
+                            <td className="p-3 text-left">
+                              <div className="">
+                                {" "}
+                                {item["checked_at"] != ""
+                                  ? formatDateTime(item["checked_at"])
+                                  : ""}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              {/* {!onload && outstanding.length == 0 && (
+                <div className="flex justify-center pb-10 pt-5">
+                  Data tidak ditemukan
+                </div>
+              )} */}
+              {/* <PaginationDataButton
+                currentPage={currentPageOutstanding}
+                totalPage={totalPageOutstanding}
+                setCurrentPage={setCurrentPageOutstanding}
+                goToPage={goToPageOutstanding} // Pass goToPage sebagai props ke PaginationDataButton
+              /> */}
+            </div>
+
+            {/* <PageCard>
               <div className="mb-3  sm:flex  sm:items-center sm:justify-evenly">
                 <div className="w-full">
                   <CommonInput
@@ -488,6 +711,7 @@ export default function Page({ params }) {
                       <th className="p-1">Diff</th>
                       <th className="p-1">Unit</th>
                       <th className="p-1">Category</th>
+                      <th>Recent Transaction</th>
                       <th className="w-30 p-1">Checked By</th>
                       <th className="w-30 p-1">Checked At</th>
                     </tr>
@@ -524,6 +748,9 @@ export default function Page({ params }) {
                           <td className="p-1 text-center">
                             {item["category"]}
                           </td>
+                          <td className="p-1 text-center">
+                            {item["has_recent_transaction"]}
+                          </td>
 
                           <td className="p-1">{item["checked_name"]}</td>
                           <td className="p-1">
@@ -537,7 +764,7 @@ export default function Page({ params }) {
                   </tbody>
                 </table>
               </div>
-            </PageCard>
+            </PageCard> */}
           </DefaultLayout>
         </div>
         <CustomModal

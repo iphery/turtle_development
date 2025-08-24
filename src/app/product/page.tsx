@@ -313,7 +313,12 @@ const Products = () => {
                         return (
                           <tr
                             key={key}
-                            className="border-b border-bodydark1 hover:cursor-pointer hover:text-strokedark "
+                            className={`border-b border-bodydark1 ${parseInt(userLevel) <= 2 ? "hover:cursor-pointer hover:text-strokedark" : "select-none"} `}
+                            onClick={() => {
+                              if (parseInt(userLevel) <= 2) {
+                                router.push(`/product/${item["id_product"]}`);
+                              }
+                            }}
                           >
                             <td className="p-3 text-left">
                               <div className="">{item.description}</div>
