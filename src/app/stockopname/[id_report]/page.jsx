@@ -28,10 +28,11 @@ import { useMediaQuery } from "react-responsive";
 import { NotifySuccess } from "@/utils/notify";
 import { MdClear } from "react-icons/md";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }) {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
-
+  const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
   const [initialSO, setInitialSO] = useState([]);
   const [dataSO, setDataSO] = useState({});
@@ -606,10 +607,17 @@ export default function Page({ params }) {
                         return (
                           <tr
                             key={key}
-                            className="border-b border-bodydark1 hover:cursor-pointer hover:text-strokedark "
+                            className="border-b border-bodydark1  hover:text-strokedark "
                           >
-                            <td className="p-3 text-left">
-                              <div className="">{item["description"]}</div>
+                            <td className="p-3 text-left hover:cursor-pointer">
+                              <div
+                                className=""
+                                onClick={() => {
+                                  router.push(`/product/${item["id_product"]}`);
+                                }}
+                              >
+                                {item["description"]}
+                              </div>
                             </td>
                             <td className=" p-3 text-center ">
                               <div className="overflow-wrap: break-word w-[100px]">
