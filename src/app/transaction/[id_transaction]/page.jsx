@@ -169,7 +169,7 @@ export default function Page({ params }) {
                   {showDropdown && (
                     <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                       <div className="py-1">
-                        {userlevel <= 2 && trans.signed == 0 ? (
+                        {userlevel <= 1 && trans.signed == 0 ? (
                           <div
                             className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                             onClick={() => {
@@ -185,7 +185,7 @@ export default function Page({ params }) {
                           <></>
                         )}
 
-                        {userlevel <= 2 && trans.signed == 1 ? (
+                        {userlevel <= 1 && trans.signed == 1 ? (
                           <div
                             className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
                             onClick={() => {
@@ -259,7 +259,9 @@ export default function Page({ params }) {
                         <div className="w-full">
                           <div className="flex items-center justify-start">
                             <div className="">
-                              {formatDateLocal2(trans.signed_at)}
+                              {trans.signed_at == "" || trans.signed_at
+                                ? formatDateLocal2(trans.signed_at)
+                                : ""}
                             </div>
                             {trans.signed == 0 ? (
                               parseInt(localStorage.getItem("userlevel")) <=
@@ -321,37 +323,39 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
-              <div className="px-5 pb-15 pt-2">
-                <table className="w-full">
-                  <thead className="border-b border-t border-bodydark1">
-                    <tr className="select-none">
-                      <th className="p-3 text-left">No</th>
-                      <th className="p-3 text-left">Description</th>
-                      <th className="p-3 text-left">Quantity</th>
-                      <th className="p-3 text-left">Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {detail.length > 0 &&
-                      detail.map((item, index) => {
-                        return (
-                          <tr
-                            key={index}
-                            className="border-b border-bodydark1  hover:text-strokedark "
-                          >
-                            <td className="p-3 text-left">{index + 1}</td>
-                            <td className="p-3 text-left ">
-                              {item["description"]}
-                            </td>
-                            <td className="p-3 text-left">
-                              {item["quantity"]}
-                            </td>
-                            <td className="p-3 text-left">{item["unit"]}</td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
+              <div className="px-3">
+                <div className="overflow-x-auto pb-15 pt-2">
+                  <table className="w-full">
+                    <thead className="border-b border-t border-bodydark1">
+                      <tr className="select-none">
+                        <th className="p-3 text-left">No</th>
+                        <th className="p-3 text-left">Description</th>
+                        <th className="p-3 text-left">Quantity</th>
+                        <th className="p-3 text-left">Unit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {detail.length > 0 &&
+                        detail.map((item, index) => {
+                          return (
+                            <tr
+                              key={index}
+                              className="border-b border-bodydark1  hover:text-strokedark "
+                            >
+                              <td className="p-3 text-left">{index + 1}</td>
+                              <td className="p-3 text-left ">
+                                {item["description"]}
+                              </td>
+                              <td className="p-3 text-left">
+                                {item["quantity"]}
+                              </td>
+                              <td className="p-3 text-left">{item["unit"]}</td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
