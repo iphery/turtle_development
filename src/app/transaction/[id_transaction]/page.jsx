@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import UserAuth from "@/components/auth";
 import { CommonButton, CommonButtonFull } from "@/components/button";
@@ -63,13 +64,16 @@ export default function Page({ params }) {
 
   const resend_message = async () => {
     setResend(true);
+
     const apiurl = `${API_URL}/resendmessage`;
     const response = await axios.post(apiurl, {
       term: "stockout",
       idTransaction: params.id_transaction,
+      uid: localStorage.getItem("userUid"),
     });
     if (response.status == 200) {
       NotifySuccess("Message sent !");
+      fetch_data();
     }
     setResend(false);
   };
@@ -145,146 +149,213 @@ export default function Page({ params }) {
       <div className="relative">
         <div className="absolute z-0 h-full w-full">
           <DefaultLayout>
-            <div className="mb-3 flex items-center justify-between">
-              <div className=" text-xl font-bold">Transaction Detail</div>
+            <Breadcrumb pageName="Transaction Detail" />
+            <div className="mb-5 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="relative flex  items-center justify-between border-b border-stroke px-4 py-5 md:px-6 xl:px-7.5">
+                <div>Information</div>
+                <div className="relative z-20">
+                  {parseInt(userlevel) <= 1 && (
+                    <button
+                      onClick={toggleDropdown}
+                      className="rounded-md bg-strokedark px-3 py-1 text-white"
+                    >
+                      <div className="flex items-center justify-start">
+                        <IoMdArrowDropdown />
+                        <div>Option</div>
+                      </div>
+                    </button>
+                  )}
 
-              <div className="relative z-20">
-                {parseInt(userlevel) <= 1 && (
-                  <button
-                    onClick={toggleDropdown}
-                    className="rounded-md bg-strokedark px-3 py-1 text-white"
-                  >
-                    <div className="flex items-center justify-start">
-                      <IoMdArrowDropdown />
-                      <div>Option</div>
-                    </div>
-                  </button>
-                )}
+                  {showDropdown && (
+                    <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                      <div className="py-1">
+                        {userlevel <= 2 && trans.signed == 0 ? (
+                          <div
+                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                            onClick={() => {
+                              setUpdatedList(detail);
+                              setModalEdit(true);
+                              setEditMode(false);
+                              toggleDropdown();
+                            }}
+                          >
+                            Edit Transaction
+                          </div>
+                        ) : (
+                          <></>
+                        )}
 
-                {showDropdown && (
-                  <div className="divide-gray-100 absolute right-0 mt-2 w-56 divide-y rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                    <div className="py-1">
-                      {userlevel <= 2 && trans.signed == 0 ? (
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            setUpdatedList(detail);
-                            setModalEdit(true);
-                            setEditMode(false);
-                            toggleDropdown();
-                          }}
-                        >
-                          Edit Transaction
-                        </div>
-                      ) : (
-                        <></>
-                      )}
+                        {userlevel <= 2 && trans.signed == 1 ? (
+                          <div
+                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                            onClick={() => {
+                              setUpdatedList(detail);
+                              setModalEdit(true);
+                              setEditMode(true);
+                              toggleDropdown();
+                            }}
+                          >
+                            Retur
+                          </div>
+                        ) : (
+                          <></>
+                        )}
 
-                      {userlevel <= 2 && trans.signed == 1 ? (
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            setUpdatedList(detail);
-                            setModalEdit(true);
-                            setEditMode(true);
-                            toggleDropdown();
-                          }}
-                        >
-                          Retur
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-
-                      {userlevel <= 1 ? (
-                        <div
-                          className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
-                          onClick={() => {
-                            setModalVoid(true);
-                            toggleDropdown();
-                          }}
-                        >
-                          Void Transaction
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <PageCard>
-              <div className="mb-2 sm:mb-0 sm:flex sm:flex-row">
-                <div className="w-full sm:w-1/2 ">
-                  <div className="mb-2 sm:flex sm:justify-evenly">
-                    <div className="w-full">No Transaction</div>
-                    <div className="w-full">{trans.id_transaction}</div>
-                  </div>
-                  <div className="mb-2 sm:flex sm:justify-evenly">
-                    <div className="w-full">Date</div>
-                    <div className="w-full">{shortDate(trans.date)}</div>
-                  </div>
-                  <div className="mb-2 sm:flex sm:justify-evenly">
-                    <div className="w-full">Type</div>
-                    <div className="w-full">{trans.type}</div>
-                  </div>
-                  <div className="mb-2 sm:flex sm:justify-evenly">
-                    <div className="w-full">
-                      {trans.type == "IN" ? "From" : "To"}
-                    </div>
-                    <div className="w-full">{trans.subject}</div>
-                  </div>
-                </div>
-                <div className="w-full sm:w-1/2">
-                  {trans.type == "OUT" ? (
-                    <div className="mb-2 sm:flex sm:justify-evenly">
-                      <div className="w-full">Note</div>
-                      <div className="w-full">{trans.note}</div>
-                    </div>
-                  ) : (
-                    <div className="mb-2 sm:flex sm:justify-evenly">
-                      <div className="w-full">RF No.</div>
-                      <div className="w-full">{trans.note}</div>
+                        {userlevel <= 1 ? (
+                          <div
+                            className="text-md text-gray-800 block w-full cursor-default px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                            onClick={() => {
+                              setModalVoid(true);
+                              toggleDropdown();
+                            }}
+                          >
+                            Void Transaction
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
-            </PageCard>
-            <div className="mb-5"></div>
-            <PageCard>
-              <div className="p-2">
+              <div className="p-5">
+                <div className="mb-2 sm:mb-0 sm:flex sm:flex-row">
+                  <div className="w-full sm:w-1/2 ">
+                    <div className="mb-2 sm:flex sm:justify-evenly">
+                      <div className="w-full">No Transaction</div>
+                      <div className="w-full">{trans.id_transaction}</div>
+                    </div>
+                    <div className="mb-2 sm:flex sm:justify-evenly">
+                      <div className="w-full">Date</div>
+                      <div className="w-full">{shortDate(trans.date)}</div>
+                    </div>
+                    <div className="mb-2 sm:flex sm:justify-evenly">
+                      <div className="w-full">Type</div>
+                      <div className="w-full">{trans.type}</div>
+                    </div>
+                    <div className="mb-2 sm:flex sm:justify-evenly">
+                      <div className="w-full">
+                        {trans.type == "IN" ? "From" : "To"}
+                      </div>
+                      <div className="w-full">{trans.subject}</div>
+                    </div>
+                  </div>
+                  <div className="w-full sm:w-1/2">
+                    {trans.type == "OUT" ? (
+                      <div className="mb-2 sm:flex sm:justify-evenly">
+                        <div className="w-full">Note</div>
+                        <div className="w-full">{trans.note}</div>
+                      </div>
+                    ) : (
+                      <div className="mb-2 sm:flex sm:justify-evenly">
+                        <div className="w-full">RF No.</div>
+                        <div className="w-full">{trans.note}</div>
+                      </div>
+                    )}
+                    {trans.type == "OUT" && (
+                      <div className="mb-2 sm:flex sm:justify-evenly">
+                        <div className="w-full">Sign at </div>
+                        <div className="w-full">
+                          <div className="flex items-center justify-start">
+                            <div className="">
+                              {formatDateLocal2(trans.signed_at)}
+                            </div>
+                            {trans.signed == 0 ? (
+                              parseInt(localStorage.getItem("userlevel")) <=
+                              2 ? (
+                                resend ? (
+                                  <ButtonLoader />
+                                ) : (
+                                  <>
+                                    <div
+                                      onClick={resend_message}
+                                      data-tooltip-id="my-tooltip-1"
+                                      className="cursor-default text-success hover:text-warning"
+                                    >
+                                      <FaWhatsapp />
+                                    </div>
+
+                                    <ReactTooltip
+                                      id="my-tooltip-1"
+                                      place="bottom"
+                                      content="Resend message to requestor"
+                                    />
+                                  </>
+                                )
+                              ) : (
+                                <></>
+                              )
+                            ) : parseInt(localStorage.getItem("userlevel")) <=
+                              2 ? (
+                              <div
+                                className="ml-3 hover:text-warning"
+                                onClick={() => {
+                                  window.open(
+                                    `/receipt/${trans.token}`,
+                                    "_blank",
+                                    "noopener,noreferrer",
+                                  );
+                                }}
+                              >
+                                <IoDocumentTextOutline />
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {trans.type == "OUT" && (
+                      <div className="mb-2 sm:flex sm:justify-evenly">
+                        <div className="w-full">Signature</div>
+                        <div className="w-full">
+                          {" "}
+                          <div className="ml-3">
+                            <img src={trans.signature} className="h-12" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="px-5 pb-15 pt-2">
                 <table className="w-full">
-                  <thead>
-                    <tr className="bg-strokedark text-white">
-                      <th>No</th>
-                      <th>Description</th>
-                      <th>Quantity</th>
-                      <th>Unit</th>
+                  <thead className="border-b border-t border-bodydark1">
+                    <tr className="select-none">
+                      <th className="p-3 text-left">No</th>
+                      <th className="p-3 text-left">Description</th>
+                      <th className="p-3 text-left">Quantity</th>
+                      <th className="p-3 text-left">Unit</th>
                     </tr>
                   </thead>
                   <tbody>
                     {detail.length > 0 &&
                       detail.map((item, index) => {
                         return (
-                          <tr key={index}>
-                            <td className="p-1 text-center">{index + 1}</td>
-                            <td className="p-1 ">{item["description"]}</td>
-                            <td className="p-1 text-center">
+                          <tr
+                            key={index}
+                            className="border-b border-bodydark1  hover:text-strokedark "
+                          >
+                            <td className="p-3 text-left">{index + 1}</td>
+                            <td className="p-3 text-left ">
+                              {item["description"]}
+                            </td>
+                            <td className="p-3 text-left">
                               {item["quantity"]}
                             </td>
-                            <td className="p-1 text-center">{item["unit"]}</td>
+                            <td className="p-3 text-left">{item["unit"]}</td>
                           </tr>
                         );
                       })}
                   </tbody>
                 </table>
               </div>
-            </PageCard>
-            <div className="mb-5"></div>
+            </div>
 
-            {trans.type == "OUT" ? (
+            {/* {trans.type == "OUT" ? (
               <PageCard>
                 <div className="sm:flex sm:justify-evenly">
                   <div className="w-full">
@@ -345,22 +416,24 @@ export default function Page({ params }) {
               </PageCard>
             ) : (
               <></>
-            )}
+            )} */}
 
-            <div className="mb-5"></div>
+            {/* <div className="mb-5"></div> */}
 
-            <PageCard>
-              <div className="mb-3">Logs :</div>
-              {histories.length > 0 &&
-                histories.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="text-sm"
-                    >{`${formatDateLocal2(item["created_at"])} : ${item["name"]} : ${item["action"]}`}</div>
-                  );
-                })}
-            </PageCard>
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="p-5">
+                <div className="mb-3">Logs :</div>
+                {histories.length > 0 &&
+                  histories.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="text-sm"
+                      >{`${formatDateLocal2(item["created_at"])} : ${item["name"]} : ${item["action"]}`}</div>
+                    );
+                  })}
+              </div>
+            </div>
           </DefaultLayout>
         </div>
         <CustomModal
