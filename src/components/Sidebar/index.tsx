@@ -59,7 +59,7 @@ const menuGroups: MenuGroup[] = [
             icon: "stock",
             label: "Stock Opname",
             route: "/stockopname",
-            maxLevel: 1,
+            maxLevel: 2,
           },
           {
             icon: "analysis",

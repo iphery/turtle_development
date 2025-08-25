@@ -52,6 +52,8 @@ const Products = () => {
     initial_stock: "",
   });
 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [filePreview, setFilePreview] = useState();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -61,6 +63,8 @@ const Products = () => {
   const [modalPeriod, setModalPeriod] = useState(false);
   const [month, setMonth] = useState("");
   const [onDownload, setOnDownload] = useState(false);
+  const [modalTransaction, setModalTransaction] = useState(false);
+  const [onDownloadTransaction, setOnDownloadTransaction] = useState(false);
 
   const fetch_product = async () => {
     const apiUrl = `${API_URL}/fetchtransaction1?page=${currentPage}&keyword=${currentSearch}`;
@@ -153,6 +157,26 @@ const Products = () => {
 
     setOnDownload(false);
     setModalPeriod(false);
+  };
+
+  const donwload_transaction = async () => {
+    setOnDownloadTransaction(true);
+    const apiurl = `${API_URL}/downloadtransaction`;
+    try {
+      const response = await axios.post(apiurl, {
+        start_date: startDate,
+        end_date: endDate,
+      });
+
+      console.log(response.data);
+      window.location.href =
+        "https://mipa.farmaguru.cloud/download-daily-transaction";
+    } catch (error) {
+      console.log(error);
+    }
+
+    setOnDownloadTransaction(false);
+    setModalTransaction(false);
   };
 
   return (
@@ -268,6 +292,17 @@ const Products = () => {
                               }}
                             >
                               Download Report
+                            </button>
+                          )}
+                          {parseInt(userLevel) <= 1 && (
+                            <button
+                              className="text-md text-gray-800 block w-full px-4 py-2 text-left transition-colors duration-200 ease-in-out hover:bg-black hover:text-white"
+                              onClick={() => {
+                                setShowDropdown(false);
+                                setModalTransaction(true);
+                              }}
+                            >
+                              Download Transaction
                             </button>
                           )}
                         </div>
@@ -389,6 +424,62 @@ const Products = () => {
               onload={onDownload}
               disabled={onDownload}
               onClick={donwload_report}
+            />
+          </div>
+        </CustomModal>
+        <CustomModal
+          isVisible={modalTransaction}
+          isSmallWidth="sm"
+          onClose={() => {
+            setModalTransaction(false);
+          }}
+        >
+          <div className="mb-5 font-bold">Periode</div>
+          <div className="justify-evently mb-3 flex items-center">
+            <div className="w-1/3">Start date</div>
+            <div className="w-2/3">
+              <input
+                className="border-gray-300 text-gray-700 w-full rounded-lg border px-4 py-2.5 shadow-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type={"date"}
+                value={startDate}
+                onChange={(e: any) => {
+                  const val = e.target.value;
+                  const datestart = new Date(val);
+                  const dateend = new Date(endDate);
+                  if (datestart > dateend) {
+                    setEndDate(val);
+                  }
+                  setStartDate(val);
+                }}
+              />
+            </div>
+          </div>
+          <div className="justify-evently mb-3 flex items-center">
+            <div className="w-1/3">End date</div>
+            <div className="w-2/3">
+              <input
+                className="border-gray-300 text-gray-700 w-full rounded-lg border px-4 py-2.5 shadow-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type={"date"}
+                value={endDate}
+                onChange={(e: any) => {
+                  const val = e.target.value;
+                  const datestart = new Date(startDate);
+                  const dateend = new Date(val);
+                  if (datestart > dateend) {
+                    setStartDate(val);
+                  }
+                  setEndDate(val);
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="mt-5 flex justify-end">
+            <CommonButton
+              label={"Submit"}
+              onload={onDownloadTransaction}
+              disabled={onDownloadTransaction}
+              onClick={donwload_transaction}
             />
           </div>
         </CustomModal>
